@@ -11,11 +11,18 @@ interface Props {
 }
 
 export function UniversalCalculatorRenderer({ slug, name }: Props) {
+  const todayStr = () => new Date().toISOString().split("T")[0];
+
   // Date states
   const [dob, setDob] = useState<string>("2000-01-01");
-  const [targetDate, setTargetDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
-  const [startDate, setStartDate] = useState<string>("2026-01-01");
-  const [endDate, setEndDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [targetDate, setTargetDate] = useState<string>(todayStr);
+  const [startDate, setStartDate] = useState<string>(todayStr);
+  const [endDate, setEndDate] = useState<string>(todayStr);
+
+  // Date Add / Subtract states
+  const [baseDate, setBaseDate] = useState<string>(todayStr);
+  const [addQty, setAddQty] = useState<number>(30);
+  const [addUnit, setAddUnit] = useState<"days" | "weeks" | "months" | "years">("days");
 
   // Time duration states (HH:MM)
   const [startTime, setStartTime] = useState<string>("09:00");
@@ -51,13 +58,61 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
 
   // Calculate Result
   const result = useMemo(() => {
-    // 1. Time Duration & Hours Calculator
+    // 1. Date Add & Subtract Calculator
+    if (slug === "date-add-calculator" || slug === "date-subtract-calculator") {
+      const isAdd = slug === "date-add-calculator";
+      const dt = new Date(baseDate);
+
+      if (isNaN(dt.getTime())) {
+        return {
+          primaryLabel: "Calculated Date",
+          primaryValue: "Invalid Date",
+          metrics: [],
+          summaryText: "Please select a valid date.",
+        };
+      }
+
+      const factor = isAdd ? 1 : -1;
+      const qty = Math.max(0, addQty) * factor;
+
+      if (addUnit === "days") {
+        dt.setDate(dt.getDate() + qty);
+      } else if (addUnit === "weeks") {
+        dt.setDate(dt.getDate() + qty * 7);
+      } else if (addUnit === "months") {
+        dt.setMonth(dt.getMonth() + qty);
+      } else if (addUnit === "years") {
+        dt.setFullYear(dt.getFullYear() + qty);
+      }
+
+      const formattedResultDate = dt.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      const dayOfWeek = dt.toLocaleDateString("en-US", { weekday: "long" });
+
+      return {
+        primaryLabel: isAdd ? "Resulting Future Date" : "Resulting Past Date",
+        primaryValue: formattedResultDate,
+        metrics: [
+          { label: "Day of the Week", value: dayOfWeek, highlight: true },
+          { label: "Operation", value: `${isAdd ? "Added" : "Subtracted"} ${addQty} ${addUnit}` },
+          { label: "Starting Date", value: baseDate },
+        ],
+        summaryText: `${isAdd ? "Adding" : "Subtracting"} ${addQty} ${addUnit} to ${baseDate} results in ${formattedResultDate}.`,
+      };
+    }
+
+    // 2. Time Duration & Hours Calculator
     if (slug === "time-duration-calculator" || slug === "hours-calculator") {
       const [startH, startM] = startTime.split(":").map(Number);
       const [endH, endM] = endTime.split(":").map(Number);
 
       let totalMinutes = (endH * 60 + endM) - (startH * 60 + startM);
-      if (totalMinutes < 0) totalMinutes += 24 * 60; // Next day shift crossover
+      if (totalMinutes < 0) totalMinutes += 24 * 60;
 
       const netMinutes = Math.max(0, totalMinutes - (slug === "hours-calculator" ? breakMins : 0));
       const hours = Math.floor(netMinutes / 60);
@@ -71,13 +126,13 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
           { label: "Decimal Hours", value: `${decimalHours} hrs`, highlight: true },
           { label: "Total Minutes", value: `${formatNumberIN(netMinutes, 0)} Mins` },
           { label: "Total Seconds", value: `${formatNumberIN(netMinutes * 60, 0)} Secs` },
-          ...(slug === "hours-calculator" ? [{ label: "Unpaid Break Deducted", value: `${breakMins} mins` }] : []),
+          ...(slug === "hours-calculator" ? [{ label: "Break Deducted", value: `${breakMins} mins` }] : []),
         ],
         summaryText: `From ${startTime} to ${endTime}${slug === "hours-calculator" ? ` minus ${breakMins}m break` : ""}, duration is ${hours}h ${mins}m (${decimalHours} hrs).`,
       };
     }
 
-    // 2. Date Difference & Days Between Dates
+    // 3. Date Difference & Days Between Dates
     if (slug === "date-difference-calculator" || slug === "days-between-dates") {
       const d1 = new Date(startDate);
       const d2 = new Date(endDate);
@@ -91,13 +146,13 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
         metrics: [
           { label: "Total Weeks", value: `${weeks} Weeks`, highlight: true },
           { label: "Total Hours", value: `${formatNumberIN(totalDays * 24, 0)} Hours` },
-          { label: "Total Working Days (approx)", value: `${formatNumberIN(Math.round(totalDays * (5 / 7)), 0)} Days` },
+          { label: "Working Days (approx)", value: `${formatNumberIN(Math.round(totalDays * (5 / 7)), 0)} Days` },
         ],
         summaryText: `Between ${startDate} and ${endDate}, there are ${totalDays} calendar days (${weeks} weeks).`,
       };
     }
 
-    // 3. Age Calculators
+    // 4. Age Calculators
     if (slug === "age-calculator" || slug === "age-in-days-calculator") {
       const birth = new Date(dob);
       const target = new Date(targetDate);
@@ -150,7 +205,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     }
 
     return calculateUniversal(slug, v1, v2, v3);
-  }, [slug, dob, targetDate, startDate, endDate, startTime, endTime, breakMins, v1, v2, v3]);
+  }, [slug, baseDate, addQty, addUnit, dob, targetDate, startDate, endDate, startTime, endTime, breakMins, v1, v2, v3]);
 
   const handleCopy = () => {
     const text = `${name} Results:\n${result.primaryLabel}: ${result.primaryValue}\n` +
@@ -179,10 +234,13 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
   };
 
   const handleReset = () => {
+    setBaseDate(todayStr());
+    setAddQty(30);
+    setAddUnit("days");
     setDob("2000-01-01");
-    setTargetDate(new Date().toISOString().split("T")[0]);
-    setStartDate("2026-01-01");
-    setEndDate(new Date().toISOString().split("T")[0]);
+    setTargetDate(todayStr());
+    setStartDate(todayStr());
+    setEndDate(todayStr());
     setStartTime("09:00");
     setEndTime("17:30");
     setBreakMins(30);
@@ -191,6 +249,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     setV3(0);
   };
 
+  const isDateAddSubCalculator = slug === "date-add-calculator" || slug === "date-subtract-calculator";
   const isTimeCalculator = slug === "time-duration-calculator" || slug === "hours-calculator";
   const isDateDiffCalculator = slug === "date-difference-calculator" || slug === "days-between-dates";
   const isAgeCalculator = slug === "age-calculator" || slug === "age-in-days-calculator";
@@ -215,7 +274,52 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
-          {isTimeCalculator ? (
+          {isDateAddSubCalculator ? (
+            <>
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  Starting Date
+                </label>
+                <input
+                  type="date"
+                  value={baseDate}
+                  onChange={(e) => setBaseDate(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    {slug === "date-add-calculator" ? "Amount to Add" : "Amount to Subtract"}
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10000"
+                    value={addQty}
+                    onChange={(e) => setAddQty(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    Unit of Time
+                  </label>
+                  <select
+                    value={addUnit}
+                    onChange={(e) => setAddUnit(e.target.value as any)}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  >
+                    <option value="days">Days</option>
+                    <option value="weeks">Weeks</option>
+                    <option value="months">Months</option>
+                    <option value="years">Years</option>
+                  </select>
+                </div>
+              </div>
+            </>
+          ) : isTimeCalculator ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
