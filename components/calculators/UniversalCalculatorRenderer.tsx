@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { formatNumberIN, formatINR } from "@/lib/formatters";
 import { calculateUniversal } from "@/lib/calculators/allEngines";
 import { Copy, Check, Share2, RotateCcw } from "lucide-react";
 
@@ -10,6 +11,11 @@ interface Props {
 }
 
 export function UniversalCalculatorRenderer({ slug, name }: Props) {
+  // Date of birth state for Age Calculator
+  const [dob, setDob] = useState<string>("2000-01-01");
+  const [targetDate, setTargetDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+
+  // General numeric values
   const [v1, setV1] = useState<number>(() => {
     if (slug === "bmi-calculator") return 70;
     if (slug.includes("calorie") || slug.includes("bmr")) return 70;
@@ -24,7 +30,6 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     if (slug === "bmi-calculator") return 175;
     if (slug.includes("calorie") || slug.includes("bmr")) return 175;
     if (slug === "roas-calculator") return 30000;
-    if (slug === "celsius-to-fahrenheit") return 0;
     if (slug === "fuel-cost-calculator") return 18;
     return 10;
   });
@@ -37,9 +42,61 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
 
   const [copied, setCopied] = useState<boolean>(false);
 
+  // Calculate Result
   const result = useMemo(() => {
+    if (slug === "age-calculator" || slug === "age-in-days-calculator" || slug.includes("date") || slug.includes("days-between")) {
+      const birth = new Date(dob);
+      const target = new Date(targetDate);
+      
+      if (isNaN(birth.getTime()) || isNaN(target.getTime())) {
+        return {
+          primaryLabel: "Your Exact Age",
+          primaryValue: "Invalid Date",
+          metrics: [],
+          summaryText: "Please select a valid date.",
+        };
+      }
+
+      let diffMs = target.getTime() - birth.getTime();
+      if (diffMs < 0) diffMs = 0;
+
+      const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      
+      let years = target.getFullYear() - birth.getFullYear();
+      let months = target.getMonth() - birth.getMonth();
+      let days = target.getDate() - birth.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(target.getFullYear(), target.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      const nextBday = new Date(target.getFullYear(), birth.getMonth(), birth.getDate());
+      if (nextBday < target) {
+        nextBday.setFullYear(target.getFullYear() + 1);
+      }
+      const daysToNextBday = Math.ceil((nextBday.getTime() - target.getTime()) / (1000 * 60 * 60 * 24));
+
+      return {
+        primaryLabel: slug === "age-in-days-calculator" ? "Total Days Alive" : "Your Exact Age",
+        primaryValue: slug === "age-in-days-calculator" ? `${formatNumberIN(totalDays, 0)} Days` : `${years} Years, ${months} Months, ${days} Days`,
+        metrics: [
+          { label: "Total Days Lived", value: `${formatNumberIN(totalDays, 0)} Days`, highlight: true },
+          { label: "Total Hours Lived", value: `${formatNumberIN(totalDays * 24, 0)} Hours` },
+          { label: "Next Birthday In", value: `${daysToNextBday} Days` },
+          { label: "Total Weeks Lived", value: `${formatNumberIN(Math.floor(totalDays / 7), 0)} Weeks` },
+        ],
+        summaryText: `Born on ${dob}, you are ${years} years, ${months} months, and ${days} days old as of ${targetDate}.`,
+      };
+    }
+
     return calculateUniversal(slug, v1, v2, v3);
-  }, [slug, v1, v2, v3]);
+  }, [slug, dob, targetDate, v1, v2, v3]);
 
   const handleCopy = () => {
     const text = `${name} Results:\n${result.primaryLabel}: ${result.primaryValue}\n` +
@@ -68,10 +125,14 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
   };
 
   const handleReset = () => {
+    setDob("2000-01-01");
+    setTargetDate(new Date().toISOString().split("T")[0]);
     setV1(slug === "bmi-calculator" ? 70 : 100);
     setV2(slug === "bmi-calculator" ? 175 : 10);
     setV3(0);
   };
+
+  const isDateCalculator = slug === "age-calculator" || slug === "age-in-days-calculator" || slug.includes("date") || slug.includes("days-between");
 
   return (
     <div className="bg-white border border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm">
@@ -93,81 +154,111 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
-          <div>
-            <label className="block font-bold text-sm text-navy mb-2">
-              {slug === "bmi-calculator" || slug.includes("calorie") || slug.includes("water")
-                ? "Body Weight (kg)"
-                : slug === "cgpa-to-percentage"
-                ? "Enter CGPA (0 - 10 Scale)"
-                : slug === "percentage-to-cgpa"
-                ? "Enter Percentage (%)"
-                : slug === "roas-calculator"
-                ? "Total Campaign Revenue (₹)"
-                : slug === "celsius-to-fahrenheit"
-                ? "Temperature in Celsius (°C)"
-                : slug === "fahrenheit-to-celsius"
-                ? "Temperature in Fahrenheit (°F)"
-                : slug === "fuel-cost-calculator"
-                ? "Total Distance (km)"
-                : slug === "electricity-bill-calculator"
-                ? "Total Power Rating (Watts)"
-                : slug === "tip-calculator"
-                ? "Total Bill Amount (₹)"
-                : "Primary Input Value"}
-            </label>
-            <input
-              type="number"
-              step="any"
-              value={v1 || ""}
-              onChange={(e) => setV1(Number(e.target.value))}
-              className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
-            />
-          </div>
+          {isDateCalculator ? (
+            <>
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  Date of Birth (DOB)
+                </label>
+                <input
+                  type="date"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
 
-          {!slug.includes("cgpa") && !slug.includes("water") && !slug.includes("to-") && (
-            <div>
-              <label className="block font-bold text-sm text-navy mb-2">
-                {slug === "bmi-calculator" || slug.includes("calorie")
-                  ? "Height (cm)"
-                  : slug === "roas-calculator"
-                  ? "Total Ad Spend (₹)"
-                  : slug === "fuel-cost-calculator"
-                  ? "Vehicle Mileage (km / Liter)"
-                  : slug === "electricity-bill-calculator"
-                  ? "Hours Used Per Day"
-                  : slug === "tip-calculator"
-                  ? "Tip Percentage (%)"
-                  : "Secondary Value"}
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={v2 || ""}
-                onChange={(e) => setV2(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
-              />
-            </div>
-          )}
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  Age as of Date (Today)
+                </label>
+                <input
+                  type="date"
+                  value={targetDate}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  {slug === "bmi-calculator" || slug.includes("calorie") || slug.includes("water")
+                    ? "Body Weight (kg)"
+                    : slug === "cgpa-to-percentage"
+                    ? "Enter CGPA (0 - 10 Scale)"
+                    : slug === "percentage-to-cgpa"
+                    ? "Enter Percentage (%)"
+                    : slug === "roas-calculator"
+                    ? "Total Campaign Revenue (₹)"
+                    : slug === "celsius-to-fahrenheit"
+                    ? "Temperature in Celsius (°C)"
+                    : slug === "fahrenheit-to-celsius"
+                    ? "Temperature in Fahrenheit (°F)"
+                    : slug === "fuel-cost-calculator"
+                    ? "Total Distance (km)"
+                    : slug === "electricity-bill-calculator"
+                    ? "Total Power Rating (Watts)"
+                    : slug === "tip-calculator"
+                    ? "Total Bill Amount (₹)"
+                    : "Primary Input Value"}
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  value={v1 || ""}
+                  onChange={(e) => setV1(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
 
-          {(slug.includes("calorie") || slug === "fuel-cost-calculator" || slug === "electricity-bill-calculator" || slug === "tip-calculator") && (
-            <div>
-              <label className="block font-bold text-sm text-navy mb-2">
-                {slug.includes("calorie")
-                  ? "Age (Years)"
-                  : slug === "fuel-cost-calculator"
-                  ? "Fuel Price (₹ / Liter)"
-                  : slug === "electricity-bill-calculator"
-                  ? "Electricity Tariff (₹ / Unit kWh)"
-                  : "Number of People Sharing"}
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={v3 || ""}
-                onChange={(e) => setV3(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
-              />
-            </div>
+              {!slug.includes("cgpa") && !slug.includes("water") && !slug.includes("to-") && (
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    {slug === "bmi-calculator" || slug.includes("calorie")
+                      ? "Height (cm)"
+                      : slug === "roas-calculator"
+                      ? "Total Ad Spend (₹)"
+                      : slug === "fuel-cost-calculator"
+                      ? "Vehicle Mileage (km / Liter)"
+                      : slug === "electricity-bill-calculator"
+                      ? "Hours Used Per Day"
+                      : slug === "tip-calculator"
+                      ? "Tip Percentage (%)"
+                      : "Secondary Value"}
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={v2 || ""}
+                    onChange={(e) => setV2(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+              )}
+
+              {(slug.includes("calorie") || slug === "fuel-cost-calculator" || slug === "electricity-bill-calculator" || slug === "tip-calculator") && (
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    {slug.includes("calorie")
+                      ? "Age (Years)"
+                      : slug === "fuel-cost-calculator"
+                      ? "Fuel Price (₹ / Liter)"
+                      : slug === "electricity-bill-calculator"
+                      ? "Electricity Tariff (₹ / Unit kWh)"
+                      : "Number of People Sharing"}
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={v3 || ""}
+                    onChange={(e) => setV3(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -177,7 +268,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
             <div className="text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
               {result.primaryLabel}
             </div>
-            <div className="text-3xl sm:text-4xl font-black text-navy mb-6 tracking-tight">
+            <div className="text-2xl sm:text-3xl font-black text-navy mb-6 tracking-tight">
               {result.primaryValue}
             </div>
 
