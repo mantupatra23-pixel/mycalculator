@@ -11,9 +11,16 @@ interface Props {
 }
 
 export function UniversalCalculatorRenderer({ slug, name }: Props) {
-  // Date of birth state for Age Calculator
+  // Date states
   const [dob, setDob] = useState<string>("2000-01-01");
   const [targetDate, setTargetDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+  const [startDate, setStartDate] = useState<string>("2026-01-01");
+  const [endDate, setEndDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
+
+  // Time duration states (HH:MM)
+  const [startTime, setStartTime] = useState<string>("09:00");
+  const [endTime, setEndTime] = useState<string>("17:30");
+  const [breakMins, setBreakMins] = useState<number>(30);
 
   // General numeric values
   const [v1, setV1] = useState<number>(() => {
@@ -44,7 +51,54 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
 
   // Calculate Result
   const result = useMemo(() => {
-    if (slug === "age-calculator" || slug === "age-in-days-calculator" || slug.includes("date") || slug.includes("days-between")) {
+    // 1. Time Duration & Hours Calculator
+    if (slug === "time-duration-calculator" || slug === "hours-calculator") {
+      const [startH, startM] = startTime.split(":").map(Number);
+      const [endH, endM] = endTime.split(":").map(Number);
+
+      let totalMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+      if (totalMinutes < 0) totalMinutes += 24 * 60; // Next day shift crossover
+
+      const netMinutes = Math.max(0, totalMinutes - (slug === "hours-calculator" ? breakMins : 0));
+      const hours = Math.floor(netMinutes / 60);
+      const mins = netMinutes % 60;
+      const decimalHours = (netMinutes / 60).toFixed(2);
+
+      return {
+        primaryLabel: slug === "hours-calculator" ? "Net Working Hours" : "Total Duration",
+        primaryValue: `${hours} Hours, ${mins} Minutes`,
+        metrics: [
+          { label: "Decimal Hours", value: `${decimalHours} hrs`, highlight: true },
+          { label: "Total Minutes", value: `${formatNumberIN(netMinutes, 0)} Mins` },
+          { label: "Total Seconds", value: `${formatNumberIN(netMinutes * 60, 0)} Secs` },
+          ...(slug === "hours-calculator" ? [{ label: "Unpaid Break Deducted", value: `${breakMins} mins` }] : []),
+        ],
+        summaryText: `From ${startTime} to ${endTime}${slug === "hours-calculator" ? ` minus ${breakMins}m break` : ""}, duration is ${hours}h ${mins}m (${decimalHours} hrs).`,
+      };
+    }
+
+    // 2. Date Difference & Days Between Dates
+    if (slug === "date-difference-calculator" || slug === "days-between-dates") {
+      const d1 = new Date(startDate);
+      const d2 = new Date(endDate);
+      const diffMs = Math.abs(d2.getTime() - d1.getTime());
+      const totalDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      const weeks = (totalDays / 7).toFixed(1);
+
+      return {
+        primaryLabel: "Days Between Dates",
+        primaryValue: `${formatNumberIN(totalDays, 0)} Days`,
+        metrics: [
+          { label: "Total Weeks", value: `${weeks} Weeks`, highlight: true },
+          { label: "Total Hours", value: `${formatNumberIN(totalDays * 24, 0)} Hours` },
+          { label: "Total Working Days (approx)", value: `${formatNumberIN(Math.round(totalDays * (5 / 7)), 0)} Days` },
+        ],
+        summaryText: `Between ${startDate} and ${endDate}, there are ${totalDays} calendar days (${weeks} weeks).`,
+      };
+    }
+
+    // 3. Age Calculators
+    if (slug === "age-calculator" || slug === "age-in-days-calculator") {
       const birth = new Date(dob);
       const target = new Date(targetDate);
       
@@ -96,7 +150,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     }
 
     return calculateUniversal(slug, v1, v2, v3);
-  }, [slug, dob, targetDate, v1, v2, v3]);
+  }, [slug, dob, targetDate, startDate, endDate, startTime, endTime, breakMins, v1, v2, v3]);
 
   const handleCopy = () => {
     const text = `${name} Results:\n${result.primaryLabel}: ${result.primaryValue}\n` +
@@ -127,12 +181,19 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
   const handleReset = () => {
     setDob("2000-01-01");
     setTargetDate(new Date().toISOString().split("T")[0]);
+    setStartDate("2026-01-01");
+    setEndDate(new Date().toISOString().split("T")[0]);
+    setStartTime("09:00");
+    setEndTime("17:30");
+    setBreakMins(30);
     setV1(slug === "bmi-calculator" ? 70 : 100);
     setV2(slug === "bmi-calculator" ? 175 : 10);
     setV3(0);
   };
 
-  const isDateCalculator = slug === "age-calculator" || slug === "age-in-days-calculator" || slug.includes("date") || slug.includes("days-between");
+  const isTimeCalculator = slug === "time-duration-calculator" || slug === "hours-calculator";
+  const isDateDiffCalculator = slug === "date-difference-calculator" || slug === "days-between-dates";
+  const isAgeCalculator = slug === "age-calculator" || slug === "age-in-days-calculator";
 
   return (
     <div className="bg-white border border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm">
@@ -154,7 +215,75 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
-          {isDateCalculator ? (
+          {isTimeCalculator ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    Start Time
+                  </label>
+                  <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    End Time
+                  </label>
+                  <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {slug === "hours-calculator" && (
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">
+                    Unpaid Break (Minutes)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="300"
+                    value={breakMins}
+                    onChange={(e) => setBreakMins(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+              )}
+            </>
+          ) : isDateDiffCalculator ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
+            </div>
+          ) : isAgeCalculator ? (
             <>
               <div>
                 <label className="block font-bold text-sm text-navy mb-2">
@@ -167,7 +296,6 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
                   className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
                 />
               </div>
-
               <div>
                 <label className="block font-bold text-sm text-navy mb-2">
                   Age as of Date (Today)
