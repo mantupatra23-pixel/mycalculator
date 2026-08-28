@@ -1,10 +1,222 @@
 import { formatNumberIN, formatINR } from "@/lib/formatters";
 import { CalculationResult } from "./finance";
 
-export function calculateUniversal(slug: string, v1: number, v2: number, v3: number, strVal?: string): CalculationResult {
+function getGCD(a: number, b: number): number {
+  a = Math.abs(Math.round(a));
+  b = Math.abs(Math.round(b));
+  while (b) {
+    const t = b;
+    b = a % b;
+    a = t;
+  }
+  return a || 1;
+}
+
+// 1. Fraction Calculator
+export function calculateFraction(n1: number, d1: number, op: string, n2: number, d2: number): CalculationResult {
+  const den1 = d1 === 0 ? 1 : d1;
+  const den2 = d2 === 0 ? 1 : d2;
+  const num1 = n1;
+  const num2 = n2;
+
+  let resNum = 0;
+  let resDen = 1;
+
+  if (op === "+") {
+    resNum = num1 * den2 + num2 * den1;
+    resDen = den1 * den2;
+  } else if (op === "-") {
+    resNum = num1 * den2 - num2 * den1;
+    resDen = den1 * den2;
+  } else if (op === "*") {
+    resNum = num1 * num2;
+    resDen = den1 * den2;
+  } else if (op === "/") {
+    resNum = num1 * den2;
+    resDen = den1 * (num2 === 0 ? 1 : num2);
+  }
+
+  const gcd = getGCD(resNum, resDen);
+  const simNum = resNum / gcd;
+  const simDen = resDen / gcd;
+
+  const decimalVal = simNum / simDen;
+  const wholePart = Math.floor(Math.abs(simNum) / simDen);
+  const remainder = Math.abs(simNum) % simDen;
+  const mixedFraction =
+    wholePart > 0 && remainder > 0
+      ? `${simNum < 0 ? "-" : ""}${wholePart} ${remainder}/${simDen}`
+      : `${simNum}/${simDen}`;
+
+  return {
+    primaryLabel: "Simplified Result",
+    primaryValue: simDen === 1 ? `${simNum}` : `${simNum} / ${simDen}`,
+    metrics: [
+      { label: "Decimal Value", value: decimalVal.toFixed(4), highlight: true },
+      { label: "Mixed Number", value: mixedFraction },
+      { label: "Equation", value: `${num1}/${den1} ${op} ${num2}/${den2}` },
+    ],
+    summaryText: `${num1}/${den1} ${op} ${num2}/${den2} = ${simNum}/${simDen} (${decimalVal.toFixed(4)}).`,
+  };
+}
+
+// 2. Countdown Calculator
+export function calculateCountdown(targetDateStr: string, titleStr: string = "Target Event"): CalculationResult {
+  const target = new Date(targetDateStr);
+  const now = new Date();
+
+  if (isNaN(target.getTime())) {
+    return {
+      primaryLabel: "Time Remaining",
+      primaryValue: "Invalid Date",
+      metrics: [],
+      summaryText: "Please select a valid future date.",
+    };
+  }
+
+  const diffMs = target.getTime() - now.getTime();
+  const isPast = diffMs < 0;
+  const absMs = Math.abs(diffMs);
+
+  const totalSeconds = Math.floor(absMs / 1000);
+  const days = Math.floor(totalSeconds / (3600 * 24));
+  const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return {
+    primaryLabel: isPast ? `${titleStr} Passed Since` : `Time Left Until ${titleStr}`,
+    primaryValue: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+    metrics: [
+      { label: "Total Days", value: `${formatNumberIN(days, 0)} Days`, highlight: true },
+      { label: "Total Hours", value: `${formatNumberIN(Math.floor(totalSeconds / 3600), 0)} Hours` },
+      { label: "Total Minutes", value: `${formatNumberIN(Math.floor(totalSeconds / 60), 0)} Mins` },
+      { label: "Event Date", value: target.toLocaleDateString("en-US", { weekday: "short", year: "numeric", month: "short", day: "numeric" }) },
+    ],
+    summaryText: isPast
+      ? `The event occurred ${days} days and ${hours} hours ago.`
+      : `There are ${days} days, ${hours} hours, and ${minutes} minutes remaining until ${titleStr}.`,
+  };
+}
+
+// 3. Multi-Unit Converter Engine
+export function calculateUnitConverter(
+  category: "length" | "weight" | "temperature" | "area" | "volume" | "speed" | "data" | "time",
+  fromUnit: string,
+  toUnit: string,
+  value: number
+): CalculationResult {
+  const val = isNaN(value) ? 0 : value;
+
+  // Length in meters
+  const lengthToM: Record<string, number> = {
+    m: 1,
+    km: 1000,
+    cm: 0.01,
+    mm: 0.001,
+    ft: 0.3048,
+    in: 0.0254,
+    yd: 0.9144,
+    mi: 1609.344,
+  };
+
+  // Weight in grams
+  const weightToG: Record<string, number> = {
+    g: 1,
+    kg: 1000,
+    mg: 0.001,
+    lb: 453.59237,
+    oz: 28.3495,
+    ton: 1000000,
+  };
+
+  // Area in sq meters
+  const areaToSqm: Record<string, number> = {
+    sqm: 1,
+    sqft: 0.092903,
+    sqyd: 0.836127,
+    acre: 4046.86,
+    hectare: 10000,
+    bigha: 2529.28,
+  };
+
+  // Volume in Liters
+  const volumeToL: Record<string, number> = {
+    l: 1,
+    ml: 0.001,
+    gal: 3.78541,
+    qt: 0.946353,
+    pt: 0.473176,
+    cup: 0.24,
+    cum: 1000,
+  };
+
+  // Speed in km/h
+  const speedToKmh: Record<string, number> = {
+    kmh: 1,
+    mph: 1.60934,
+    ms: 3.6,
+    knot: 1.852,
+  };
+
+  // Data in Megabytes
+  const dataToMB: Record<string, number> = {
+    b: 0.00000095367431640625,
+    kb: 0.0009765625,
+    mb: 1,
+    gb: 1024,
+    tb: 1048576,
+    pb: 1073741824,
+  };
+
+  let converted = 0;
+
+  if (category === "temperature") {
+    let tempC = val;
+    if (fromUnit === "f") tempC = ((val - 32) * 5) / 9;
+    if (fromUnit === "k") tempC = val - 273.15;
+
+    if (toUnit === "c") converted = tempC;
+    else if (toUnit === "f") converted = (tempC * 9) / 5 + 32;
+    else if (toUnit === "k") converted = tempC + 273.15;
+  } else if (category === "length") {
+    const inMeters = val * (lengthToM[fromUnit] || 1);
+    converted = inMeters / (lengthToM[toUnit] || 1);
+  } else if (category === "weight") {
+    const inGrams = val * (weightToG[fromUnit] || 1);
+    converted = inGrams / (weightToG[toUnit] || 1);
+  } else if (category === "area") {
+    const inSqm = val * (areaToSqm[fromUnit] || 1);
+    converted = inSqm / (areaToSqm[toUnit] || 1);
+  } else if (category === "volume") {
+    const inL = val * (volumeToL[fromUnit] || 1);
+    converted = inL / (volumeToL[toUnit] || 1);
+  } else if (category === "speed") {
+    const inKmh = val * (speedToKmh[fromUnit] || 1);
+    converted = inKmh / (speedToKmh[toUnit] || 1);
+  } else if (category === "data") {
+    const inMB = val * (dataToMB[fromUnit] || 1);
+    converted = inMB / (dataToMB[toUnit] || 1);
+  }
+
+  return {
+    primaryLabel: `Converted Value (${toUnit.toUpperCase()})`,
+    primaryValue: `${formatNumberIN(converted, 4)} ${toUnit}`,
+    metrics: [
+      { label: "Original Input", value: `${formatNumberIN(val, 2)} ${fromUnit}` },
+      { label: "Target Unit", value: toUnit.toUpperCase(), highlight: true },
+      { label: "Category", value: category.toUpperCase() },
+    ],
+    summaryText: `${val} ${fromUnit} equals ${formatNumberIN(converted, 4)} ${toUnit}.`,
+  };
+}
+
+// 4. Main Universal Routing Engine
+export function calculateUniversal(slug: string, v1: number, v2: number, v3: number, v4: number = 0): CalculationResult {
   const a = isNaN(v1) ? 0 : v1;
   const b = isNaN(v2) ? 0 : v2;
   const c = isNaN(v3) ? 0 : v3;
+  const d = isNaN(v4) ? 0 : v4;
 
   // --- HEALTH ---
   if (slug === "bmi-calculator") {
@@ -22,16 +234,15 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       primaryValue: bmi.toFixed(1),
       metrics: [
         { label: "Category", value: category, highlight: true },
-        { label: "Weight", value: `${weightKg} kg` },
+        { label: "Body Weight", value: `${weightKg} kg` },
         { label: "Height", value: `${heightCm} cm` },
         { label: "Healthy Range", value: "18.5 - 24.9" },
       ],
-      summaryText: `Your BMI is ${bmi.toFixed(1)}, which falls in the ${category} category.`,
+      summaryText: `Your BMI is ${bmi.toFixed(1)}, which falls into the ${category} category.`,
     };
   }
 
   if (slug === "bmr-calculator" || slug === "calorie-calculator") {
-    // Mifflin-St Jeor
     const weightKg = Math.max(1, a);
     const heightCm = Math.max(1, b);
     const age = Math.max(1, c || 25);
@@ -44,10 +255,10 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       metrics: [
         { label: "BMR (Resting Burn)", value: `${Math.round(bmr)} kcal` },
         { label: "Mild Weight Loss (0.25kg/wk)", value: `${maintenance - 250} kcal`, highlight: true },
-        { label: "Weight Loss (0.5kg/wk)", value: `${maintenance - 500} kcal` },
-        { label: "Weight Gain (+0.5kg/wk)", value: `${maintenance + 500} kcal` },
+        { label: "Standard Weight Loss (0.5kg/wk)", value: `${maintenance - 500} kcal` },
+        { label: "Lean Muscle Gain (+0.5kg/wk)", value: `${maintenance + 400} kcal` },
       ],
-      summaryText: `Your daily resting metabolic burn is ${Math.round(bmr)} kcal, and maintenance target is ${maintenance} kcal.`,
+      summaryText: `Your daily resting burn is ${Math.round(bmr)} kcal, with a daily maintenance requirement of ${maintenance} kcal.`,
     };
   }
 
@@ -61,25 +272,26 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       primaryLabel: "Ideal Body Weight",
       primaryValue: `${idealKg.toFixed(1)} kg`,
       metrics: [
-        { label: "Healthy Weight Range", value: `${(idealKg * 0.9).toFixed(1)} - ${(idealKg * 1.1).toFixed(1)} kg`, highlight: true },
+        { label: "Healthy Target Range", value: `${(idealKg * 0.9).toFixed(1)} - ${(idealKg * 1.1).toFixed(1)} kg`, highlight: true },
         { label: "Height Entered", value: `${heightCm} cm` },
       ],
-      summaryText: `For a height of ${heightCm} cm, the ideal estimated weight is approximately ${idealKg.toFixed(1)} kg.`,
+      summaryText: `For a height of ${heightCm} cm, your ideal estimated body weight is ${idealKg.toFixed(1)} kg.`,
     };
   }
 
   if (slug === "water-intake-calculator") {
     const weightKg = Math.max(1, a || 65);
-    const dailyWaterLiters = (weightKg * 0.033) + 0.35;
+    const dailyWaterLiters = weightKg * 0.033 + 0.35;
 
     return {
-      primaryLabel: "Daily Water Goal",
+      primaryLabel: "Daily Water Intake Goal",
       primaryValue: `${dailyWaterLiters.toFixed(2)} Liters`,
       metrics: [
-        { label: "Glasses of Water (250ml)", value: `${Math.round(dailyWaterLiters * 4)} Glasses`, highlight: true },
+        { label: "Standard Glasses (250ml)", value: `${Math.round(dailyWaterLiters * 4)} Glasses`, highlight: true },
+        { label: "Water Bottles (750ml)", value: `${(dailyWaterLiters / 0.75).toFixed(1)} Bottles` },
         { label: "Body Weight", value: `${weightKg} kg` },
       ],
-      summaryText: `Based on your weight of ${weightKg} kg, drink at least ${dailyWaterLiters.toFixed(2)} L of water daily.`,
+      summaryText: `Based on your weight of ${weightKg} kg, drink at least ${dailyWaterLiters.toFixed(2)} Liters of water daily.`,
     };
   }
 
@@ -91,55 +303,13 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
 
     return {
       primaryLabel: "Daily Protein Target",
-      primaryValue: `${proteinG}g (${Math.round(dailyCalories * 0.3)} kcal)`,
+      primaryValue: `${proteinG}g (30%)`,
       metrics: [
         { label: "Carbohydrates (40%)", value: `${carbsG}g`, highlight: true },
         { label: "Healthy Fats (30%)", value: `${fatsG}g` },
-        { label: "Total Calories", value: `${dailyCalories} kcal` },
+        { label: "Total Daily Energy", value: `${dailyCalories} kcal` },
       ],
       summaryText: `For ${dailyCalories} kcal: Protein ${proteinG}g, Carbs ${carbsG}g, Fats ${fatsG}g.`,
-    };
-  }
-
-  // --- TIME & DATE ---
-  if (slug === "age-calculator" || slug === "age-in-days-calculator") {
-    const birthYear = Math.max(1900, a || 1998);
-    const birthMonth = Math.max(1, Math.min(12, b || 1));
-    const birthDay = Math.max(1, Math.min(31, c || 1));
-    const birth = new Date(birthYear, birthMonth - 1, birthDay);
-    const now = new Date();
-    const diffMs = Math.max(0, now.getTime() - birth.getTime());
-    const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const years = Math.floor(totalDays / 365.25);
-    const months = Math.floor((totalDays % 365.25) / 30.44);
-    const days = Math.floor((totalDays % 365.25) % 30.44);
-
-    return {
-      primaryLabel: slug === "age-in-days-calculator" ? "Total Days Alive" : "Your Exact Age",
-      primaryValue: slug === "age-in-days-calculator" ? `${formatNumberIN(totalDays, 0)} Days` : `${years} Years, ${months} Months, ${days} Days`,
-      metrics: [
-        { label: "Total Days Lived", value: `${formatNumberIN(totalDays, 0)} Days`, highlight: true },
-        { label: "Total Hours Lived", value: `${formatNumberIN(totalDays * 24, 0)} Hours` },
-        { label: "Next Birthday In", value: `${Math.round(365 - (totalDays % 365))} Days` },
-      ],
-      summaryText: `You are ${years} years old and have lived approximately ${formatNumberIN(totalDays, 0)} days.`,
-    };
-  }
-
-  if (slug.includes("date") || slug.includes("days-between") || slug.includes("time-duration") || slug.includes("hours")) {
-    const days = Math.max(1, a || 45);
-    const weeks = (days / 7).toFixed(1);
-    const hours = days * 24;
-
-    return {
-      primaryLabel: "Calculated Duration",
-      primaryValue: `${days} Days`,
-      metrics: [
-        { label: "In Weeks", value: `${weeks} Weeks`, highlight: true },
-        { label: "In Hours", value: `${hours} Hours` },
-        { label: "In Minutes", value: `${formatNumberIN(hours * 60, 0)} Mins` },
-      ],
-      summaryText: `Total elapsed time equals ${days} days (${weeks} weeks).`,
     };
   }
 
@@ -147,14 +317,14 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
   if (slug === "roas-calculator") {
     const revenue = Math.max(0, a);
     const adSpend = Math.max(1, b || 1);
-    const roas = (revenue / adSpend);
+    const roas = revenue / adSpend;
     const roasPct = roas * 100;
 
     return {
       primaryLabel: "Return on Ad Spend (ROAS)",
       primaryValue: `${roas.toFixed(2)}x (${roasPct.toFixed(0)}%)`,
       metrics: [
-        { label: "Total Revenue", value: formatINR(revenue) },
+        { label: "Total Campaign Revenue", value: formatINR(revenue) },
         { label: "Total Ad Spend", value: formatINR(adSpend) },
         { label: "Net Campaign Profit", value: formatINR(revenue - adSpend), highlight: true },
       ],
@@ -178,7 +348,43 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
         { label: "Unit Margin", value: formatINR(contributionMargin) },
         { label: "Fixed Overhead", value: formatINR(fixedCosts) },
       ],
-      summaryText: `You must sell at least ${breakEvenUnits} units to cover all costs and break even.`,
+      summaryText: `You need to sell ${breakEvenUnits} units to cover fixed overheads and reach break-even.`,
+    };
+  }
+
+  if (slug === "commission-calculator") {
+    const totalSales = Math.max(0, a || 200000);
+    const commRate = Math.max(0, b || 10);
+    const commissionAmt = (totalSales * commRate) / 100;
+    const netSellerShare = totalSales - commissionAmt;
+
+    return {
+      primaryLabel: "Commission Earned",
+      primaryValue: formatINR(Math.round(commissionAmt)),
+      metrics: [
+        { label: "Gross Sales Revenue", value: formatINR(totalSales) },
+        { label: "Commission Rate", value: `${commRate}%` },
+        { label: "Net Payout", value: formatINR(Math.round(netSellerShare)), highlight: true },
+      ],
+      summaryText: `A ${commRate}% commission on ₹${formatNumberIN(totalSales, 0)} yields ₹${formatNumberIN(commissionAmt, 0)}.`,
+    };
+  }
+
+  if (slug === "overtime-calculator") {
+    const hourlyWage = Math.max(0, a || 250);
+    const otHours = Math.max(0, b || 15);
+    const multiplier = Math.max(1, c || 1.5);
+    const otPay = hourlyWage * otHours * multiplier;
+
+    return {
+      primaryLabel: "Total Overtime Pay",
+      primaryValue: formatINR(Math.round(otPay)),
+      metrics: [
+        { label: "Base Hourly Rate", value: formatINR(hourlyWage) },
+        { label: "Overtime Hours", value: `${otHours} Hours` },
+        { label: "Effective OT Rate", value: formatINR(Math.round(hourlyWage * multiplier)), highlight: true },
+      ],
+      summaryText: `Working ${otHours} hours overtime at ${multiplier}x base pay yields ${formatINR(Math.round(otPay))}.`,
     };
   }
 
@@ -228,7 +434,7 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       primaryValue: formatINR(Math.round(splitPerPerson)),
       metrics: [
         { label: "Total Room Rent", value: formatINR(totalRent) },
-        { label: "Total Flatmates", value: `${people} People` },
+        { label: "Total Flatmates", value: `${people} Flatmates` },
       ],
       summaryText: `Dividing ${formatINR(totalRent)} equally among ${people} flatmates is ${formatINR(Math.round(splitPerPerson))} each.`,
     };
@@ -244,7 +450,7 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       primaryValue: `${percentage.toFixed(2)}%`,
       metrics: [
         { label: "CGPA (10 Point Scale)", value: cgpa.toString() },
-        { label: "Conversion Factor", value: "CGPA × 9.5 (CBSE/AICTE Standard)", highlight: true },
+        { label: "Standard Formula", value: "CGPA × 9.5 (CBSE/AICTE)", highlight: true },
       ],
       summaryText: `A CGPA of ${cgpa} corresponds to ${percentage.toFixed(2)}% marks.`,
     };
@@ -259,7 +465,7 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       primaryValue: `${cgpa.toFixed(2)} / 10`,
       metrics: [
         { label: "Entered Percentage", value: `${pct}%` },
-        { label: "Formula Applied", value: "Percentage ÷ 9.5", highlight: true },
+        { label: "Conversion Formula", value: "Percentage ÷ 9.5", highlight: true },
       ],
       summaryText: `${pct}% marks translates to a CGPA of ${cgpa.toFixed(2)}.`,
     };
@@ -279,105 +485,16 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
       primaryLabel: "Calculated Grade / GPA",
       primaryValue: `${grade} (GPA ${gpa4})`,
       metrics: [
-        { label: "Marks Scored", value: `${score}%` },
-        { label: "4.0 Scale GPA", value: gpa4, highlight: true },
+        { label: "Marks Percentage", value: `${score}%` },
+        { label: "4.0 Scale GPA Equivalent", value: gpa4, highlight: true },
       ],
       summaryText: `A score of ${score}% achieves a grade of ${grade} with a ${gpa4} GPA.`,
     };
   }
 
-  // --- UNIT CONVERTERS ---
-  if (slug === "feet-to-meter") {
-    const ft = a || 10;
-    const m = ft * 0.3048;
-    return {
-      primaryLabel: "Meters",
-      primaryValue: `${m.toFixed(4)} m`,
-      metrics: [{ label: "Feet Entered", value: `${ft} ft` }, { label: "Inches", value: `${(ft * 12).toFixed(2)} in`, highlight: true }],
-      summaryText: `${ft} feet is equal to ${m.toFixed(4)} meters.`,
-    };
-  }
-
-  if (slug === "meter-to-feet") {
-    const m = a || 3;
-    const ft = m * 3.28084;
-    return {
-      primaryLabel: "Feet",
-      primaryValue: `${ft.toFixed(2)} ft`,
-      metrics: [{ label: "Meters Entered", value: `${m} m` }, { label: "Centimeters", value: `${(m * 100).toFixed(0)} cm`, highlight: true }],
-      summaryText: `${m} meters is equal to ${ft.toFixed(2)} feet.`,
-    };
-  }
-
-  if (slug === "celsius-to-fahrenheit") {
-    const cVal = a || 25;
-    const fVal = (cVal * 9/5) + 32;
-    return {
-      primaryLabel: "Fahrenheit",
-      primaryValue: `${fVal.toFixed(1)} °F`,
-      metrics: [{ label: "Celsius (°C)", value: `${cVal} °C` }, { label: "Kelvin (K)", value: `${(cVal + 273.15).toFixed(2)} K`, highlight: true }],
-      summaryText: `${cVal}°C is equal to ${fVal.toFixed(1)}°F.`,
-    };
-  }
-
-  if (slug === "fahrenheit-to-celsius") {
-    const fVal = a || 98.6;
-    const cVal = (fVal - 32) * 5/9;
-    return {
-      primaryLabel: "Celsius",
-      primaryValue: `${cVal.toFixed(2)} °C`,
-      metrics: [{ label: "Fahrenheit (°F)", value: `${fVal} °F` }, { label: "Kelvin (K)", value: `${(cVal + 273.15).toFixed(2)} K`, highlight: true }],
-      summaryText: `${fVal}°F is equal to ${cVal.toFixed(2)}°C.`,
-    };
-  }
-
-  if (slug === "kg-to-pound") {
-    const kg = a || 70;
-    const lbs = kg * 2.20462;
-    return {
-      primaryLabel: "Pounds (lbs)",
-      primaryValue: `${lbs.toFixed(2)} lbs`,
-      metrics: [{ label: "Kilograms (kg)", value: `${kg} kg` }, { label: "Grams", value: `${kg * 1000} g`, highlight: true }],
-      summaryText: `${kg} kg equals ${lbs.toFixed(2)} pounds.`,
-    };
-  }
-
-  if (slug === "pound-to-kg") {
-    const lbs = a || 150;
-    const kg = lbs / 2.20462;
-    return {
-      primaryLabel: "Kilograms (kg)",
-      primaryValue: `${kg.toFixed(2)} kg`,
-      metrics: [{ label: "Pounds (lbs)", value: `${lbs} lbs` }],
-      summaryText: `${lbs} lbs equals ${kg.toFixed(2)} kg.`,
-    };
-  }
-
-  if (slug === "km-to-miles") {
-    const km = a || 10;
-    const mi = km * 0.621371;
-    return {
-      primaryLabel: "Miles",
-      primaryValue: `${mi.toFixed(3)} miles`,
-      metrics: [{ label: "Kilometers", value: `${km} km` }, { label: "Meters", value: `${km * 1000} m`, highlight: true }],
-      summaryText: `${km} km is equal to ${mi.toFixed(3)} miles.`,
-    };
-  }
-
-  if (slug === "miles-to-km") {
-    const mi = a || 10;
-    const km = mi / 0.621371;
-    return {
-      primaryLabel: "Kilometers",
-      primaryValue: `${km.toFixed(3)} km`,
-      metrics: [{ label: "Miles", value: `${mi} mi` }],
-      summaryText: `${mi} miles is equal to ${km.toFixed(3)} km.`,
-    };
-  }
-
-  // --- OTHER (Fuel, Electricity, Tip, Mileage) ---
-  if (slug === "fuel-cost-calculator" || slug === "mileage-calculator") {
-    const distanceKm = Math.max(1, a || 250);
+  // --- OTHER (Fuel, Mileage, Electricity, Tip, Savings) ---
+  if (slug === "fuel-cost-calculator") {
+    const distanceKm = Math.max(1, a || 300);
     const mileageKmpl = Math.max(1, b || 18);
     const fuelPricePerLiter = Math.max(1, c || 102);
 
@@ -393,7 +510,27 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
         { label: "Running Cost Per KM", value: `₹${costPerKm.toFixed(2)} / km` },
         { label: "Trip Distance", value: `${distanceKm} km` },
       ],
-      summaryText: `A trip of ${distanceKm} km with ${mileageKmpl} km/L efficiency will consume ${litersNeeded.toFixed(2)} L costing ${formatINR(Math.round(totalCost))}.`,
+      summaryText: `A trip of ${distanceKm} km with ${mileageKmpl} km/L efficiency consumes ${litersNeeded.toFixed(2)} L costing ${formatINR(Math.round(totalCost))}.`,
+    };
+  }
+
+  if (slug === "mileage-calculator") {
+    const distanceKm = Math.max(1, a || 450);
+    const fuelLiters = Math.max(0.1, b || 25);
+    const fuelCost = Math.max(1, c || 102);
+
+    const kmpl = distanceKm / fuelLiters;
+    const costPerKm = (fuelLiters * fuelCost) / distanceKm;
+
+    return {
+      primaryLabel: "Fuel Efficiency",
+      primaryValue: `${kmpl.toFixed(2)} km/L`,
+      metrics: [
+        { label: "Cost Per KM", value: `₹${costPerKm.toFixed(2)} / km`, highlight: true },
+        { label: "Distance Covered", value: `${distanceKm} km` },
+        { label: "Total Fuel Consumed", value: `${fuelLiters} Liters` },
+      ],
+      summaryText: `Covering ${distanceKm} km with ${fuelLiters} L yields an average mileage of ${kmpl.toFixed(2)} km/L.`,
     };
   }
 
@@ -407,7 +544,7 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
     const monthlyCost = monthlyUnits * costPerUnitKwh;
 
     return {
-      primaryLabel: "Monthly Electricity Cost",
+      primaryLabel: "Estimated Monthly Bill",
       primaryValue: formatINR(Math.round(monthlyCost)),
       metrics: [
         { label: "Monthly Units Consumed", value: `${monthlyUnits.toFixed(1)} kWh (Units)`, highlight: true },
@@ -439,9 +576,33 @@ export function calculateUniversal(slug: string, v1: number, v2: number, v3: num
     };
   }
 
-  // Default Universal Fallback
+  if (slug === "savings-calculator") {
+    const p = Math.max(0, a || 5000);
+    const r = Math.max(0, b || 7) / 12 / 100;
+    const n = Math.max(1, (c || 5) * 12);
+
+    let futureVal = 0;
+    if (r > 0) futureVal = p * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+    else futureVal = p * n;
+
+    const totalInvested = p * n;
+    const gains = futureVal - totalInvested;
+
+    return {
+      primaryLabel: "Accumulated Savings",
+      primaryValue: formatINR(Math.round(futureVal)),
+      metrics: [
+        { label: "Total Deposited", value: formatINR(totalInvested) },
+        { label: "Compound Interest Earned", value: formatINR(Math.round(gains)), highlight: true },
+        { label: "Duration", value: `${c || 5} Years (${n} Months)` },
+      ],
+      summaryText: `Saving ${formatINR(p)} monthly at ${b || 7}% for ${c || 5} years yields ${formatINR(Math.round(futureVal))}.`,
+    };
+  }
+
+  // Fallback
   return {
-    primaryLabel: "Result",
+    primaryLabel: "Calculated Value",
     primaryValue: formatNumberIN(a + b, 2),
     metrics: [
       { label: "Input 1", value: formatNumberIN(a, 2) },
