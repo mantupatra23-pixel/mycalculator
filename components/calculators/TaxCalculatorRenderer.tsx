@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { calculateIncomeTax } from "@/lib/calculators/tax";
+import { calculateIncomeTaxDetailed } from "@/lib/calculators/tax";
 import { formatINR } from "@/lib/formatters";
 import { Disclaimer } from "@/components/Disclaimer";
-import { Copy, Check, Share2, RotateCcw, Landmark } from "lucide-react";
+import { Copy, Check, Share2, RotateCcw, Landmark, HelpCircle, CheckCircle2 } from "lucide-react";
 
 interface Props {
   slug: string;
@@ -15,44 +15,49 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
   const [ay, setAy] = useState<"AY2026_27" | "AY2025_26">("AY2026_27");
   const [income, setIncome] = useState<number>(1200000);
   const [regime, setRegime] = useState<"new" | "old">("new");
+  const [incomeType, setIncomeType] = useState<"salaried" | "business">("salaried");
   const [sec80C, setSec80C] = useState<number>(150000);
   const [sec80D, setSec80D] = useState<number>(25000);
   const [hra, setHra] = useState<number>(100000);
   const [otherDeductions, setOtherDeductions] = useState<number>(0);
   const [copied, setCopied] = useState<boolean>(false);
 
-  const result = useMemo(() => {
-    return calculateIncomeTax({
+  const b = useMemo(() => {
+    return calculateIncomeTaxDetailed({
       assessmentYear: ay,
       annualIncome: income,
       regime,
+      incomeType,
       deductions80C: sec80C,
       deductions80D: sec80D,
       hraExemption: hra,
       otherDeductions,
     });
-  }, [ay, income, regime, sec80C, sec80D, hra, otherDeductions]);
+  }, [ay, income, regime, incomeType, sec80C, sec80D, hra, otherDeductions]);
 
-  const altResult = useMemo(() => {
-    return calculateIncomeTax({
+  const alt = useMemo(() => {
+    return calculateIncomeTaxDetailed({
       assessmentYear: ay,
       annualIncome: income,
       regime: regime === "new" ? "old" : "new",
+      incomeType,
       deductions80C: sec80C,
       deductions80D: sec80D,
       hraExemption: hra,
       otherDeductions,
     });
-  }, [ay, income, regime, sec80C, sec80D, hra, otherDeductions]);
+  }, [ay, income, regime, incomeType, sec80C, sec80D, hra, otherDeductions]);
 
   const handleCopy = () => {
     const text =
       `MyCalculators - ${name}\n` +
       `Assessment Year: ${ay.replace("_", "-")}\n` +
-      `Gross Income: ${formatINR(income)}\n` +
-      `Selected Regime: ${regime.toUpperCase()} Regime\n` +
-      `Estimated Tax: ${result.primaryValue}\n` +
-      result.metrics.map((m) => `${m.label}: ${m.value}`).join("\n") +
+      `Tax Regime: ${regime.toUpperCase()} Regime\n` +
+      `Gross Income: ${formatINR(b.grossIncome)}\n` +
+      `Taxable Income: ${formatINR(b.taxableIncome)}\n` +
+      `Base Slab Tax: ${formatINR(b.slabTax)}\n` +
+      `Section 87A Rebate: -${formatINR(b.rebate87A)}\n` +
+      `Final Estimated Tax: ${formatINR(b.finalTax)}\n` +
       `\nCalculated on https://mycalculators.xyz/calculators/income-tax-calculator`;
 
     if (navigator.clipboard) {
@@ -67,7 +72,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
       try {
         await navigator.share({
           title: `${name} - MyCalculators`,
-          text: `Estimated Tax: ${result.primaryValue} on Gross Income ${formatINR(income)}`,
+          text: `Estimated Tax: ${formatINR(b.finalTax)} on Gross Income ${formatINR(b.grossIncome)}`,
           url: window.location.href,
         });
       } catch {}
@@ -91,6 +96,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
             setAy("AY2026_27");
             setIncome(1200000);
             setRegime("new");
+            setIncomeType("salaried");
             setSec80C(150000);
             setSec80D(25000);
             setHra(100000);
@@ -133,7 +139,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
             </div>
           </div>
 
-          {/* Regime Switcher */}
+          {/* Tax Regime Selector */}
           <div>
             <label className="block font-bold text-sm text-navy mb-2">Choose Tax Regime</label>
             <div className="grid grid-cols-2 gap-3">
@@ -146,7 +152,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
                     : "bg-white text-navy border-navy/20 hover:bg-sage/20"
                 }`}
               >
-                New Tax Regime (Default)
+                New Tax Regime (Revised)
               </button>
               <button
                 type="button"
@@ -157,7 +163,36 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
                     : "bg-white text-navy border-navy/20 hover:bg-sage/20"
                 }`}
               >
-                Old Tax Regime (Exemptions)
+                Old Tax Regime (With 80C/HRA)
+              </button>
+            </div>
+          </div>
+
+          {/* Income Source Type */}
+          <div>
+            <label className="block font-bold text-sm text-navy mb-2">Income Nature</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setIncomeType("salaried")}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs border transition-all ${
+                  incomeType === "salaried"
+                    ? "bg-sage/60 text-navy border-navy/30"
+                    : "bg-white text-navy/70 border-navy/15"
+                }`}
+              >
+                Salaried (Standard Deduction Eligible)
+              </button>
+              <button
+                type="button"
+                onClick={() => setIncomeType("business")}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs border transition-all ${
+                  incomeType === "business"
+                    ? "bg-sage/60 text-navy border-navy/30"
+                    : "bg-white text-navy/70 border-navy/15"
+                }`}
+              >
+                Business / Profession / Other
               </button>
             </div>
           </div>
@@ -165,7 +200,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
           {/* Annual Income */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="font-bold text-sm text-navy">Total Annual Gross Salary / Income (₹)</label>
+              <label className="font-bold text-sm text-navy">Total Annual Gross Income (₹)</label>
               <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
                 {formatINR(income)}
               </span>
@@ -229,11 +264,13 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
               </div>
             </div>
           ) : (
-            <div className="bg-sage/20 border border-navy/10 rounded-2xl p-4 text-xs text-navy/80 space-y-1">
+            <div className="bg-sage/20 border border-navy/10 rounded-2xl p-4 text-xs text-navy/80 space-y-1.5">
               <div className="font-bold text-navy flex items-center gap-1.5">
-                <Landmark className="w-4 h-4 text-steel" /> Standard Deduction ₹{ay === "AY2026_27" ? "75,000" : "50,000"} Applied
+                <Landmark className="w-4 h-4 text-steel" /> AY 2026-27 Slabs & Section 87A Rebate
               </div>
-              <p>Under the New Tax Regime, no manual 80C proofs are required. Zero tax applies up to ₹7,00,000 taxable income via Section 87A rebate.</p>
+              <p>
+                Salaried standard deduction of ₹75,000 applies automatically. Section 87A rebate provides full tax relief up to ₹12,00,000 taxable income (Net tax = ₹0).
+              </p>
             </div>
           )}
         </div>
@@ -242,32 +279,60 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
         <div className="lg:col-span-5 bg-sage/35 rounded-2xl p-5 sm:p-6 border border-navy/15 flex flex-col justify-between">
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
-              {result.primaryLabel}
+              Estimated Tax Liability
             </div>
             <div className="text-3xl sm:text-4xl font-black text-navy mb-6 tracking-tight">
-              {result.primaryValue}
+              {formatINR(Math.round(b.finalTax))}
             </div>
 
             {/* Metrics List */}
-            <div className="space-y-3 text-sm border-t border-navy/10 pt-4">
-              {result.metrics.map((m, idx) => (
-                <div key={idx} className="flex justify-between items-center">
-                  <span className="text-navy/75 font-medium">{m.label}:</span>
-                  <span className={`font-bold ${m.highlight ? "text-[#b36932]" : "text-navy"}`}>
-                    {m.value}
-                  </span>
+            <div className="space-y-2.5 text-sm border-t border-navy/10 pt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-navy/75 font-medium">Gross Annual Income:</span>
+                <span className="font-bold text-navy">{formatINR(b.grossIncome)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-navy/75 font-medium">Standard Deduction:</span>
+                <span className="font-bold text-navy">-{formatINR(b.standardDeduction)}</span>
+              </div>
+              {b.otherDeductions > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-navy/75 font-medium">Exemptions (80C/80D/HRA):</span>
+                  <span className="font-bold text-navy">-{formatINR(b.otherDeductions)}</span>
                 </div>
-              ))}
+              )}
+              <div className="flex justify-between items-center">
+                <span className="text-navy/75 font-medium">Net Taxable Income:</span>
+                <span className="font-bold text-navy">{formatINR(b.taxableIncome)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-navy/75 font-medium">Base Computed Slab Tax:</span>
+                <span className="font-bold text-navy">{formatINR(b.slabTax)}</span>
+              </div>
+              {b.rebate87A > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-navy/75 font-medium">Section 87A Tax Rebate:</span>
+                  <span className="font-bold text-emerald-700">-{formatINR(b.rebate87A)}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center">
+                <span className="text-navy/75 font-medium">Health & Education Cess (4%):</span>
+                <span className="font-bold text-navy">{formatINR(Math.round(b.cess))}</span>
+              </div>
+              <div className="flex justify-between items-center pt-2 border-t border-navy/10">
+                <span className="text-navy font-bold">Effective Tax Rate:</span>
+                <span className="font-extrabold text-steel">{b.effectiveRate.toFixed(2)}%</span>
+              </div>
             </div>
 
-            {/* Regime Comparison Box */}
+            {/* Comparison Box */}
             <div className="mt-6 pt-4 border-t border-navy/10 bg-white/70 rounded-xl p-3.5 border border-navy/10">
               <div className="text-xs font-bold text-navy/60 uppercase">Alternative Regime Comparison</div>
               <div className="flex justify-between items-center mt-1 text-xs">
                 <span className="font-semibold text-navy">
                   {regime === "new" ? "Old Regime Tax:" : "New Regime Tax:"}
                 </span>
-                <span className="font-extrabold text-navy">{altResult.primaryValue}</span>
+                <span className="font-extrabold text-navy">{formatINR(Math.round(alt.finalTax))}</span>
               </div>
             </div>
           </div>
@@ -289,6 +354,21 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Why This Result Breakdown Box */}
+      <div className="bg-sage/20 border border-navy/10 rounded-2xl p-5 space-y-2 text-xs text-navy/80">
+        <h4 className="font-bold text-navy text-sm flex items-center gap-1.5">
+          <CheckCircle2 className="w-4 h-4 text-steel" /> Calculation Details & Explanation
+        </h4>
+        <ul className="list-disc pl-5 space-y-1">
+          {b.explanation.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+          <li>
+            Slab Tax = {formatINR(b.slabTax)}, 87A Rebate = -{formatINR(b.rebate87A)}, Net Tax after Rebate = {formatINR(b.taxAfterRebate)}, Cess (4%) = {formatINR(Math.round(b.cess))}.
+          </li>
+        </ul>
       </div>
 
       <Disclaimer type="tax" />

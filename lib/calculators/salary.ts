@@ -21,7 +21,6 @@ export function calculateInHandSalary(input: SalaryInput): CalculationResult {
   const ctc = Math.max(0, input.annualCTC);
 
   if (!input.isAdvancedMode) {
-    // Simplified Standard Salary Engine
     const annualBasic = ctc * 0.50;
     const annualHRA = ctc * 0.20;
     const statutoryEmployerPF = Math.min(annualBasic * 0.12, 21600 * 12);
@@ -51,10 +50,10 @@ export function calculateInHandSalary(input: SalaryInput): CalculationResult {
       primaryValue: formatINR(Math.round(monthlyInHand)),
       metrics: [
         { label: "Annual Cost to Company (CTC)", value: formatINR(ctc) },
-        { label: "Monthly Gross Salary", value: formatINR(Math.round(monthlyGrossSalary)) },
+        { label: "Estimated Monthly Gross Salary", value: formatINR(Math.round(monthlyGrossSalary)) },
         { label: "Total Monthly Deductions", value: formatINR(Math.round(totalMonthlyDeductions)), highlight: true },
-        { label: "Annual Take-Home Pay", value: formatINR(Math.round(annualInHand)) },
-        { label: "Employee PF Deduction (Monthly)", value: formatINR(Math.round(monthlyEmployeePF)) },
+        { label: "Annual Net Take-Home Pay", value: formatINR(Math.round(annualInHand)) },
+        { label: "Employee PF (Monthly)", value: formatINR(Math.round(monthlyEmployeePF)) },
         { label: "Professional Tax (PT)", value: formatINR(Math.round(monthlyPT)) },
         { label: "Estimated Monthly TDS", value: formatINR(Math.round(monthlyTDS)) },
       ],
@@ -67,17 +66,16 @@ export function calculateInHandSalary(input: SalaryInput): CalculationResult {
         rows: [
           ["Basic Salary (50%)", formatINR(Math.round(annualBasic / 12)), formatINR(Math.round(annualBasic)), "Gross Earnings"],
           ["House Rent Allowance (20%)", formatINR(Math.round(annualHRA / 12)), formatINR(Math.round(annualHRA)), "Gross Earnings"],
-          ["Special / Flexi Allowance", formatINR(Math.round((annualGrossSalary - annualBasic - annualHRA) / 12)), formatINR(Math.round(annualGrossSalary - annualBasic - annualHRA)), "Gross Earnings"],
+          ["Special Allowance", formatINR(Math.round((annualGrossSalary - annualBasic - annualHRA) / 12)), formatINR(Math.round(annualGrossSalary - annualBasic - annualHRA)), "Gross Earnings"],
           ["Employee PF (EPF)", `-${formatINR(Math.round(monthlyEmployeePF))}`, `-${formatINR(Math.round(employeePFAnnual))}`, "Employee Deduction"],
           ["Professional Tax (PT)", `-${formatINR(Math.round(monthlyPT))}`, `-${formatINR(Math.round(ptAnnual))}`, "Employee Deduction"],
           ["Estimated TDS / Tax", `-${formatINR(Math.round(monthlyTDS))}`, `-${formatINR(Math.round(tdsAnnual))}`, "Employee Deduction"],
           ["Net Take-Home Salary", formatINR(Math.round(monthlyInHand)), formatINR(Math.round(annualInHand)), "Net Payout"],
         ],
       },
-      summaryText: `For an annual CTC of ${formatINR(ctc)}, estimated monthly take-home is ${formatINR(Math.round(monthlyInHand))} after statutory deductions.`,
+      summaryText: `For an annual CTC of ${formatINR(ctc)}, estimated take-home pay is ${formatINR(Math.round(monthlyInHand))}/month after statutory deductions.`,
     };
   } else {
-    // Advanced Salary Structure Mode
     const basicPct = Math.min(100, Math.max(10, input.basicPercentage ?? 50));
     const hraPct = Math.min(100, Math.max(0, input.hraPercentage ?? 20));
 
@@ -107,9 +105,9 @@ export function calculateInHandSalary(input: SalaryInput): CalculationResult {
       metrics: [
         { label: "Annual CTC", value: formatINR(ctc) },
         { label: "Employer Benefits (PF/Gratuity/Bonus)", value: `-${formatINR(Math.round(totalEmployerBenefits))}` },
-        { label: "Gross Monthly Salary", value: formatINR(Math.round(monthlyGrossSalary)) },
+        { label: "Gross Monthly Pay", value: formatINR(Math.round(monthlyGrossSalary)) },
         { label: "Total Employee Monthly Deductions", value: `-${formatINR(Math.round(totalEmployeeDeductionsAnnual / 12))}`, highlight: true },
-        { label: "Net Annual Take-Home", value: formatINR(Math.round(annualInHand)) },
+        { label: "Annual Net Take-Home", value: formatINR(Math.round(annualInHand)) },
       ],
       table: {
         headers: ["Component", "Monthly Share", "Annual Total", "Type"],
@@ -124,7 +122,7 @@ export function calculateInHandSalary(input: SalaryInput): CalculationResult {
           ["Net Take-Home Pay", formatINR(Math.round(monthlyInHand)), formatINR(Math.round(annualInHand)), "Net Payout"],
         ],
       },
-      summaryText: `Under advanced breakdown, net take-home salary is ${formatINR(Math.round(monthlyInHand))}/month (${formatINR(Math.round(annualInHand))}/year).`,
+      summaryText: `Under advanced breakdown, net take-home salary is ${formatINR(Math.round(monthlyInHand))}/month.`,
     };
   }
 }

@@ -30,30 +30,34 @@ export function calculateLTV(propertyValue: number, loanAmount: number): Calcula
   const downPayment = Math.max(0, prop - loan);
   const downPaymentPct = prop > 0 ? (downPayment / prop) * 100 : 0;
 
-  let riskCategory = "Low Risk (Standard Bank Approvals)";
-  if (ltvPct > 90) riskCategory = "Very High Risk (>90% requires special approval/guarantee)";
-  else if (ltvPct > 80) riskCategory = "Moderate / High Risk (RBI cap is 75-80% for high-value homes)";
-  else if (ltvPct > 0 && ltvPct <= 60) riskCategory = "Excellent (Best Interest Rates Available)";
+  let interpretation = "Lower LTV indicates smaller borrowing proportion and higher equity down payment.";
+  if (ltvPct > 90) {
+    interpretation = "Very high borrowing ratio (>90%). Most Indian lenders enforce regulatory LTV caps between 75% and 90%.";
+  } else if (ltvPct > 75) {
+    interpretation = "Standard mortgage financing ratio. Higher down payment generally improves loan terms.";
+  } else if (ltvPct > 0) {
+    interpretation = "Conservative borrowing ratio with strong initial equity contribution.";
+  }
 
   return {
     primaryLabel: "Loan-to-Value Ratio (LTV)",
     primaryValue: `${ltvPct.toFixed(2)}%`,
     metrics: [
-      { label: "Total Property / Asset Value", value: formatINR(prop) },
+      { label: "Total Property Value", value: formatINR(prop) },
       { label: "Loan Amount Requested", value: formatINR(loan) },
-      { label: "Required Down Payment / Equity", value: formatINR(downPayment), highlight: true },
-      { label: "Down Payment Share", value: `${downPaymentPct.toFixed(1)}%` },
-      { label: "Bank Approval Profile", value: riskCategory },
+      { label: "Minimum Down Payment Required", value: formatINR(downPayment), highlight: true },
+      { label: "Equity Down Payment Share", value: `${downPaymentPct.toFixed(1)}%` },
+      { label: "LTV Interpretation", value: interpretation },
     ],
     breakdown: {
       principalPct: parseFloat(Math.min(100, ltvPct).toFixed(1)),
       interestPct: parseFloat(Math.max(0, downPaymentPct).toFixed(1)),
     },
-    summaryText: `For a property valued at ${formatINR(prop)}, a loan of ${formatINR(loan)} represents an LTV ratio of ${ltvPct.toFixed(2)}% with a minimum down payment of ${formatINR(downPayment)}.`,
+    summaryText: `For a property valued at ${formatINR(prop)}, financing ${formatINR(loan)} requires a minimum equity down payment of ${formatINR(downPayment)} (${downPaymentPct.toFixed(1)}%).`,
   };
 }
 
-// 2. Loan EMI Calculator (Full N-Year Amortization Schedule)
+// 2. Loan EMI Calculator (Reducing Balance Formula)
 export function calculateLoanEMI(
   principal: number,
   annualRate: number,
@@ -79,7 +83,6 @@ export function calculateLoanEMI(
   const principalPct = totalPayment > 0 ? (p / totalPayment) * 100 : 0;
   const interestPct = totalPayment > 0 ? (totalInterest / totalPayment) * 100 : 0;
 
-  // Complete Amortization Schedule for ALL N years
   let balance = p;
   const fullAmortizationRows: string[][] = [];
 
@@ -183,7 +186,7 @@ export function calculateSIP(monthlyInvestment: number, returnRate: number, tenu
   };
 }
 
-// 4. GST Calculator (Intra-State vs Inter-State)
+// 4. GST Calculator
 export function calculateGST(
   amount: number,
   gstRate: number,
@@ -223,7 +226,7 @@ export function calculateGST(
           ]),
       { label: "Gross Total Payable", value: formatINR(Math.round(totalAmount)) },
     ],
-    summaryText: `${isExclusive ? "Adding" : "Extracting"} ${rate}% GST on ${formatINR(base)} results in a GST tax amount of ${formatINR(Math.round(gstAmount))}.`,
+    summaryText: `${isExclusive ? "Adding" : "Extracting"} ${rate}% GST on ${formatINR(base)} yields a tax amount of ${formatINR(Math.round(gstAmount))}.`,
   };
 }
 
