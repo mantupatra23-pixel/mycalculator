@@ -5,7 +5,7 @@ import { formatNumberIN, formatINR } from "@/lib/formatters";
 import { calculateUniversal } from "@/lib/calculators/allEngines";
 import { Copy, Check, Share2, RotateCcw, ArrowRightLeft } from "lucide-react";
 
-interface Props {
+export interface UniversalProps {
   slug: string;
   name: string;
 }
@@ -23,8 +23,8 @@ const TIMEZONES = [
   { label: "AEST - Australian Eastern Time / Sydney (UTC+10)", offset: 10, id: "AEST" },
 ];
 
-export default function UniversalCalculatorRenderer({ slug, name }: Props) {
-  const todayStr = () => new Date().toISOString().split("T")[0];
+export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
+  const todayStr = "2026-08-28";
 
   // Time Zone states
   const [tzTime, setTzTime] = useState<string>("14:30");
@@ -34,7 +34,7 @@ export default function UniversalCalculatorRenderer({ slug, name }: Props) {
   // Date states
   const [dob, setDob] = useState<string>("2000-01-01");
   const [targetDate, setTargetDate] = useState<string>(todayStr);
-  const [startDate, setStartDate] = useState<string>(todayStr);
+  const [startDate, setStartDate] = useState<string>("2026-01-01");
   const [endDate, setEndDate] = useState<string>(todayStr);
 
   // Date Add / Subtract states
@@ -82,9 +82,8 @@ export default function UniversalCalculatorRenderer({ slug, name }: Props) {
       const tgtObj = TIMEZONES.find((t) => t.id === targetTz) || TIMEZONES[2];
 
       const [h, m] = tzTime.split(":").map(Number);
-      const srcTotalMinutes = h * 60 + m;
+      const srcTotalMinutes = (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m);
       
-      // Convert source to UTC, then UTC to target
       const utcMinutes = srcTotalMinutes - srcObj.offset * 60;
       let targetTotalMinutes = utcMinutes + tgtObj.offset * 60;
 
@@ -117,7 +116,7 @@ export default function UniversalCalculatorRenderer({ slug, name }: Props) {
         metrics: [
           { label: "24-Hour Format", value: `${time24h} (${tgtObj.id})`, highlight: true },
           { label: "Time Difference", value: diffStr },
-          { label: "Day Relative to Source", value: dayOffset === 0 ? "Same Day" : dayOffset > 0 ? "+1 Day Next Day" : "-1 Day Previous Day" },
+          { label: "Day Relative to Source", value: dayOffset === 0 ? "Same Day" : dayOffset > 0 ? "+1 Day (Next Day)" : "-1 Day (Previous Day)" },
           { label: "Source Input Time", value: `${tzTime} (${srcObj.id})` },
         ],
         summaryText: `${tzTime} in ${srcObj.id} corresponds to ${formattedTime} (${time24h}) in ${tgtObj.id}.`,
@@ -170,7 +169,7 @@ export default function UniversalCalculatorRenderer({ slug, name }: Props) {
       const [startH, startM] = startTime.split(":").map(Number);
       const [endH, endM] = endTime.split(":").map(Number);
 
-      let totalMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+      let totalMinutes = ((endH || 0) * 60 + (endM || 0)) - ((startH || 0) * 60 + (startM || 0));
       if (totalMinutes < 0) totalMinutes += 24 * 60;
 
       const netMinutes = Math.max(0, totalMinutes - (slug === "hours-calculator" ? breakMins : 0));
@@ -289,21 +288,22 @@ export default function UniversalCalculatorRenderer({ slug, name }: Props) {
   };
 
   const handleSwapTz = () => {
+    const prevSrc = sourceTz;
     setSourceTz(targetTz);
-    setTargetTz(sourceTz);
+    setTargetTz(prevSrc);
   };
 
   const handleReset = () => {
     setTzTime("14:30");
     setSourceTz("IST");
     setTargetTz("EST");
-    setBaseDate(todayStr());
+    setBaseDate(todayStr);
     setAddQty(30);
     setAddUnit("days");
     setDob("2000-01-01");
-    setTargetDate(todayStr());
-    setStartDate(todayStr());
-    setEndDate(todayStr());
+    setTargetDate(todayStr);
+    setStartDate("2026-01-01");
+    setEndDate(todayStr);
     setStartTime("09:00");
     setEndTime("17:30");
     setBreakMins(30);
