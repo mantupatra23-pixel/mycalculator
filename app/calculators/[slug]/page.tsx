@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CALCULATORS } from "@/lib/registry";
 import { FinanceCalculatorRenderer } from "@/components/calculators/FinanceCalculatorRenderer";
+import { MathCalculatorRenderer } from "@/components/calculators/MathCalculatorRenderer";
 import { ArrowLeft, CheckCircle2, HelpCircle, BookOpen, Layers, ArrowRight } from "lucide-react";
 
 interface Props {
@@ -47,7 +48,6 @@ export default function CalculatorDetailPage({ params }: Props) {
     (c) => c.category === calc.category && c.slug !== calc.slug
   ).slice(0, 4);
 
-  // Structured Data Schema
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -90,8 +90,12 @@ export default function CalculatorDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Calculator Interactive UI */}
-      <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />
+      {/* Render Component According to Category */}
+      {calc.category === "math" ? (
+        <MathCalculatorRenderer slug={calc.slug} name={calc.name} />
+      ) : (
+        <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />
+      )}
 
       {/* SEO & Educational Guidance Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-6">
@@ -104,24 +108,24 @@ export default function CalculatorDetailPage({ params }: Props) {
             <ul className="space-y-2.5 text-xs sm:text-sm text-navy/80 leading-relaxed">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Enter your parameters in the input fields above or drag the sliders.</span>
+                <span>Enter your parameters in the input fields above.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>The engine automatically updates the primary result and itemized metrics instantly.</span>
+                <span>The algorithm updates the primary metric and calculations in real-time.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Use the &ldquo;Copy Result&rdquo; or &ldquo;Share&rdquo; button to export the summary.</span>
+                <span>Use the &ldquo;Copy Result&rdquo; or &ldquo;Share&rdquo; button to save and share the outcome.</span>
               </li>
             </ul>
           </section>
 
-          {/* Mathematical Methodology */}
+          {/* Methodology */}
           <section className="space-y-3 text-navy">
             <h2 className="text-xl font-bold">Calculation Methodology</h2>
             <p className="text-xs sm:text-sm text-navy/80 leading-relaxed">
-              Calculations are executed deterministically on your device utilizing standard mathematical, banking, and statutory formulas. For financial and tax planning, numbers are mapped with Indian numbering conventions (₹ Lakhs & Crores).
+              Calculations are executed deterministically on your device utilizing standard mathematical, banking, and statistical formulas. All operations happen client-side with zero external latency.
             </p>
           </section>
 
@@ -133,18 +137,18 @@ export default function CalculatorDetailPage({ params }: Props) {
             <div className="space-y-3">
               <div className="bg-white border border-navy/15 rounded-xl p-4">
                 <h3 className="font-bold text-sm text-navy mb-1">
-                  Are these calculations completely free to use?
+                  Are these calculations free and accurate?
                 </h3>
                 <p className="text-xs text-navy/70">
-                  Yes, 100% free with unlimited calculations. No subscription or signup is required.
+                  Yes, calculations are completely free and processed using strict mathematical formulas.
                 </p>
               </div>
               <div className="bg-white border border-navy/15 rounded-xl p-4">
                 <h3 className="font-bold text-sm text-navy mb-1">
-                  Is my financial data stored on any server?
+                  Does this tool work offline?
                 </h3>
                 <p className="text-xs text-navy/70">
-                  No. All calculations run strictly inside your web browser. None of your numbers are transmitted or saved remotely.
+                  Yes. Once loaded, all calculators operate locally inside your browser without needing an active connection for each calculation.
                 </p>
               </div>
             </div>
