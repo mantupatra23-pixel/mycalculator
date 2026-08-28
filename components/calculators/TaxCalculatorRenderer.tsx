@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import { calculateIncomeTaxDetailed } from "@/lib/calculators/tax";
 import { formatINR } from "@/lib/formatters";
 import { Disclaimer } from "@/components/Disclaimer";
-import { Copy, Check, Share2, RotateCcw, Landmark, HelpCircle, CheckCircle2 } from "lucide-react";
+import { Copy, Check, Share2, RotateCcw, Landmark, CheckCircle2 } from "lucide-react";
 
 interface Props {
   slug: string;
@@ -269,7 +269,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
                 <Landmark className="w-4 h-4 text-steel" /> AY 2026-27 Slabs & Section 87A Rebate
               </div>
               <p>
-                Salaried standard deduction of ₹75,000 applies automatically. Section 87A rebate provides full tax relief up to ₹12,00,000 taxable income (Net tax = ₹0).
+                Section 87A rebate can provide full tax relief for eligible resident individuals with total income up to ₹12,00,000, subject to applicable rules. For salaried taxpayers, standard deduction of ₹75,000 applies separately to reduce taxable income.
               </p>
             </div>
           )}
@@ -285,7 +285,6 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
               {formatINR(Math.round(b.finalTax))}
             </div>
 
-            {/* Metrics List */}
             <div className="space-y-2.5 text-sm border-t border-navy/10 pt-4">
               <div className="flex justify-between items-center">
                 <span className="text-navy/75 font-medium">Gross Annual Income:</span>
@@ -325,7 +324,6 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
               </div>
             </div>
 
-            {/* Comparison Box */}
             <div className="mt-6 pt-4 border-t border-navy/10 bg-white/70 rounded-xl p-3.5 border border-navy/10">
               <div className="text-xs font-bold text-navy/60 uppercase">Alternative Regime Comparison</div>
               <div className="flex justify-between items-center mt-1 text-xs">
@@ -337,7 +335,6 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-2 pt-6 mt-6 border-t border-navy/10">
             <button
               onClick={handleCopy}
@@ -356,7 +353,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
         </div>
       </div>
 
-      {/* Why This Result Breakdown Box */}
+      {/* Why This Result Breakdown */}
       <div className="bg-sage/20 border border-navy/10 rounded-2xl p-5 space-y-2 text-xs text-navy/80">
         <h4 className="font-bold text-navy text-sm flex items-center gap-1.5">
           <CheckCircle2 className="w-4 h-4 text-steel" /> Calculation Details & Explanation

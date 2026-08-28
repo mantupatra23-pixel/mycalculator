@@ -191,13 +191,13 @@ export const CALCULATORS: CalculatorMeta[] = [
     popular: true,
     assumptions: [
       "New Regime includes standard deduction of ₹75,000 for salaried employees.",
-      "Section 87A rebate provides full tax rebate for taxable income up to ₹7,00,000 in New Regime.",
+      "Section 87A rebate can provide full tax relief for eligible resident individuals with total income up to ₹12,00,000, subject to applicable rules.",
       "Health & Education cess is uniformly applied at 4% on net income tax."
     ],
     relatedCalculators: ["salary-calculator", "hra-calculator", "tds-calculator", "ppf-calculator"],
     faqs: [
       { q: "What is the standard deduction for AY 2026-27 in New Regime?", a: "The standard deduction for salaried individuals in the New Tax Regime is ₹75,000." },
-      { q: "Is tax zero up to ₹7 Lakhs in New Regime?", a: "Yes, under Section 87A, resident individuals with net taxable income up to ₹7 Lakh receive full tax rebate." }
+      { q: "Is tax zero up to ₹12 Lakhs in the New Tax Regime?", a: "For eligible resident individuals, Section 87A provides a rebate of income tax where total income does not exceed ₹12,00,000 under the AY 2026-27 New Tax Regime. The maximum rebate is ₹60,000. The actual result depends on taxable income and applicable rules." }
     ]
   },
   {

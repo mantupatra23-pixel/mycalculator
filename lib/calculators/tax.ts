@@ -33,14 +33,11 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
   const isSalaried = (input.incomeType ?? "salaried") === "salaried";
 
   if (input.regime === "new") {
-    // -------------------------------------------------------------
-    // NEW TAX REGIME
-    // -------------------------------------------------------------
     let standardDeduction = 0;
     if (isSalaried) {
-      standardDeduction = ay === "AY2026_27" ? 75000 : 75000;
+      standardDeduction = 75000;
     }
-    const otherDeductions = 0; // 80C/80D not available in New Regime
+    const otherDeductions = 0;
     const taxableIncome = Math.max(0, gross - standardDeduction);
     let slabTax = 0;
     const explanation: string[] = [];
@@ -48,11 +45,11 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
     if (ay === "AY2026_27") {
       // AY 2026-27 (FY 2025-26) Revised Slabs:
       // 0 to 4,00,000: 0%
-      // 4,00,001 to 8,00,000: 5% (Max ₹20,000)
-      // 8,00,001 to 12,00,000: 10% (Max ₹40,000)
-      // 12,00,001 to 16,00,000: 15% (Max ₹60,000)
-      // 16,00,001 to 20,00,000: 20% (Max ₹80,000)
-      // 20,00,001 to 24,00,000: 25% (Max ₹1,00,000)
+      // 4,00,001 to 8,00,000: 5%
+      // 8,00,001 to 12,00,000: 10%
+      // 12,00,001 to 16,00,000: 15%
+      // 16,00,001 to 20,00,000: 20%
+      // 20,00,001 to 24,00,000: 25%
       // Above 24,00,000: 30%
 
       if (taxableIncome > 2400000) {
@@ -84,20 +81,19 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
         slabTax += (taxableIncome - 400000) * 0.05;
       }
 
-      explanation.push(`Standard deduction of ${formatINR(standardDeduction)} applied for salaried income.`);
+      if (isSalaried) {
+        explanation.push(`Standard deduction of ${formatINR(standardDeduction)} applied for salaried income.`);
+      }
       explanation.push(`Taxable income computed as ${formatINR(taxableIncome)} across AY 2026-27 revised slabs.`);
 
-      // Section 87A Rebate for AY 2026-27:
-      // Resident individual with taxable income <= ₹12,00,000 gets rebate up to ₹60,000 (tax becomes 0).
       let rebate87A = 0;
       if (taxableIncome <= 1200000 && taxableIncome > 0) {
         rebate87A = Math.min(slabTax, 60000);
-        explanation.push(`Full Section 87A rebate of ${formatINR(rebate87A)} applied (eligible taxable income ≤ ₹12 Lakh).`);
+        explanation.push(`Section 87A rebate applied based on eligible total income and applicable AY 2026-27 rules.`);
       }
 
       const taxAfterRebate = Math.max(0, slabTax - rebate87A);
 
-      // Surcharge
       let surcharge = 0;
       if (taxableIncome > 20000000) surcharge = taxAfterRebate * 0.25;
       else if (taxableIncome > 10000000) surcharge = taxAfterRebate * 0.15;
@@ -122,7 +118,7 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
         explanation,
       };
     } else {
-      // AY 2025-26 Slabs (0-3L Nil, 3-7L 5%, 7-10L 10%, 10-12L 15%, 12-15L 20%, >15L 30%)
+      // AY 2025-26 Slabs
       if (taxableIncome > 1500000) {
         slabTax += (taxableIncome - 1500000) * 0.30;
         slabTax += 300000 * 0.20;
@@ -171,9 +167,7 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
       };
     }
   } else {
-    // -------------------------------------------------------------
-    // OLD TAX REGIME
-    // -------------------------------------------------------------
+    // Old Tax Regime
     const standardDeduction = isSalaried ? 50000 : 0;
     const sec80C = Math.min(150000, Math.max(0, input.deductions80C ?? 0));
     const sec80D = Math.min(75000, Math.max(0, input.deductions80D ?? 0));
@@ -184,7 +178,6 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
     const taxableIncome = Math.max(0, gross - standardDeduction - totalEligibleDeductions);
     let slabTax = 0;
 
-    // Old Slabs: 0-2.5L: Nil, 2.5-5L: 5%, 5-10L: 20%, >10L: 30%
     if (taxableIncome > 1000000) {
       slabTax += (taxableIncome - 1000000) * 0.30;
       slabTax += 500000 * 0.20;
@@ -196,7 +189,6 @@ export function calculateIncomeTaxDetailed(input: IncomeTaxInput): TaxComputatio
       slabTax += (taxableIncome - 250000) * 0.05;
     }
 
-    // Section 87A in Old Regime (Taxable Income <= ₹5,00,000)
     let rebate87A = 0;
     if (taxableIncome <= 500000 && taxableIncome > 0) {
       rebate87A = Math.min(slabTax, 12500);
