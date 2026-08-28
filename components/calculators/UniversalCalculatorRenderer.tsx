@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { formatNumberIN, formatINR } from "@/lib/formatters";
 import { calculateUniversal } from "@/lib/calculators/allEngines";
-import { Copy, Check, Share2, RotateCcw, ArrowRightLeft } from "lucide-react";
+import { Copy, Check, Share2, RotateCcw, ArrowRightLeft, ChevronDown } from "lucide-react";
 
 export interface UniversalProps {
   slug: string;
@@ -11,16 +11,16 @@ export interface UniversalProps {
 }
 
 const TIMEZONES = [
-  { label: "IST - India Standard Time (UTC+5:30)", offset: 5.5, id: "IST" },
-  { label: "UTC - Coordinated Universal Time (UTC+0)", offset: 0, id: "UTC" },
-  { label: "EST - Eastern Standard Time / New York (UTC-5)", offset: -5, id: "EST" },
-  { label: "PST - Pacific Standard Time / San Francisco (UTC-8)", offset: -8, id: "PST" },
-  { label: "GMT - Greenwich Mean Time / London (UTC+0)", offset: 0, id: "GMT" },
-  { label: "CET - Central European Time / Paris / Berlin (UTC+1)", offset: 1, id: "CET" },
-  { label: "GST - Gulf Standard Time / Dubai (UTC+4)", offset: 4, id: "GST" },
-  { label: "SGT - Singapore / Malaysia Time (UTC+8)", offset: 8, id: "SGT" },
-  { label: "JST - Japan Standard Time / Tokyo (UTC+9)", offset: 9, id: "JST" },
-  { label: "AEST - Australian Eastern Time / Sydney (UTC+10)", offset: 10, id: "AEST" },
+  { label: "IST - India (UTC+5:30)", offset: 5.5, id: "IST" },
+  { label: "UTC - Universal (UTC+0)", offset: 0, id: "UTC" },
+  { label: "EST - New York (UTC-5)", offset: -5, id: "EST" },
+  { label: "PST - Los Angeles (UTC-8)", offset: -8, id: "PST" },
+  { label: "GMT - London (UTC+0)", offset: 0, id: "GMT" },
+  { label: "CET - Paris / Berlin (UTC+1)", offset: 1, id: "CET" },
+  { label: "GST - Dubai (UTC+4)", offset: 4, id: "GST" },
+  { label: "SGT - Singapore (UTC+8)", offset: 8, id: "SGT" },
+  { label: "JST - Tokyo (UTC+9)", offset: 9, id: "JST" },
+  { label: "AEST - Sydney (UTC+10)", offset: 10, id: "AEST" },
 ];
 
 export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
@@ -116,8 +116,8 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
         metrics: [
           { label: "24-Hour Format", value: `${time24h} (${tgtObj.id})`, highlight: true },
           { label: "Time Difference", value: diffStr },
-          { label: "Day Relative to Source", value: dayOffset === 0 ? "Same Day" : dayOffset > 0 ? "+1 Day (Next Day)" : "-1 Day (Previous Day)" },
-          { label: "Source Input Time", value: `${tzTime} (${srcObj.id})` },
+          { label: "Day Offset", value: dayOffset === 0 ? "Same Day" : dayOffset > 0 ? "+1 Day (Tomorrow)" : "-1 Day (Yesterday)" },
+          { label: "Source Time", value: `${tzTime} (${srcObj.id})` },
         ],
         summaryText: `${tzTime} in ${srcObj.id} corresponds to ${formattedTime} (${time24h}) in ${tgtObj.id}.`,
       };
@@ -356,17 +356,20 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 <label className="block font-bold text-sm text-navy mb-2">
                   From Time Zone (Source)
                 </label>
-                <select
-                  value={sourceTz}
-                  onChange={(e) => setSourceTz(e.target.value)}
-                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
-                >
-                  {TIMEZONES.map((tz) => (
-                    <option key={tz.id} value={tz.id}>
-                      {tz.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={sourceTz}
+                    onChange={(e) => setSourceTz(e.target.value)}
+                    className="w-full appearance-none px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm pr-10"
+                  >
+                    {TIMEZONES.map((tz) => (
+                      <option key={tz.id} value={tz.id}>
+                        {tz.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-navy/50 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
               </div>
 
               <div className="flex justify-center">
@@ -383,17 +386,20 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 <label className="block font-bold text-sm text-navy mb-2">
                   To Time Zone (Target)
                 </label>
-                <select
-                  value={targetTz}
-                  onChange={(e) => setTargetTz(e.target.value)}
-                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
-                >
-                  {TIMEZONES.map((tz) => (
-                    <option key={tz.id} value={tz.id}>
-                      {tz.label}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={targetTz}
+                    onChange={(e) => setTargetTz(e.target.value)}
+                    className="w-full appearance-none px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm pr-10"
+                  >
+                    {TIMEZONES.map((tz) => (
+                      <option key={tz.id} value={tz.id}>
+                        {tz.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-navy/50 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
               </div>
             </>
           ) : isDateAddSubCalculator ? (
@@ -428,16 +434,19 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                   <label className="block font-bold text-sm text-navy mb-2">
                     Unit of Time
                   </label>
-                  <select
-                    value={addUnit}
-                    onChange={(e) => setAddUnit(e.target.value as any)}
-                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
-                  >
-                    <option value="days">Days</option>
-                    <option value="weeks">Weeks</option>
-                    <option value="months">Months</option>
-                    <option value="years">Years</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={addUnit}
+                      onChange={(e) => setAddUnit(e.target.value as any)}
+                      className="w-full appearance-none px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm pr-10"
+                    >
+                      <option value="days">Days</option>
+                      <option value="weeks">Weeks</option>
+                      <option value="months">Months</option>
+                      <option value="years">Years</option>
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-navy/50 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
               </div>
             </>
