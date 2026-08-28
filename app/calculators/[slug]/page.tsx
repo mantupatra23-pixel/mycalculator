@@ -3,9 +3,16 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CALCULATORS } from "@/lib/registry";
+
 import { FinanceCalculatorRenderer } from "@/components/calculators/FinanceCalculatorRenderer";
 import { MathCalculatorRenderer } from "@/components/calculators/MathCalculatorRenderer";
-import { UniversalCalculatorRenderer } from "@/components/calculators/UniversalCalculatorRenderer";
+import { ConvertersRenderer } from "@/components/calculators/ConvertersRenderer";
+import { EducationRenderer } from "@/components/calculators/EducationRenderer";
+import { TimeDateRenderer } from "@/components/calculators/TimeDateRenderer";
+import { HealthRenderer } from "@/components/calculators/HealthRenderer";
+import { BusinessRenderer } from "@/components/calculators/BusinessRenderer";
+import { OtherRenderer } from "@/components/calculators/OtherRenderer";
+
 import { CheckCircle2, HelpCircle, BookOpen, Layers, ArrowRight } from "lucide-react";
 
 interface Props {
@@ -63,6 +70,28 @@ export default function CalculatorDetailPage({ params }: Props) {
     description: calc.description,
   };
 
+  const renderCalculatorComponent = () => {
+    switch (calc.category) {
+      case "finance":
+        return <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />;
+      case "math":
+        return <MathCalculatorRenderer slug={calc.slug} name={calc.name} />;
+      case "converters":
+        return <ConvertersRenderer slug={calc.slug} name={calc.name} />;
+      case "education":
+        return <EducationRenderer slug={calc.slug} name={calc.name} />;
+      case "time-date":
+        return <TimeDateRenderer slug={calc.slug} name={calc.name} />;
+      case "health":
+        return <HealthRenderer slug={calc.slug} name={calc.name} />;
+      case "business":
+        return <BusinessRenderer slug={calc.slug} name={calc.name} />;
+      case "other":
+      default:
+        return <OtherRenderer slug={calc.slug} name={calc.name} />;
+    }
+  };
+
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
       <script
@@ -91,14 +120,8 @@ export default function CalculatorDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Render Component According to Category */}
-      {calc.category === "math" ? (
-        <MathCalculatorRenderer slug={calc.slug} name={calc.name} />
-      ) : calc.category === "finance" ? (
-        <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />
-      ) : (
-        <UniversalCalculatorRenderer slug={calc.slug} name={calc.name} />
-      )}
+      {/* Modular Category Component */}
+      {renderCalculatorComponent()}
 
       {/* SEO & Educational Guidance Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-6">
@@ -118,7 +141,7 @@ export default function CalculatorDetailPage({ params }: Props) {
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Use the &ldquo;Copy Result&rdquo; or &ldquo;Share&rdquo; button to save and share the outcome.</span>
+                <span>Use the &ldquo;Copy Result&rdquo; button to save and share the outcome.</span>
               </li>
             </ul>
           </section>
