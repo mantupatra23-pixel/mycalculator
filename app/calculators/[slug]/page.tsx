@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { CALCULATORS } from "@/lib/registry";
 import { FinanceCalculatorRenderer } from "@/components/calculators/FinanceCalculatorRenderer";
 import { MathCalculatorRenderer } from "@/components/calculators/MathCalculatorRenderer";
-import { ArrowLeft, CheckCircle2, HelpCircle, BookOpen, Layers, ArrowRight } from "lucide-react";
+import { UniversalCalculatorRenderer } from "@/components/calculators/UniversalCalculatorRenderer";
+import { CheckCircle2, HelpCircle, BookOpen, Layers, ArrowRight } from "lucide-react";
 
 interface Props {
   params: {
@@ -93,14 +94,15 @@ export default function CalculatorDetailPage({ params }: Props) {
       {/* Render Component According to Category */}
       {calc.category === "math" ? (
         <MathCalculatorRenderer slug={calc.slug} name={calc.name} />
-      ) : (
+      ) : calc.category === "finance" ? (
         <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />
+      ) : (
+        <UniversalCalculatorRenderer slug={calc.slug} name={calc.name} />
       )}
 
       {/* SEO & Educational Guidance Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-6">
         <div className="md:col-span-8 space-y-8">
-          {/* How It Works */}
           <section className="bg-sage/20 border border-navy/10 rounded-2xl p-6">
             <h2 className="text-xl font-bold text-navy mb-3 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-steel" /> How to Use This Calculator
@@ -121,7 +123,6 @@ export default function CalculatorDetailPage({ params }: Props) {
             </ul>
           </section>
 
-          {/* Methodology */}
           <section className="space-y-3 text-navy">
             <h2 className="text-xl font-bold">Calculation Methodology</h2>
             <p className="text-xs sm:text-sm text-navy/80 leading-relaxed">
@@ -129,7 +130,6 @@ export default function CalculatorDetailPage({ params }: Props) {
             </p>
           </section>
 
-          {/* FAQ Section */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-navy flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-sand" /> Frequently Asked Questions
