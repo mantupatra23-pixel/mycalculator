@@ -3,15 +3,33 @@
 import React, { useState, useMemo } from "react";
 import { formatNumberIN, formatINR } from "@/lib/formatters";
 import { calculateUniversal } from "@/lib/calculators/allEngines";
-import { Copy, Check, Share2, RotateCcw } from "lucide-react";
+import { Copy, Check, Share2, RotateCcw, ArrowRightLeft } from "lucide-react";
 
 interface Props {
   slug: string;
   name: string;
 }
 
-export function UniversalCalculatorRenderer({ slug, name }: Props) {
+const TIMEZONES = [
+  { label: "IST - India Standard Time (UTC+5:30)", offset: 5.5, id: "IST" },
+  { label: "UTC - Coordinated Universal Time (UTC+0)", offset: 0, id: "UTC" },
+  { label: "EST - Eastern Standard Time / New York (UTC-5)", offset: -5, id: "EST" },
+  { label: "PST - Pacific Standard Time / San Francisco (UTC-8)", offset: -8, id: "PST" },
+  { label: "GMT - Greenwich Mean Time / London (UTC+0)", offset: 0, id: "GMT" },
+  { label: "CET - Central European Time / Paris / Berlin (UTC+1)", offset: 1, id: "CET" },
+  { label: "GST - Gulf Standard Time / Dubai (UTC+4)", offset: 4, id: "GST" },
+  { label: "SGT - Singapore / Malaysia Time (UTC+8)", offset: 8, id: "SGT" },
+  { label: "JST - Japan Standard Time / Tokyo (UTC+9)", offset: 9, id: "JST" },
+  { label: "AEST - Australian Eastern Time / Sydney (UTC+10)", offset: 10, id: "AEST" },
+];
+
+export default function UniversalCalculatorRenderer({ slug, name }: Props) {
   const todayStr = () => new Date().toISOString().split("T")[0];
+
+  // Time Zone states
+  const [tzTime, setTzTime] = useState<string>("14:30");
+  const [sourceTz, setSourceTz] = useState<string>("IST");
+  const [targetTz, setTargetTz] = useState<string>("EST");
 
   // Date states
   const [dob, setDob] = useState<string>("2000-01-01");
@@ -58,7 +76,55 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
 
   // Calculate Result
   const result = useMemo(() => {
-    // 1. Date Add & Subtract Calculator
+    // 1. Time Zone Converter
+    if (slug === "time-zone-calculator") {
+      const srcObj = TIMEZONES.find((t) => t.id === sourceTz) || TIMEZONES[0];
+      const tgtObj = TIMEZONES.find((t) => t.id === targetTz) || TIMEZONES[2];
+
+      const [h, m] = tzTime.split(":").map(Number);
+      const srcTotalMinutes = h * 60 + m;
+      
+      // Convert source to UTC, then UTC to target
+      const utcMinutes = srcTotalMinutes - srcObj.offset * 60;
+      let targetTotalMinutes = utcMinutes + tgtObj.offset * 60;
+
+      let dayOffset = 0;
+      while (targetTotalMinutes < 0) {
+        targetTotalMinutes += 24 * 60;
+        dayOffset -= 1;
+      }
+      while (targetTotalMinutes >= 24 * 60) {
+        targetTotalMinutes -= 24 * 60;
+        dayOffset += 1;
+      }
+
+      const resH = Math.floor(targetTotalMinutes / 60);
+      const resM = Math.round(targetTotalMinutes % 60);
+      
+      const period = resH >= 12 ? "PM" : "AM";
+      const displayH = resH % 12 === 0 ? 12 : resH % 12;
+      const formattedTime = `${String(displayH).padStart(2, "0")}:${String(resM).padStart(2, "0")} ${period}`;
+      const time24h = `${String(resH).padStart(2, "0")}:${String(resM).padStart(2, "0")}`;
+
+      const timeDifference = tgtObj.offset - srcObj.offset;
+      const diffStr = timeDifference >= 0 
+        ? `+${timeDifference} hrs ahead` 
+        : `${timeDifference} hrs behind`;
+
+      return {
+        primaryLabel: `Time in ${tgtObj.id}`,
+        primaryValue: formattedTime,
+        metrics: [
+          { label: "24-Hour Format", value: `${time24h} (${tgtObj.id})`, highlight: true },
+          { label: "Time Difference", value: diffStr },
+          { label: "Day Relative to Source", value: dayOffset === 0 ? "Same Day" : dayOffset > 0 ? "+1 Day Next Day" : "-1 Day Previous Day" },
+          { label: "Source Input Time", value: `${tzTime} (${srcObj.id})` },
+        ],
+        summaryText: `${tzTime} in ${srcObj.id} corresponds to ${formattedTime} (${time24h}) in ${tgtObj.id}.`,
+      };
+    }
+
+    // 2. Date Add & Subtract Calculator
     if (slug === "date-add-calculator" || slug === "date-subtract-calculator") {
       const isAdd = slug === "date-add-calculator";
       const dt = new Date(baseDate);
@@ -75,15 +141,10 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       const factor = isAdd ? 1 : -1;
       const qty = Math.max(0, addQty) * factor;
 
-      if (addUnit === "days") {
-        dt.setDate(dt.getDate() + qty);
-      } else if (addUnit === "weeks") {
-        dt.setDate(dt.getDate() + qty * 7);
-      } else if (addUnit === "months") {
-        dt.setMonth(dt.getMonth() + qty);
-      } else if (addUnit === "years") {
-        dt.setFullYear(dt.getFullYear() + qty);
-      }
+      if (addUnit === "days") dt.setDate(dt.getDate() + qty);
+      else if (addUnit === "weeks") dt.setDate(dt.getDate() + qty * 7);
+      else if (addUnit === "months") dt.setMonth(dt.getMonth() + qty);
+      else if (addUnit === "years") dt.setFullYear(dt.getFullYear() + qty);
 
       const formattedResultDate = dt.toLocaleDateString("en-US", {
         weekday: "long",
@@ -92,13 +153,11 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
         day: "numeric",
       });
 
-      const dayOfWeek = dt.toLocaleDateString("en-US", { weekday: "long" });
-
       return {
         primaryLabel: isAdd ? "Resulting Future Date" : "Resulting Past Date",
         primaryValue: formattedResultDate,
         metrics: [
-          { label: "Day of the Week", value: dayOfWeek, highlight: true },
+          { label: "Day of the Week", value: dt.toLocaleDateString("en-US", { weekday: "long" }), highlight: true },
           { label: "Operation", value: `${isAdd ? "Added" : "Subtracted"} ${addQty} ${addUnit}` },
           { label: "Starting Date", value: baseDate },
         ],
@@ -106,7 +165,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       };
     }
 
-    // 2. Time Duration & Hours Calculator
+    // 3. Time Duration & Hours Calculator
     if (slug === "time-duration-calculator" || slug === "hours-calculator") {
       const [startH, startM] = startTime.split(":").map(Number);
       const [endH, endM] = endTime.split(":").map(Number);
@@ -132,7 +191,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       };
     }
 
-    // 3. Date Difference & Days Between Dates
+    // 4. Date Difference & Days Between Dates
     if (slug === "date-difference-calculator" || slug === "days-between-dates") {
       const d1 = new Date(startDate);
       const d2 = new Date(endDate);
@@ -152,7 +211,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       };
     }
 
-    // 4. Age Calculators
+    // 5. Age Calculators
     if (slug === "age-calculator" || slug === "age-in-days-calculator") {
       const birth = new Date(dob);
       const target = new Date(targetDate);
@@ -166,9 +225,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
         };
       }
 
-      let diffMs = target.getTime() - birth.getTime();
-      if (diffMs < 0) diffMs = 0;
-
+      let diffMs = Math.max(0, target.getTime() - birth.getTime());
       const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       
       let years = target.getFullYear() - birth.getFullYear();
@@ -186,9 +243,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       }
 
       const nextBday = new Date(target.getFullYear(), birth.getMonth(), birth.getDate());
-      if (nextBday < target) {
-        nextBday.setFullYear(target.getFullYear() + 1);
-      }
+      if (nextBday < target) nextBday.setFullYear(target.getFullYear() + 1);
       const daysToNextBday = Math.ceil((nextBday.getTime() - target.getTime()) / (1000 * 60 * 60 * 24));
 
       return {
@@ -205,7 +260,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     }
 
     return calculateUniversal(slug, v1, v2, v3);
-  }, [slug, baseDate, addQty, addUnit, dob, targetDate, startDate, endDate, startTime, endTime, breakMins, v1, v2, v3]);
+  }, [slug, tzTime, sourceTz, targetTz, baseDate, addQty, addUnit, dob, targetDate, startDate, endDate, startTime, endTime, breakMins, v1, v2, v3]);
 
   const handleCopy = () => {
     const text = `${name} Results:\n${result.primaryLabel}: ${result.primaryValue}\n` +
@@ -233,7 +288,15 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     }
   };
 
+  const handleSwapTz = () => {
+    setSourceTz(targetTz);
+    setTargetTz(sourceTz);
+  };
+
   const handleReset = () => {
+    setTzTime("14:30");
+    setSourceTz("IST");
+    setTargetTz("EST");
     setBaseDate(todayStr());
     setAddQty(30);
     setAddUnit("days");
@@ -249,6 +312,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
     setV3(0);
   };
 
+  const isTzCalculator = slug === "time-zone-calculator";
   const isDateAddSubCalculator = slug === "date-add-calculator" || slug === "date-subtract-calculator";
   const isTimeCalculator = slug === "time-duration-calculator" || slug === "hours-calculator";
   const isDateDiffCalculator = slug === "date-difference-calculator" || slug === "days-between-dates";
@@ -259,7 +323,7 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-navy/10">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-steel bg-sage/40 px-2.5 py-1 rounded-md">
-            Interactive Calculator
+            Interactive Tool
           </span>
           <h2 className="text-xl sm:text-2xl font-black text-navy mt-1">{name}</h2>
         </div>
@@ -274,7 +338,65 @@ export function UniversalCalculatorRenderer({ slug, name }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
-          {isDateAddSubCalculator ? (
+          {isTzCalculator ? (
+            <>
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  Select Time
+                </label>
+                <input
+                  type="time"
+                  value={tzTime}
+                  onChange={(e) => setTzTime(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  From Time Zone (Source)
+                </label>
+                <select
+                  value={sourceTz}
+                  onChange={(e) => setSourceTz(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                >
+                  {TIMEZONES.map((tz) => (
+                    <option key={tz.id} value={tz.id}>
+                      {tz.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={handleSwapTz}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sage/50 text-navy font-bold text-xs hover:bg-sage transition-colors border border-navy/10"
+                >
+                  <ArrowRightLeft className="w-4 h-4 text-steel" /> Swap Time Zones
+                </button>
+              </div>
+
+              <div>
+                <label className="block font-bold text-sm text-navy mb-2">
+                  To Time Zone (Target)
+                </label>
+                <select
+                  value={targetTz}
+                  onChange={(e) => setTargetTz(e.target.value)}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel shadow-sm"
+                >
+                  {TIMEZONES.map((tz) => (
+                    <option key={tz.id} value={tz.id}>
+                      {tz.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          ) : isDateAddSubCalculator ? (
             <>
               <div>
                 <label className="block font-bold text-sm text-navy mb-2">
