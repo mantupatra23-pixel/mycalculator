@@ -88,20 +88,21 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "emi-calculator",
     name: "EMI Calculator",
     category: "finance",
-    description: "Calculate home loan, car loan, and personal loan monthly EMIs with full amortization schedule.",
+    description: "Calculate monthly loan EMI and total interest with full amortization schedule.",
     keywords: ["emi calculator", "loan emi", "home loan emi", "car loan emi", "monthly installment"],
     popular: true,
     featured: true,
     formulaDescription: "EMI = P × r × (1 + r)^n / ((1 + r)^n - 1)",
     assumptions: [
       "Interest is calculated on a monthly reducing balance basis.",
-      "Monthly interest rate equals Annual Rate / 1200.",
+      "Monthly interest rate equals Annual Interest Rate / 1200.",
       "Repayments occur at standard regular monthly intervals."
     ],
     relatedCalculators: ["home-loan-emi-calculator", "car-loan-emi-calculator", "personal-loan-emi-calculator", "ltv-calculator"],
     faqs: [
       { q: "How is EMI calculated?", a: "EMI is computed using the reducing balance formula taking principal loan amount, monthly interest rate, and total monthly installments into account." },
-      { q: "Does extending tenure increase total interest?", a: "Yes. Longer loan tenures reduce your monthly installment amount but significantly increase overall compound interest paid across the lifetime of the loan." }
+      { q: "Does extending tenure increase total interest?", a: "Yes. Longer loan tenures reduce your monthly installment amount but significantly increase overall compound interest paid across the lifetime of the loan." },
+      { q: "What happens if interest rates change?", a: "For floating-rate loans, an increase in benchmark interest rate generally increases the loan tenure or monthly EMI amount." }
     ]
   },
   {
@@ -119,7 +120,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "car-loan-emi-calculator",
     name: "Car Loan EMI Calculator",
     category: "finance",
-    description: "Calculate auto loan monthly payments, tenure interest, and on-road down payment ratios.",
+    description: "Calculate auto loan monthly payments, tenure interest, and down payment ratios.",
     keywords: ["car loan emi", "auto loan calculator", "vehicle financing"],
     relatedCalculators: ["emi-calculator", "personal-loan-emi-calculator", "loan-calculator"]
   },
@@ -143,14 +144,15 @@ export const CALCULATORS: CalculatorMeta[] = [
     featured: true,
     formulaDescription: "FV = P × [ (1 + i)^n - 1 ] / i × (1 + i)",
     assumptions: [
-      "Investments are made systematically at the end/beginning of each monthly cycle.",
-      "Compounding frequency is monthly aligned with deposit frequency.",
-      "Projected annual returns are constant estimates and not guaranteed market returns."
+      "Investments are deposited systematically at regular monthly intervals.",
+      "Compounding frequency matches deposit frequency (monthly compounding).",
+      "Expected rate of return is an annualized constant estimate and not guaranteed."
     ],
     relatedCalculators: ["lumpsum-calculator", "cagr-calculator", "mutual-fund-returns-calculator", "compound-interest-calculator"],
     faqs: [
-      { q: "How is SIP maturity value calculated?", a: "SIP uses monthly compounding on each installment where earlier deposits accumulate interest for longer durations." },
-      { q: "Are SIP returns guaranteed?", a: "No, mutual fund investments are subject to market volatility. The rate entered is an expected annualized CAGR estimate." }
+      { q: "How are SIP returns calculated?", a: "SIP uses monthly compounding on each installment where earlier deposits accumulate returns for longer durations." },
+      { q: "Are SIP returns guaranteed?", a: "No. Mutual fund investments are subject to market risks. The expected return rate is an annualized projection." },
+      { q: "What is the difference between SIP and Lump Sum?", a: "SIP invests fixed amounts at regular intervals to average market volatility, while Lump Sum invests the entire capital at once." }
     ]
   },
   {
@@ -171,14 +173,16 @@ export const CALCULATORS: CalculatorMeta[] = [
     keywords: ["gst calculator", "goods and services tax", "gst inclusive", "gst exclusive", "cgst sgst igst"],
     popular: true,
     featured: true,
-    formulaDescription: "Exclusive GST = Base × Rate / 100 | Inclusive Base = Total / (1 + Rate / 100)",
+    formulaDescription: "GST Exclusive = Base × Rate / 100 | GST Inclusive Base = Total / (1 + Rate / 100)",
     assumptions: [
       "Intra-state transactions split GST equally between CGST (50%) and SGST (50%).",
       "Inter-state supplies apply full GST under IGST (100%)."
     ],
     relatedCalculators: ["invoice-total-calculator", "profit-loss-calculator", "percentage-calculator"],
     faqs: [
-      { q: "What is the difference between GST inclusive and exclusive?", a: "GST exclusive adds tax on top of base amount. GST inclusive extracts embedded tax from the final retail price." }
+      { q: "What is GST exclusive pricing?", a: "GST exclusive adds the tax percentage on top of the net base supply amount." },
+      { q: "What is GST inclusive pricing?", a: "GST inclusive extracts the embedded tax amount from the final gross selling price." },
+      { q: "What is the difference between CGST, SGST, and IGST?", a: "CGST and SGST apply to transactions within the same state, while IGST applies to inter-state supplies." }
     ]
   },
   {
@@ -186,18 +190,19 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "income-tax-calculator",
     name: "Income Tax Calculator",
     category: "finance",
-    description: "Compare tax liabilities between New and Old Tax Regimes under current Indian financial rules.",
+    description: "Calculate estimated income tax liability under AY 2026-27 and AY 2025-26 New & Old Tax Regimes.",
     keywords: ["income tax calculator", "new tax regime", "old tax regime", "tds calculation", "itr planning"],
     popular: true,
     assumptions: [
-      "New Regime includes standard deduction of ₹75,000 for salaried employees.",
+      "Salaried standard deduction of ₹75,000 applies under the New Tax Regime.",
       "Section 87A rebate can provide full tax relief for eligible resident individuals with total income up to ₹12,00,000, subject to applicable rules.",
       "Health & Education cess is uniformly applied at 4% on net income tax."
     ],
     relatedCalculators: ["salary-calculator", "hra-calculator", "tds-calculator", "ppf-calculator"],
     faqs: [
       { q: "What is the standard deduction for AY 2026-27 in New Regime?", a: "The standard deduction for salaried individuals in the New Tax Regime is ₹75,000." },
-      { q: "Is tax zero up to ₹12 Lakhs in the New Tax Regime?", a: "For eligible resident individuals, Section 87A provides a rebate of income tax where total income does not exceed ₹12,00,000 under the AY 2026-27 New Tax Regime. The maximum rebate is ₹60,000. The actual result depends on taxable income and applicable rules." }
+      { q: "Is tax zero up to ₹12 Lakhs in the New Tax Regime?", a: "For eligible resident individuals, Section 87A provides a rebate of income tax where total income does not exceed ₹12,00,000 under the AY 2026-27 New Tax Regime. The maximum rebate is ₹60,000. The actual result depends on taxable income and applicable rules." },
+      { q: "Which tax regime should I choose?", a: "The New Tax Regime offers lower slab rates without exemptions, while the Old Tax Regime allows deductions like Section 80C, 80D, and HRA." }
     ]
   },
   {
@@ -210,13 +215,14 @@ export const CALCULATORS: CalculatorMeta[] = [
     popular: true,
     featured: true,
     assumptions: [
+      "CTC-to-take-home calculations are estimates because employer CTC structures differ.",
       "Statutory EPF deduction is 12% of basic pay (capped at ₹1,800/mo standard).",
-      "Professional tax is estimated at standard ₹200/month (₹2,400/year).",
-      "Employer contributions included in CTC are separated from gross monthly salary."
+      "Professional tax is estimated at standard ₹200/month (₹2,400/year)."
     ],
     relatedCalculators: ["income-tax-calculator", "salary-hike-calculator", "payroll-calculator", "hra-calculator"],
     faqs: [
-      { q: "Why does monthly in-hand differ from CTC / 12?", a: "CTC includes employer contributions (PF, gratuity, insurance) and employee deductions (PF, professional tax, TDS)." }
+      { q: "What is the difference between CTC and take-home salary?", a: "CTC is the total cost to the company including employer benefits (PF, gratuity, insurance). Take-home is the net amount credited after employee deductions." },
+      { q: "Does CTC include employer PF?", a: "Yes, most employer CTC structures bundle the employer's 12% PF contribution inside the headline CTC." }
     ]
   },
   {
@@ -224,14 +230,17 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "fd-calculator",
     name: "Fixed Deposit (FD) Calculator",
     category: "finance",
-    description: "Calculate bank Fixed Deposit maturity value, quarterly compound interest, and tenure yield.",
+    description: "Calculate bank Fixed Deposit maturity value, compound interest, and tenure yield.",
     keywords: ["fd calculator", "fixed deposit interest", "bank fd rates", "maturity corpus"],
     popular: true,
     assumptions: [
-      "Bank standard compounding frequency is quarterly (4 times per year).",
+      "Standard bank compounding frequency is quarterly (4 times per year).",
       "TDS deductions on interest income are not withheld in the baseline estimate."
     ],
-    relatedCalculators: ["rd-calculator", "compound-interest-calculator", "simple-interest-calculator", "ppf-calculator"]
+    relatedCalculators: ["rd-calculator", "compound-interest-calculator", "simple-interest-calculator", "ppf-calculator"],
+    faqs: [
+      { q: "How is FD interest compounded?", a: "Most Indian banks compound FD interest on a quarterly basis, adding earned interest back to the principal every 3 months." }
+    ]
   },
   {
     id: "rd-calculator",
@@ -391,7 +400,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     formulaDescription: "LTV Ratio (%) = (Loan Amount / Property Value) × 100",
     assumptions: [
       "LTV reflects the proportion of collateral asset value funded by borrowing.",
-      "Actual loan sanction depends on lender underwriting, credit scores, legal clearances, and repayment capacity."
+      "Actual loan approval depends on lender-specific underwriting, credit profile, property characteristics, and income."
     ],
     relatedCalculators: ["home-loan-emi-calculator", "emi-calculator", "loan-calculator"],
     faqs: [
@@ -643,7 +652,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "bmi-calculator",
     name: "BMI Calculator",
     category: "health",
-    description: "Calculate Body Mass Index (BMI) and healthy weight ranges for adults.",
+    description: "Calculate Body Mass Index (BMI) and healthy weight reference ranges for adults.",
     keywords: ["bmi calculator", "body mass index", "healthy weight"],
     popular: true,
     relatedCalculators: ["ideal-weight-calculator", "body-fat-calculator", "calorie-calculator"]
@@ -662,7 +671,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "calorie-calculator",
     name: "Daily Calorie Calculator",
     category: "health",
-    description: "Determine daily maintenance, deficit, and surplus calories for targeted fitness goals.",
+    description: "Determine daily maintenance, deficit, and surplus calories for fitness goals.",
     keywords: ["calorie calculator", "tdee calculator", "weight loss calories"],
     popular: true,
     relatedCalculators: ["bmr-calculator", "macro-calculator", "water-intake-calculator"]
