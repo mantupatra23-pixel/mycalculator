@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { CALCULATORS, CATEGORIES_META, CalculatorCategory } from "@/lib/registry";
 import { FeaturedEMI } from "@/components/FeaturedEMI";
+import { HeroSearch } from "@/components/HeroSearch";
 import {
   TrendingUp,
   Briefcase,
@@ -21,7 +22,7 @@ import {
 export const metadata: Metadata = {
   title: "Free Online Calculators - EMI, GST, SIP, Finance & Math | MyCalculators",
   description:
-    "Use 100+ free online calculators for EMI, GST, SIP returns, in-hand salary, percentages, age, unit conversions, and health metrics. Fast and mobile-friendly.",
+    "Use 100+ free online calculators for EMI, GST, SIP returns, in-hand salary, percentages, age, unit conversions, and health metrics. Fast, private and mobile-friendly.",
   alternates: {
     canonical: "https://mycalculators.xyz",
   },
@@ -53,9 +54,9 @@ export default function HomePage() {
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-12">
       {/* Hero Section */}
-      <section className="text-center space-y-4 max-w-3xl mx-auto pt-4">
+      <section className="text-center space-y-4 max-w-3xl mx-auto pt-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage/50 text-steel font-bold text-xs uppercase tracking-wider border border-navy/10">
-          <Zap className="w-3.5 h-3.5" /> {totalCount >= 100 ? "100+ Free Online Calculators" : `${totalCount} Free Online Calculators`}
+          <Zap className="w-3.5 h-3.5" /> 100+ Free Online Calculators
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-navy tracking-tight leading-tight">
           Smart Calculators for Everyday Life
@@ -63,6 +64,11 @@ export default function HomePage() {
         <p className="text-sm sm:text-base text-navy/75 leading-relaxed max-w-2xl mx-auto">
           Calculate loans, GST, SIP returns, in-hand salary, percentages, age, health metrics, and unit conversions with zero latency and complete privacy.
         </p>
+
+        {/* Hero Search Box with Instant Live Suggestions & Chips */}
+        <div className="pt-2">
+          <HeroSearch />
+        </div>
       </section>
 
       {/* Featured EMI Engine */}
@@ -70,9 +76,9 @@ export default function HomePage() {
         <FeaturedEMI />
       </section>
 
-      {/* Popular Calculators Grid */}
+      {/* Popular Calculators Grid (With Styled Border Cards & Action Buttons) */}
       <section className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-2 border-b border-navy/10">
           <div>
             <h2 className="text-2xl font-black text-navy">Popular Calculators</h2>
             <p className="text-xs sm:text-sm text-navy/70">Most frequently used tools by individuals and businesses</p>
@@ -87,38 +93,42 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {popularCalculators.map((calc) => (
-            <Link
+            <div
               key={calc.id}
-              href={`/calculators/${calc.slug}`}
-              className="bg-white border border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all group flex flex-col justify-between"
+              className="bg-white border-2 border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all flex flex-col justify-between group"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-2.5">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-steel bg-sage/50 px-2 py-0.5 rounded">
                     {calc.category}
                   </span>
-                  <span className="text-[10px] font-bold text-navy bg-sand px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold text-navy bg-sand px-2.5 py-0.5 rounded-full shadow-xs">
                     Popular
                   </span>
                 </div>
-                <h3 className="font-extrabold text-base sm:text-lg text-navy group-hover:text-steel transition-colors mb-1.5">
+                <h3 className="font-black text-base sm:text-lg text-navy group-hover:text-steel transition-colors mb-1.5">
                   {calc.name}
                 </h3>
-                <p className="text-xs text-navy/70 line-clamp-2 leading-relaxed mb-4">
+                <p className="text-xs text-navy/70 line-clamp-2 leading-relaxed mb-5">
                   {calc.description}
                 </p>
               </div>
-              <div className="text-xs font-bold text-steel flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+
+              {/* Styled Solid Action Button */}
+              <Link
+                href={`/calculators/${calc.slug}`}
+                className="w-full bg-steel hover:bg-steel/90 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs transition-colors shadow-sm"
+              >
                 Open Calculator <ArrowRight className="w-3.5 h-3.5" />
-              </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Browse By Category with Real-Time Registry Counts */}
-      <section className="space-y-6 pt-4">
-        <div>
+      {/* Browse By Category (With Real-Time Dynamic Counts) */}
+      <section className="space-y-6 pt-2">
+        <div className="pb-2 border-b border-navy/10">
           <h2 className="text-2xl font-black text-navy">Browse By Category</h2>
           <p className="text-xs sm:text-sm text-navy/70">Explore organized calculation tools across disciplines</p>
         </div>
@@ -133,13 +143,13 @@ export default function HomePage() {
               <Link
                 key={catKey}
                 href={`/calculators/${catKey}`}
-                className="bg-white border border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all group flex flex-col justify-between"
+                className="bg-white border-2 border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all group flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-sage/40 flex items-center justify-center text-steel mb-3 group-hover:bg-steel group-hover:text-white transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-sage/40 flex items-center justify-center text-steel mb-3 group-hover:bg-steel group-hover:text-white transition-colors shadow-xs">
                     <IconComp className="w-5 h-5" />
                   </div>
-                  <h3 className="font-bold text-base text-navy mb-1">{cat.name}</h3>
+                  <h3 className="font-extrabold text-base text-navy mb-1">{cat.name}</h3>
                   <p className="text-xs text-navy/60 line-clamp-2 mb-4 leading-relaxed">
                     {cat.description}
                   </p>
