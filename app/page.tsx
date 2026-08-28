@@ -1,163 +1,152 @@
 import React from "react";
 import Link from "next/link";
-import { SearchSection } from "@/components/SearchSection";
+import { Metadata } from "next";
+import { CALCULATORS, CATEGORIES_META, CalculatorCategory } from "@/lib/registry";
 import { FeaturedEMI } from "@/components/FeaturedEMI";
-import { CALCULATORS, CATEGORIES } from "@/lib/registry";
-import { 
-  Zap, 
-  ArrowRight, 
-  ShieldCheck, 
-  Sparkles, 
-  Layers, 
-  CheckCircle2, 
-  Calculator,
+import {
   TrendingUp,
+  Briefcase,
   Percent,
-  Clock,
   HeartPulse,
+  Clock,
   Scale,
-  GraduationCap
+  GraduationCap,
+  Calculator,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Lock,
 } from "lucide-react";
 
-export default function HomePage() {
-  const popularCalculators = CALCULATORS.filter((c) => c.popular);
+export const metadata: Metadata = {
+  title: "Free Online Calculators - EMI, GST, SIP, Finance & Math | MyCalculators",
+  description:
+    "Use 100+ free online calculators for EMI, GST, SIP returns, in-hand salary, percentages, age, unit conversions, and health metrics. Fast and mobile-friendly.",
+  alternates: {
+    canonical: "https://mycalculators.xyz",
+  },
+  openGraph: {
+    title: "Free Online Calculators for Everyday Life | MyCalculators",
+    description: "100+ browser-native calculators for finance, math, business, and health.",
+    url: "https://mycalculators.xyz",
+    siteName: "MyCalculators",
+    locale: "en_IN",
+    type: "website",
+  },
+};
 
-  const getCategoryIcon = (id: string) => {
-    switch (id) {
-      case "finance": return <TrendingUp className="w-5 h-5 text-steel" />;
-      case "math": return <Percent className="w-5 h-5 text-steel" />;
-      case "health": return <HeartPulse className="w-5 h-5 text-steel" />;
-      case "time-date": return <Clock className="w-5 h-5 text-steel" />;
-      case "converters": return <Scale className="w-5 h-5 text-steel" />;
-      case "education": return <GraduationCap className="w-5 h-5 text-steel" />;
-      default: return <Calculator className="w-5 h-5 text-steel" />;
-    }
-  };
+const ICON_MAP: Record<string, any> = {
+  TrendingUp,
+  Briefcase,
+  Percent,
+  HeartPulse,
+  Clock,
+  Scale,
+  GraduationCap,
+  Calculator,
+};
+
+export default function HomePage() {
+  const popularCalculators = CALCULATORS.filter((c) => c.popular).slice(0, 12);
+  const totalCount = CALCULATORS.length;
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-12 sm:space-y-16 bg-white">
-      {/* Hero Section (Sage Panel from Sunburn layout) */}
-      <section className="bg-sage/40 rounded-3xl p-6 sm:p-12 border border-navy/10 text-center">
-        <div className="inline-flex items-center gap-1.5 bg-cream border border-sand/50 text-navy px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-sand" /> 100% Free & Instant Calculations
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-12">
+      {/* Hero Section */}
+      <section className="text-center space-y-4 max-w-3xl mx-auto pt-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage/50 text-steel font-bold text-xs uppercase tracking-wider border border-navy/10">
+          <Zap className="w-3.5 h-3.5" /> {totalCount >= 100 ? "100+ Free Online Calculators" : `${totalCount} Free Online Calculators`}
         </div>
-        
-        <h1 className="text-3xl sm:text-5xl font-black text-navy mb-4 tracking-tight leading-tight">
-          Free Online Calculators for Everyday Life
+        <h1 className="text-3xl sm:text-5xl font-black text-navy tracking-tight leading-tight">
+          Smart Calculators for Everyday Life
         </h1>
-        
-        <p className="text-navy/80 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-          Calculate loans, GST, SIP returns, percentages, salary, age, interest, conversions and more with fast, accurate and easy-to-use calculators.
+        <p className="text-sm sm:text-base text-navy/75 leading-relaxed max-w-2xl mx-auto">
+          Calculate loans, GST, SIP returns, in-hand salary, percentages, age, health metrics, and unit conversions with zero latency and complete privacy.
         </p>
-
-        {/* Instant Search Bar */}
-        <SearchSection />
-
-        {/* Quick Suggestion Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs font-semibold text-navy/70">
-          <span>Popular:</span>
-          {["EMI", "GST", "SIP", "Percentage", "Age", "Salary", "BMI"].map((tag) => (
-            <Link
-              key={tag}
-              href={`/calculators?q=${tag.toLowerCase()}`}
-              className="bg-white hover:bg-cream px-3 py-1 rounded-full border border-navy/10 text-navy transition-colors shadow-sm"
-            >
-              {tag}
-            </Link>
-          ))}
-        </div>
       </section>
 
-      {/* Featured Calculator Section */}
-      <section>
-        <div className="mb-4">
-          <h2 className="text-2xl font-black text-navy">Interactive Calculator</h2>
-          <p className="text-sm text-navy/70">Plan your finances instantly with live recalculation.</p>
-        </div>
+      {/* Featured EMI Engine */}
+      <section className="max-w-4xl mx-auto">
         <FeaturedEMI />
       </section>
 
       {/* Popular Calculators Grid */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-black text-navy flex items-center gap-2">
-              <Zap className="w-6 h-6 text-sand fill-sand" /> Popular Calculators
-            </h2>
-            <p className="text-sm text-navy/70">Most frequently used tools by individuals & businesses.</p>
+            <h2 className="text-2xl font-black text-navy">Popular Calculators</h2>
+            <p className="text-xs sm:text-sm text-navy/70">Most frequently used tools by individuals and businesses</p>
           </div>
           <Link
             href="/calculators"
-            className="hidden sm:flex items-center gap-1.5 text-sm font-bold text-steel hover:text-navy transition-colors"
+            className="text-xs font-bold text-steel hover:text-navy flex items-center gap-1"
           >
-            View All 100+ <ArrowRight className="w-4 h-4" />
+            View All ({totalCount}) <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {popularCalculators.map((calc) => (
-            <div
+            <Link
               key={calc.id}
-              className="bg-white border border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all flex flex-col justify-between"
+              href={`/calculators/${calc.slug}`}
+              className="bg-white border border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all group flex flex-col justify-between"
             >
               <div>
-                <div className="w-10 h-10 bg-sage/40 rounded-xl flex items-center justify-center text-navy mb-3">
-                  <Calculator className="w-5 h-5 text-steel" />
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-steel bg-sage/50 px-2 py-0.5 rounded">
+                    {calc.category}
+                  </span>
+                  <span className="text-[10px] font-bold text-navy bg-sand px-2 py-0.5 rounded-full">
+                    Popular
+                  </span>
                 </div>
-                <h3 className="font-extrabold text-lg text-navy mb-1">{calc.name}</h3>
-                <p className="text-xs sm:text-sm text-navy/70 mb-5 leading-relaxed">{calc.description}</p>
+                <h3 className="font-extrabold text-base sm:text-lg text-navy group-hover:text-steel transition-colors mb-1.5">
+                  {calc.name}
+                </h3>
+                <p className="text-xs text-navy/70 line-clamp-2 leading-relaxed mb-4">
+                  {calc.description}
+                </p>
               </div>
-
-              <Link
-                href={`/calculators/${calc.slug}`}
-                className="w-full bg-steel hover:bg-steel/90 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm transition-colors shadow-sm"
-              >
-                Open Calculator <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+              <div className="text-xs font-bold text-steel flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                Open Calculator <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
           ))}
-        </div>
-
-        <div className="mt-6 flex sm:hidden justify-center">
-          <Link
-            href="/calculators"
-            className="w-full text-center bg-sand text-navy font-bold py-3 px-4 rounded-xl text-sm shadow-sm"
-          >
-            Explore All Calculators
-          </Link>
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-2xl font-black text-navy flex items-center gap-2">
-            <Layers className="w-6 h-6 text-steel" /> Browse By Category
-          </h2>
-          <p className="text-sm text-navy/70">Explore organized calculators across multiple disciplines.</p>
+      {/* Browse By Category with Real-Time Registry Counts */}
+      <section className="space-y-6 pt-4">
+        <div>
+          <h2 className="text-2xl font-black text-navy">Browse By Category</h2>
+          <p className="text-xs sm:text-sm text-navy/70">Explore organized calculation tools across disciplines</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {CATEGORIES.map((cat) => {
-            const count = CALCULATORS.filter((c) => c.category === cat.id).length;
+          {(Object.keys(CATEGORIES_META) as CalculatorCategory[]).map((catKey) => {
+            const cat = CATEGORIES_META[catKey];
+            const IconComp = ICON_MAP[cat.icon] || Calculator;
+            const count = CALCULATORS.filter((c) => c.category === catKey).length;
+
             return (
               <Link
-                key={cat.id}
-                href={`/calculators/${cat.id}`}
-                className="bg-white border border-navy/15 rounded-2xl p-5 hover:border-sand hover:shadow-sm transition-all group flex flex-col justify-between"
+                key={catKey}
+                href={`/calculators/${catKey}`}
+                className="bg-white border border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-md transition-all group flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-10 h-10 bg-sage/30 group-hover:bg-cream rounded-xl flex items-center justify-center text-navy mb-3 transition-colors">
-                    {getCategoryIcon(cat.id)}
+                  <div className="w-10 h-10 rounded-xl bg-sage/40 flex items-center justify-center text-steel mb-3 group-hover:bg-steel group-hover:text-white transition-colors">
+                    <IconComp className="w-5 h-5" />
                   </div>
-                  <h3 className="font-bold text-base text-navy mb-1 group-hover:text-steel transition-colors">
-                    {cat.name}
-                  </h3>
-                  <p className="text-xs text-navy/60 mb-4">{cat.description}</p>
+                  <h3 className="font-bold text-base text-navy mb-1">{cat.name}</h3>
+                  <p className="text-xs text-navy/60 line-clamp-2 mb-4 leading-relaxed">
+                    {cat.description}
+                  </p>
                 </div>
-                <div className="flex items-center justify-between text-xs font-bold text-navy/75 pt-3 border-t border-navy/10">
+                <div className="flex items-center justify-between text-xs font-bold text-steel pt-3 border-t border-navy/10">
                   <span>{count} Calculators</span>
-                  <ArrowRight className="w-4 h-4 text-navy/40 group-hover:translate-x-1 group-hover:text-steel transition-all" />
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
             );
@@ -165,35 +154,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trust & Methodology Section */}
-      <section className="bg-sage/30 rounded-3xl p-6 sm:p-10 border border-navy/10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-navy">
-          <div className="flex items-start gap-3.5">
-            <CheckCircle2 className="w-6 h-6 text-sand shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-bold text-base mb-1">Instant & Browser-Native</h4>
-              <p className="text-xs text-navy/70 leading-relaxed">
-                Calculations execute locally on your device with zero server latency or loading delays.
-              </p>
-            </div>
+      {/* Trust & Architecture Badges */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-navy/10">
+        <div className="flex items-center gap-3 bg-sage/20 border border-navy/10 rounded-2xl p-4">
+          <Zap className="w-5 h-5 text-steel shrink-0" />
+          <div className="text-xs">
+            <span className="font-bold text-navy block">Instant & Browser-Native</span>
+            <span className="text-navy/70">Calculations run locally with zero server latency.</span>
           </div>
-          <div className="flex items-start gap-3.5">
-            <ShieldCheck className="w-6 h-6 text-sand shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-bold text-base mb-1">100% Private & Secure</h4>
-              <p className="text-xs text-navy/70 leading-relaxed">
-                No accounts, no logins, and zero remote financial data storage. Your numbers stay on your screen.
-              </p>
-            </div>
+        </div>
+        <div className="flex items-center gap-3 bg-sage/20 border border-navy/10 rounded-2xl p-4">
+          <Lock className="w-5 h-5 text-steel shrink-0" />
+          <div className="text-xs">
+            <span className="font-bold text-navy block">100% Private & Secure</span>
+            <span className="text-navy/70">No financial inputs or health data are stored remotely.</span>
           </div>
-          <div className="flex items-start gap-3.5">
-            <TrendingUp className="w-6 h-6 text-sand shrink-0 mt-0.5" />
-            <div>
-              <h4 className="font-bold text-base mb-1">India & Global Standards</h4>
-              <p className="text-xs text-navy/70 leading-relaxed">
-                Built-in support for INR (₹ Lakhs & Crores), standard GST slabs, and global conversion units.
-              </p>
-            </div>
+        </div>
+        <div className="flex items-center gap-3 bg-sage/20 border border-navy/10 rounded-2xl p-4">
+          <ShieldCheck className="w-5 h-5 text-steel shrink-0" />
+          <div className="text-xs">
+            <span className="font-bold text-navy block">Verified Standards</span>
+            <span className="text-navy/70">Indian currency notation (Lakhs/Crores) and GST slabs.</span>
           </div>
         </div>
       </section>

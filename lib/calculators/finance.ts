@@ -21,7 +21,39 @@ export interface CalculationResult {
   summaryText: string;
 }
 
-// 1. Full EMI Calculator Engine (Complete Amortization for All N Years)
+// 1. Loan-to-Value (LTV) Calculator
+export function calculateLTV(propertyValue: number, loanAmount: number): CalculationResult {
+  const prop = Math.max(0, propertyValue);
+  const loan = Math.max(0, loanAmount);
+
+  const ltvPct = prop > 0 ? (loan / prop) * 100 : 0;
+  const downPayment = Math.max(0, prop - loan);
+  const downPaymentPct = prop > 0 ? (downPayment / prop) * 100 : 0;
+
+  let riskCategory = "Low Risk (Standard Bank Approvals)";
+  if (ltvPct > 90) riskCategory = "Very High Risk (>90% requires special approval/guarantee)";
+  else if (ltvPct > 80) riskCategory = "Moderate / High Risk (RBI cap is 75-80% for high-value homes)";
+  else if (ltvPct > 0 && ltvPct <= 60) riskCategory = "Excellent (Best Interest Rates Available)";
+
+  return {
+    primaryLabel: "Loan-to-Value Ratio (LTV)",
+    primaryValue: `${ltvPct.toFixed(2)}%`,
+    metrics: [
+      { label: "Total Property / Asset Value", value: formatINR(prop) },
+      { label: "Loan Amount Requested", value: formatINR(loan) },
+      { label: "Required Down Payment / Equity", value: formatINR(downPayment), highlight: true },
+      { label: "Down Payment Share", value: `${downPaymentPct.toFixed(1)}%` },
+      { label: "Bank Approval Profile", value: riskCategory },
+    ],
+    breakdown: {
+      principalPct: parseFloat(Math.min(100, ltvPct).toFixed(1)),
+      interestPct: parseFloat(Math.max(0, downPaymentPct).toFixed(1)),
+    },
+    summaryText: `For a property valued at ${formatINR(prop)}, a loan of ${formatINR(loan)} represents an LTV ratio of ${ltvPct.toFixed(2)}% with a minimum down payment of ${formatINR(downPayment)}.`,
+  };
+}
+
+// 2. Loan EMI Calculator (Full N-Year Amortization Schedule)
 export function calculateLoanEMI(
   principal: number,
   annualRate: number,
@@ -47,7 +79,7 @@ export function calculateLoanEMI(
   const principalPct = totalPayment > 0 ? (p / totalPayment) * 100 : 0;
   const interestPct = totalPayment > 0 ? (totalInterest / totalPayment) * 100 : 0;
 
-  // Complete Amortization Schedule for ALL years
+  // Complete Amortization Schedule for ALL N years
   let balance = p;
   const fullAmortizationRows: string[][] = [];
 
@@ -84,21 +116,21 @@ export function calculateLoanEMI(
       { label: "Principal Loan Amount", value: formatINR(p) },
       { label: "Total Interest Payable", value: formatINR(Math.round(totalInterest)), highlight: true },
       { label: "Total Repayment Amount", value: formatINR(Math.round(totalPayment)) },
-      { label: "Total Number of Months", value: `${totalMonths} Months` },
+      { label: "Total Tenure Months", value: `${totalMonths} Months` },
     ],
     breakdown: {
       principalPct: parseFloat(principalPct.toFixed(1)),
       interestPct: parseFloat(interestPct.toFixed(1)),
     },
     table: {
-      headers: ["Period", "Yearly Payment", "Principal Paid", "Interest Paid", "Outstanding Balance"],
+      headers: ["Period", "Yearly Payment", "Principal Paid", "Interest Paid", "Balance"],
       rows: fullAmortizationRows,
     },
-    summaryText: `Your monthly EMI is ${formatINR(Math.round(emi))}. Over ${tenureYears} years, you will pay ${formatINR(Math.round(totalInterest))} in total interest on a principal of ${formatINR(p)}.`,
+    summaryText: `Your monthly EMI is ${formatINR(Math.round(emi))}. Total interest payable across ${tenureYears} years is ${formatINR(Math.round(totalInterest))}.`,
   };
 }
 
-// 2. SIP Calculator
+// 3. SIP Calculator
 export function calculateSIP(monthlyInvestment: number, returnRate: number, tenureYears: number): CalculationResult {
   const p = Math.max(0, monthlyInvestment);
   const i = Math.max(0, returnRate) / 12 / 100;
@@ -117,7 +149,6 @@ export function calculateSIP(monthlyInvestment: number, returnRate: number, tenu
   const investedPct = futureValue > 0 ? (investedAmount / futureValue) * 100 : 0;
   const returnsPct = futureValue > 0 ? (estimatedReturns / futureValue) * 100 : 0;
 
-  // Complete Yearly Growth Schedule
   const scheduleRows: string[][] = [];
   for (let y = 1; y <= years; y++) {
     const months = y * 12;
@@ -148,12 +179,17 @@ export function calculateSIP(monthlyInvestment: number, returnRate: number, tenu
       headers: ["Period", "Amount Deposited", "Gains Earned", "Future Value"],
       rows: scheduleRows,
     },
-    summaryText: `Investing ${formatINR(p)} monthly at ${returnRate}% for ${tenureYears} years will grow into a corpus of ${formatINR(Math.round(futureValue))}.`,
+    summaryText: `Investing ${formatINR(p)} monthly at ${returnRate}% for ${tenureYears} years accumulates into ${formatINR(Math.round(futureValue))}.`,
   };
 }
 
-// 3. GST Calculator
-export function calculateGST(amount: number, gstRate: number, isExclusive: boolean): CalculationResult {
+// 4. GST Calculator (Intra-State vs Inter-State)
+export function calculateGST(
+  amount: number,
+  gstRate: number,
+  isExclusive: boolean,
+  isInterState: boolean = false
+): CalculationResult {
   const base = Math.max(0, amount);
   const rate = Math.max(0, gstRate);
 
@@ -177,17 +213,21 @@ export function calculateGST(amount: number, gstRate: number, isExclusive: boole
     primaryLabel: isExclusive ? "Total Amount (GST Included)" : "Net Amount (Before GST)",
     primaryValue: formatINR(Math.round(isExclusive ? totalAmount : netAmount)),
     metrics: [
-      { label: "Base / Net Amount", value: formatINR(Math.round(netAmount)) },
+      { label: "Base Taxable Value", value: formatINR(Math.round(netAmount)) },
       { label: `Total GST (${rate}%)`, value: formatINR(Math.round(gstAmount)), highlight: true },
-      { label: `CGST (${(rate / 2).toFixed(1)}%)`, value: formatINR(Math.round(halfGST)) },
-      { label: `SGST / UTGST (${(rate / 2).toFixed(1)}%)`, value: formatINR(Math.round(halfGST)) },
+      ...(isInterState
+        ? [{ label: `IGST (${rate}%)`, value: formatINR(Math.round(gstAmount)) }]
+        : [
+            { label: `CGST (${(rate / 2).toFixed(1)}%)`, value: formatINR(Math.round(halfGST)) },
+            { label: `SGST / UTGST (${(rate / 2).toFixed(1)}%)`, value: formatINR(Math.round(halfGST)) },
+          ]),
       { label: "Gross Total Payable", value: formatINR(Math.round(totalAmount)) },
     ],
-    summaryText: `${isExclusive ? "Adding" : "Extracting"} ${rate}% GST on ${formatINR(base)} results in a GST tax of ${formatINR(Math.round(gstAmount))}.`,
+    summaryText: `${isExclusive ? "Adding" : "Extracting"} ${rate}% GST on ${formatINR(base)} results in a GST tax amount of ${formatINR(Math.round(gstAmount))}.`,
   };
 }
 
-// 4. Fixed Deposit (FD) Calculator
+// 5. Fixed Deposit (FD) Calculator
 export function calculateFD(principal: number, interestRate: number, tenureYears: number, compoundingFrequency: number = 4): CalculationResult {
   const p = Math.max(0, principal);
   const r = Math.max(0, interestRate) / 100;
@@ -209,7 +249,7 @@ export function calculateFD(principal: number, interestRate: number, tenureYears
   };
 }
 
-// 5. Recurring Deposit (RD) Calculator
+// 6. Recurring Deposit (RD) Calculator
 export function calculateRD(monthlyDeposit: number, interestRate: number, tenureMonths: number): CalculationResult {
   const p = Math.max(0, monthlyDeposit);
   const r = Math.max(0, interestRate) / 100;
@@ -236,7 +276,7 @@ export function calculateRD(monthlyDeposit: number, interestRate: number, tenure
   };
 }
 
-// 6. Compound Interest Calculator
+// 7. Compound Interest Calculator
 export function calculateCompoundInterest(principal: number, annualRate: number, tenureYears: number, compoundsPerYear: number = 1): CalculationResult {
   const p = Math.max(0, principal);
   const r = Math.max(0, annualRate) / 100;

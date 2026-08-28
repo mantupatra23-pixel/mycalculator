@@ -8,6 +8,7 @@ import {
   calculateFD,
   calculateRD,
   calculateCompoundInterest,
+  calculateLTV,
 } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/formatters";
 import { Copy, Check, Share2, RotateCcw, Table, ChevronDown } from "lucide-react";
@@ -18,8 +19,9 @@ interface Props {
 }
 
 export function FinanceCalculatorRenderer({ slug, name }: Props) {
-  // Input states
+  // Common states
   const [principal, setPrincipal] = useState<number>(() => {
+    if (slug === "ltv-calculator") return 5000000; // Property Value
     if (slug.includes("home-loan")) return 3500000;
     if (slug.includes("car-loan")) return 800000;
     if (slug.includes("personal-loan")) return 300000;
@@ -32,6 +34,7 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
   });
 
   const [rate, setRate] = useState<number>(() => {
+    if (slug === "ltv-calculator") return 4000000; // Loan Amount
     if (slug.includes("home-loan")) return 8.5;
     if (slug.includes("car-loan")) return 9.2;
     if (slug.includes("personal-loan")) return 13.5;
@@ -54,11 +57,15 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
   });
 
   const [isGstExclusive, setIsGstExclusive] = useState<boolean>(true);
+  const [isInterState, setIsInterState] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [showFullTable, setShowFullTable] = useState<boolean>(true);
 
   // Compute results
   const result = useMemo(() => {
+    if (slug === "ltv-calculator") {
+      return calculateLTV(principal, rate);
+    }
     if (slug.includes("loan") || slug === "emi-calculator" || slug.includes("mortgage")) {
       return calculateLoanEMI(principal, rate, tenure);
     }
@@ -66,7 +73,7 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
       return calculateSIP(principal, rate, tenure);
     }
     if (slug === "gst-calculator") {
-      return calculateGST(principal, rate, isGstExclusive);
+      return calculateGST(principal, rate, isGstExclusive, isInterState);
     }
     if (slug === "fd-calculator" || slug.includes("fixed-deposit")) {
       return calculateFD(principal, rate, tenure);
@@ -78,13 +85,14 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
       return calculateCompoundInterest(principal, rate, tenure);
     }
     return calculateLoanEMI(principal, rate, tenure);
-  }, [slug, principal, rate, tenure, isGstExclusive]);
+  }, [slug, principal, rate, tenure, isGstExclusive, isInterState]);
 
   const handleCopy = () => {
     const text =
-      `${name} Results:\n${result.primaryLabel}: ${result.primaryValue}\n` +
+      `MyCalculators - ${name}\n` +
+      `${result.primaryLabel}: ${result.primaryValue}\n` +
       result.metrics.map((m) => `${m.label}: ${m.value}`).join("\n") +
-      `\nCalculated on MyCalculators.xyz`;
+      `\nCalculated on https://mycalculators.xyz/calculators/${slug}`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
@@ -108,11 +116,17 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
   };
 
   const handleReset = () => {
-    setPrincipal(slug === "emi-calculator" ? 2500000 : 10000);
-    setRate(slug === "emi-calculator" ? 8.5 : 12);
-    setTenure(slug === "emi-calculator" ? 20 : 15);
+    if (slug === "ltv-calculator") {
+      setPrincipal(5000000);
+      setRate(4000000);
+    } else {
+      setPrincipal(slug === "emi-calculator" ? 2500000 : 10000);
+      setRate(slug === "emi-calculator" ? 8.5 : 12);
+      setTenure(slug === "emi-calculator" ? 20 : 15);
+    }
   };
 
+  const isLtv = slug === "ltv-calculator";
   const isLoanType = slug.includes("loan") || slug === "emi-calculator" || slug.includes("mortgage");
   const isSipType = slug === "sip-calculator" || slug.includes("sip") || slug.includes("mutual");
   const isGst = slug === "gst-calculator";
@@ -136,153 +150,237 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Interactive Inputs & Sliders */}
+        {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Principal / Investment Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="font-bold text-sm text-navy">
-                {isLoanType
-                  ? "Principal Loan Amount (₹)"
-                  : isSipType
-                  ? "Monthly Investment Amount (₹)"
-                  : isGst
-                  ? "Base Amount (₹)"
-                  : "Principal Deposit Amount (₹)"}
-              </label>
-              <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
-                {formatINR(principal)}
-              </span>
-            </div>
-            <input
-              type="number"
-              min="1000"
-              max="50000000"
-              value={principal || ""}
-              onChange={(e) => setPrincipal(Number(e.target.value))}
-              className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
-            />
-            <input
-              type="range"
-              min={isSipType ? "500" : "50000"}
-              max={isSipType ? "200000" : "20000000"}
-              step={isSipType ? "500" : "25000"}
-              value={principal}
-              onChange={(e) => setPrincipal(Number(e.target.value))}
-              className="w-full accent-steel cursor-pointer"
-            />
-          </div>
-
-          {/* Interest / Return Rate Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="font-bold text-sm text-navy">
-                {isLoanType
-                  ? "Annual Interest Rate (%)"
-                  : isSipType
-                  ? "Expected Annual Return Rate (%)"
-                  : isGst
-                  ? "GST Tax Slab (%)"
-                  : "Interest Rate (% p.a.)"}
-              </label>
-              <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
-                {rate}%
-              </span>
-            </div>
-            <input
-              type="number"
-              step="0.1"
-              min="0.1"
-              max="50"
-              value={rate || ""}
-              onChange={(e) => setRate(Number(e.target.value))}
-              className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
-            />
-            {isGst ? (
-              <div className="flex gap-2 mt-2">
-                {[5, 12, 18, 28].map((gstVal) => (
-                  <button
-                    key={gstVal}
-                    type="button"
-                    onClick={() => setRate(gstVal)}
-                    className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all border ${
-                      rate === gstVal ? "bg-navy text-cream border-navy shadow-sm" : "bg-sage/30 text-navy border-navy/15 hover:bg-sage"
-                    }`}
-                  >
-                    {gstVal}% GST
-                  </button>
-                ))}
+          {/* LTV Calculator Specific Inputs */}
+          {isLtv ? (
+            <>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="font-bold text-sm text-navy">Property / Asset Estimated Value (₹)</label>
+                  <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
+                    {formatINR(principal)}
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  min="100000"
+                  step="50000"
+                  value={principal || ""}
+                  onChange={(e) => setPrincipal(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
+                />
+                <input
+                  type="range"
+                  min="500000"
+                  max="20000000"
+                  step="100000"
+                  value={principal}
+                  onChange={(e) => setPrincipal(Number(e.target.value))}
+                  className="w-full accent-steel cursor-pointer"
+                />
               </div>
-            ) : (
-              <input
-                type="range"
-                min="1"
-                max="30"
-                step="0.1"
-                value={rate}
-                onChange={(e) => setRate(Number(e.target.value))}
-                className="w-full accent-steel cursor-pointer"
-              />
-            )}
-          </div>
 
-          {/* Tenure Slider */}
-          {!isGst && (
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="font-bold text-sm text-navy">
-                  Tenure Duration ({slug === "rd-calculator" ? "Months" : "Years"})
-                </label>
-                <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
-                  {tenure} {slug === "rd-calculator" ? "Months" : "Years"} ({tenure * 12} Months)
-                </span>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="font-bold text-sm text-navy">Loan Amount Requested (₹)</label>
+                  <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
+                    {formatINR(rate)}
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  min="50000"
+                  step="50000"
+                  value={rate || ""}
+                  onChange={(e) => setRate(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
+                />
+                <input
+                  type="range"
+                  min="500000"
+                  max={principal || 20000000}
+                  step="50000"
+                  value={rate}
+                  onChange={(e) => setRate(Number(e.target.value))}
+                  className="w-full accent-steel cursor-pointer"
+                />
               </div>
-              <input
-                type="number"
-                min="1"
-                max={slug === "rd-calculator" ? "120" : "40"}
-                value={tenure || ""}
-                onChange={(e) => setTenure(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
-              />
-              <input
-                type="range"
-                min="1"
-                max={slug === "rd-calculator" ? "120" : "30"}
-                step="1"
-                value={tenure}
-                onChange={(e) => setTenure(Number(e.target.value))}
-                className="w-full accent-steel cursor-pointer"
-              />
-            </div>
-          )}
+            </>
+          ) : (
+            <>
+              {/* Principal / Investment Slider */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="font-bold text-sm text-navy">
+                    {isLoanType
+                      ? "Principal Loan Amount (₹)"
+                      : isSipType
+                      ? "Monthly Investment Amount (₹)"
+                      : isGst
+                      ? "Base Amount (₹)"
+                      : "Principal Deposit Amount (₹)"}
+                  </label>
+                  <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
+                    {formatINR(principal)}
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  min="1000"
+                  max="50000000"
+                  value={principal || ""}
+                  onChange={(e) => setPrincipal(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
+                />
+                <input
+                  type="range"
+                  min={isSipType ? "500" : "50000"}
+                  max={isSipType ? "200000" : "20000000"}
+                  step={isSipType ? "500" : "25000"}
+                  value={principal}
+                  onChange={(e) => setPrincipal(Number(e.target.value))}
+                  className="w-full accent-steel cursor-pointer"
+                />
+              </div>
 
-          {/* GST Exclusive / Inclusive Switch */}
-          {isGst && (
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setIsGstExclusive(true)}
-                className={`py-3 px-4 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
-                  isGstExclusive ? "bg-navy text-cream border-navy shadow-sm" : "bg-white text-navy border-navy/20 hover:bg-sage/20"
-                }`}
-              >
-                GST Exclusive (+ Add GST)
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsGstExclusive(false)}
-                className={`py-3 px-4 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
-                  !isGstExclusive ? "bg-navy text-cream border-navy shadow-sm" : "bg-white text-navy border-navy/20 hover:bg-sage/20"
-                }`}
-              >
-                GST Inclusive (- Extract GST)
-              </button>
-            </div>
+              {/* Interest / Return Rate Slider */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="font-bold text-sm text-navy">
+                    {isLoanType
+                      ? "Annual Interest Rate (%)"
+                      : isSipType
+                      ? "Expected Annual Return Rate (%)"
+                      : isGst
+                      ? "GST Tax Slab (%)"
+                      : "Interest Rate (% p.a.)"}
+                  </label>
+                  <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
+                    {rate}%
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  max="50"
+                  value={rate || ""}
+                  onChange={(e) => setRate(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
+                />
+                {isGst ? (
+                  <div className="flex gap-2 mt-2">
+                    {[5, 12, 18, 28].map((gstVal) => (
+                      <button
+                        key={gstVal}
+                        type="button"
+                        onClick={() => setRate(gstVal)}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all border ${
+                          rate === gstVal
+                            ? "bg-navy text-cream border-navy shadow-sm"
+                            : "bg-sage/30 text-navy border-navy/15 hover:bg-sage"
+                        }`}
+                      >
+                        {gstVal}% GST
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <input
+                    type="range"
+                    min="1"
+                    max="30"
+                    step="0.1"
+                    value={rate}
+                    onChange={(e) => setRate(Number(e.target.value))}
+                    className="w-full accent-steel cursor-pointer"
+                  />
+                )}
+              </div>
+
+              {/* Tenure Slider */}
+              {!isGst && (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="font-bold text-sm text-navy">
+                      Tenure Duration ({slug === "rd-calculator" ? "Months" : "Years"})
+                    </label>
+                    <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
+                      {tenure} {slug === "rd-calculator" ? "Months" : "Years"} ({tenure * 12} Months)
+                    </span>
+                  </div>
+                  <input
+                    type="number"
+                    min="1"
+                    max={slug === "rd-calculator" ? "120" : "40"}
+                    value={tenure || ""}
+                    onChange={(e) => setTenure(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm mb-2"
+                  />
+                  <input
+                    type="range"
+                    min="1"
+                    max={slug === "rd-calculator" ? "120" : "30"}
+                    step="1"
+                    value={tenure}
+                    onChange={(e) => setTenure(Number(e.target.value))}
+                    className="w-full accent-steel cursor-pointer"
+                  />
+                </div>
+              )}
+
+              {/* GST Toggles */}
+              {isGst && (
+                <div className="space-y-3 pt-2">
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsGstExclusive(true)}
+                      className={`py-3 px-4 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
+                        isGstExclusive ? "bg-navy text-cream border-navy shadow-sm" : "bg-white text-navy border-navy/20 hover:bg-sage/20"
+                      }`}
+                    >
+                      GST Exclusive (+ Add)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsGstExclusive(false)}
+                      className={`py-3 px-4 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
+                        !isGstExclusive ? "bg-navy text-cream border-navy shadow-sm" : "bg-white text-navy border-navy/20 hover:bg-sage/20"
+                      }`}
+                    >
+                      GST Inclusive (- Extract)
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsInterState(false)}
+                      className={`py-2 px-3 rounded-lg font-bold text-xs border transition-all ${
+                        !isInterState ? "bg-steel text-white border-steel" : "bg-white text-navy border-navy/15"
+                      }`}
+                    >
+                      Intra-State (CGST + SGST)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsInterState(true)}
+                      className={`py-2 px-3 rounded-lg font-bold text-xs border transition-all ${
+                        isInterState ? "bg-steel text-white border-steel" : "bg-white text-navy border-navy/15"
+                      }`}
+                    >
+                      Inter-State (IGST)
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 
-        {/* Right Output & Breakdown Box */}
+        {/* Right Output Box */}
         <div className="lg:col-span-5 bg-sage/35 rounded-2xl p-5 sm:p-6 border border-navy/15 flex flex-col justify-between">
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
@@ -296,8 +394,8 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
             {result.breakdown && (
               <div className="space-y-1.5 mb-6">
                 <div className="flex justify-between text-xs font-bold text-navy/75">
-                  <span>Principal ({result.breakdown.principalPct}%)</span>
-                  <span>Interest ({result.breakdown.interestPct}%)</span>
+                  <span>{isLtv ? `Loan (${result.breakdown.principalPct}%)` : `Principal (${result.breakdown.principalPct}%)`}</span>
+                  <span>{isLtv ? `Equity (${result.breakdown.interestPct}%)` : `Interest (${result.breakdown.interestPct}%)`}</span>
                 </div>
                 <div className="w-full h-3 rounded-full bg-sand/30 overflow-hidden flex">
                   <div
@@ -344,7 +442,7 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
         </div>
       </div>
 
-      {/* FULL AMORTIZATION SCHEDULE FOR ALL N YEARS */}
+      {/* FULL AMORTIZATION SCHEDULE FOR LOANS & SIP */}
       {result.table && (
         <div className="pt-6 border-t border-navy/10">
           <div className="flex items-center justify-between mb-4">
