@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { calculateInHandSalary } from "@/lib/calculators/salary";
 import { formatINR } from "@/lib/formatters";
+import { Disclaimer } from "@/components/Disclaimer";
 import { Copy, Check, Share2, RotateCcw, SlidersHorizontal, Table } from "lucide-react";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 
 export function SalaryCalculatorRenderer({ slug, name }: Props) {
   const [isAdvanced, setIsAdvanced] = useState<boolean>(false);
-  const [ctc, setCtc] = useState<number>(1200000); // 12 LPA
+  const [ctc, setCtc] = useState<number>(1200000);
   const [basicPct, setBasicPct] = useState<number>(50);
   const [hraPct, setHraPct] = useState<number>(20);
   const [employeePfMonthly, setEmployeePfMonthly] = useState<number>(1800);
@@ -31,14 +32,15 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
       customTDS: tdsMonthly,
       customOtherDeductions: otherDeductionsMonthly,
       includeEmployerPFInCTC: true,
+      isAdvancedMode: isAdvanced,
     });
-  }, [ctc, basicPct, hraPct, employeePfMonthly, ptMonthly, tdsMonthly, otherDeductionsMonthly]);
+  }, [ctc, basicPct, hraPct, employeePfMonthly, ptMonthly, tdsMonthly, otherDeductionsMonthly, isAdvanced]);
 
   const handleCopy = () => {
     const text =
       `MyCalculators - ${name}\n` +
       `Annual CTC: ${formatINR(ctc)}\n` +
-      `Monthly In-Hand: ${result.primaryValue}\n` +
+      `Monthly Take-Home: ${result.primaryValue}\n` +
       result.metrics.map((m) => `${m.label}: ${m.value}`).join("\n") +
       `\nCalculated on https://mycalculators.xyz/calculators/salary-calculator`;
 
@@ -75,7 +77,7 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
   };
 
   return (
-    <div className="bg-white border border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm space-y-8">
+    <div className="bg-white border-2 border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm space-y-8">
       {/* Header Bar */}
       <div className="flex items-center justify-between pb-4 border-b border-navy/10">
         <div>
@@ -89,11 +91,13 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
             type="button"
             onClick={() => setIsAdvanced((prev) => !prev)}
             className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
-              isAdvanced ? "bg-navy text-cream border-navy shadow-sm" : "bg-white text-navy border-navy/20 hover:bg-sage/20"
+              isAdvanced
+                ? "bg-navy text-cream border-navy shadow-sm"
+                : "bg-white text-navy border-navy/20 hover:bg-sage/20"
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            {isAdvanced ? "Simple Mode" : "Advanced Breakdown"}
+            {isAdvanced ? "Simple Mode" : "Advanced Mode"}
           </button>
           <button
             onClick={handleReset}
@@ -107,7 +111,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Annual CTC Input & Slider */}
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="font-bold text-sm text-navy">Annual Cost to Company (CTC)</label>
@@ -133,15 +136,16 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
               onChange={(e) => setCtc(Number(e.target.value))}
               className="w-full accent-steel cursor-pointer"
             />
-            {/* Quick CTC Chips */}
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {[300000, 600000, 1000000, 1500000, 2500000, 5000000].map((val) => (
+              {[300000, 600000, 1000000, 1200000, 1500000, 2500000, 5000000].map((val) => (
                 <button
                   key={val}
                   type="button"
                   onClick={() => setCtc(val)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
-                    ctc === val ? "bg-navy text-cream border-navy" : "bg-sage/30 text-navy/80 border-navy/10 hover:bg-sage"
+                    ctc === val
+                      ? "bg-navy text-cream border-navy"
+                      : "bg-sage/30 text-navy/80 border-navy/10 hover:bg-sage"
                   }`}
                 >
                   {val >= 100000 ? `${val / 100000} LPA` : formatINR(val)}
@@ -150,7 +154,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
             </div>
           </div>
 
-          {/* Simple Deductions */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block font-bold text-sm text-navy mb-2">Monthly Employee EPF (₹)</label>
@@ -186,7 +189,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
             />
           </div>
 
-          {/* Advanced Salary Components */}
           {isAdvanced && (
             <div className="space-y-4 pt-4 border-t border-navy/10">
               <h3 className="font-extrabold text-sm text-navy uppercase tracking-wider">
@@ -228,7 +230,9 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
               </div>
 
               <div>
-                <label className="block font-bold text-xs text-navy mb-1">Other Monthly Deductions (Insurance/Loan EMI) (₹)</label>
+                <label className="block font-bold text-xs text-navy mb-1">
+                  Other Monthly Deductions (Insurance/Loan EMI) (₹)
+                </label>
                 <input
                   type="number"
                   min="0"
@@ -251,7 +255,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
               {result.primaryValue}
             </div>
 
-            {/* Visual Ratio Bar */}
             {result.breakdown && (
               <div className="space-y-1.5 mb-6">
                 <div className="flex justify-between text-xs font-bold text-navy/75">
@@ -271,7 +274,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
               </div>
             )}
 
-            {/* Metrics Breakdown */}
             <div className="space-y-3 text-sm border-t border-navy/10 pt-4">
               {result.metrics.map((m, idx) => (
                 <div key={idx} className="flex justify-between items-center">
@@ -284,7 +286,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-2 pt-6 mt-6 border-t border-navy/10">
             <button
               onClick={handleCopy}
@@ -303,7 +304,6 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
         </div>
       </div>
 
-      {/* Salary Component Breakdown Table */}
       {result.table && (
         <div className="pt-6 border-t border-navy/10">
           <div className="flex items-center gap-2 mb-4">
@@ -335,14 +335,14 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
                     }
                   >
                     <td className="py-3 px-4 font-bold text-navy">{row[0]}</td>
-                    <td className={`py-3 px-4 ${row[3] === "Deduction" ? "text-rose-600" : ""}`}>{row[1]}</td>
-                    <td className={`py-3 px-4 ${row[3] === "Deduction" ? "text-rose-600" : ""}`}>{row[2]}</td>
+                    <td className={`py-3 px-4 ${row[3] === "Employee Deduction" || row[3] === "Deduction" ? "text-rose-600" : ""}`}>{row[1]}</td>
+                    <td className={`py-3 px-4 ${row[3] === "Employee Deduction" || row[3] === "Deduction" ? "text-rose-600" : ""}`}>{row[2]}</td>
                     <td className="py-3 px-4">
                       <span
                         className={`text-[11px] font-bold uppercase px-2 py-0.5 rounded ${
-                          row[3] === "Earnings"
+                          row[3].includes("Earnings") || row[3] === "Earnings"
                             ? "bg-emerald-100 text-emerald-800"
-                            : row[3] === "Deduction"
+                            : row[3].includes("Deduction") || row[3] === "Deduction"
                             ? "bg-rose-100 text-rose-800"
                             : "bg-navy text-cream"
                         }`}
@@ -355,11 +355,10 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-navy/60 mt-3 leading-relaxed">
-            Actual take-home salary may vary depending on employer salary structure, tax regime, deductions, benefits and applicable statutory rules.
-          </p>
         </div>
       )}
+
+      <Disclaimer type="financial" />
     </div>
   );
 }

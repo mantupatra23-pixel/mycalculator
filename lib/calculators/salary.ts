@@ -9,6 +9,7 @@ export interface SalaryInput {
   customPT?: number;
   customTDS?: number;
   customOtherDeductions?: number;
+  includeEmployerPFInCTC?: boolean;
   employerPFAnnual?: number;
   gratuityAnnual?: number;
   bonusAnnual?: number;
@@ -23,8 +24,9 @@ export function calculateInHandSalary(input: SalaryInput): CalculationResult {
     // Simplified Standard Salary Engine
     const annualBasic = ctc * 0.50;
     const annualHRA = ctc * 0.20;
-    const employerPFAnnual = Math.min(annualBasic * 0.12, 21600 * 12);
-    const employeePFAnnual = input.customEmployeePF !== undefined ? input.customEmployeePF * 12 : employerPFAnnual;
+    const statutoryEmployerPF = Math.min(annualBasic * 0.12, 21600 * 12);
+    const employerPFAnnual = input.includeEmployerPFInCTC !== false ? statutoryEmployerPF : 0;
+    const employeePFAnnual = input.customEmployeePF !== undefined ? input.customEmployeePF * 12 : statutoryEmployerPF;
     const ptAnnual = input.customPT !== undefined ? input.customPT * 12 : 2400;
     const tdsAnnual = input.customTDS !== undefined ? input.customTDS * 12 : 0;
     const otherDeductionsAnnual = input.customOtherDeductions !== undefined ? input.customOtherDeductions * 12 : 0;
