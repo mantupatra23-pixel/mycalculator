@@ -1,134 +1,110 @@
-"use client";
-
-import React, { useState, useMemo } from "react";
+import React from "react";
 import Link from "next/link";
-import { CALCULATORS, CATEGORIES } from "@/lib/registry";
-import { Search, ArrowRight, Layers, Calculator } from "lucide-react";
+import { Metadata } from "next";
+import { CALCULATORS, CATEGORIES_META, CalculatorCategory } from "@/lib/registry";
+import { ArrowRight, Search, Layers } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "All Calculators Directory - 100+ Free Online Tools | MyCalculators",
+  description:
+    "Explore 100+ free online calculators organized across Finance, Business, Math, Health, Time & Date, Converters, and Education.",
+  alternates: {
+    canonical: "https://mycalculators.xyz/calculators",
+  },
+  openGraph: {
+    title: "All Calculators Directory | MyCalculators",
+    description: "Browse 100+ fast browser-native calculation tools.",
+    url: "https://mycalculators.xyz/calculators",
+    siteName: "MyCalculators",
+    locale: "en_IN",
+    type: "website",
+  },
+};
 
 export default function AllCalculatorsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [search, setSearch] = useState<string>("");
-
-  const filtered = useMemo(() => {
-    return CALCULATORS.filter((c) => {
-      const matchCat = selectedCategory === "all" || c.category === selectedCategory;
-      const q = search.toLowerCase().trim();
-      const matchSearch =
-        !q ||
-        c.name.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q) ||
-        c.keywords.some((k) => k.toLowerCase().includes(q));
-      return matchCat && matchSearch;
-    });
-  }, [selectedCategory, search]);
+  const totalCount = CALCULATORS.length;
+  const categoriesList = Object.keys(CATEGORIES_META) as CalculatorCategory[];
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-12">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-navy/60 mb-4">
+      <div className="flex items-center gap-2 text-xs font-semibold text-navy/60">
         <Link href="/" className="hover:text-navy">Home</Link>
         <span>/</span>
-        <span className="text-navy">Calculators</span>
+        <span className="text-navy">All Calculators</span>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-black text-navy mb-2 tracking-tight">
-          All Calculators
+      {/* Header */}
+      <div className="bg-sage/40 rounded-3xl p-6 sm:p-10 border border-navy/10">
+        <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-steel bg-white px-3 py-1 rounded-md border border-navy/10 mb-4 shadow-sm">
+          <Layers className="w-3.5 h-3.5" /> {totalCount}+ Calculation Tools
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-black text-navy mb-3">
+          All Calculators Directory
         </h1>
-        <p className="text-navy/70 text-sm sm:text-base">
-          Browse our complete collection of 100+ free online calculation tools.
+        <p className="text-navy/80 text-sm sm:text-base max-w-2xl leading-relaxed">
+          Complete directory of browser-native calculators designed for financial modeling, business calculations, unit conversions, math, and health metrics.
         </p>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search within all calculators..."
-            className="w-full pl-10 pr-4 py-2.5 bg-cream border border-navy/20 rounded-xl text-sm font-semibold text-navy focus:outline-none focus:ring-2 focus:ring-steel"
-          />
-        </div>
+      {/* Category Sections */}
+      <div className="space-y-10">
+        {categoriesList.map((catKey) => {
+          const catMeta = CATEGORIES_META[catKey];
+          const calcsInCat = CALCULATORS.filter((c) => c.category === catKey);
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-          <button
-            onClick={() => setSelectedCategory("all")}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
-              selectedCategory === "all"
-                ? "bg-navy text-cream"
-                : "bg-sage/60 text-navy hover:bg-sage border border-navy/10"
-            }`}
-          >
-            All ({CALCULATORS.length})
-          </button>
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
-                selectedCategory === cat.id
-                  ? "bg-navy text-cream"
-                  : "bg-sage/60 text-navy hover:bg-sage border border-navy/10"
-              }`}
-            >
-              {cat.name.replace(" Calculators", "")}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Calculators Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map((item) => (
-          <div
-            key={item.id}
-            className="bg-cream border border-navy/15 rounded-2xl p-5 hover:border-steel hover:shadow-sm transition-all flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-steel bg-sage/80 px-2 py-0.5 rounded-md">
-                  {item.category}
-                </span>
-                {item.popular && (
-                  <span className="text-[10px] font-bold text-navy bg-sand px-2 py-0.5 rounded-full">
-                    Popular
+          return (
+            <section key={catKey} className="space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-navy/10">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-black text-navy">{catMeta.name}</h2>
+                  <span className="text-xs font-bold text-steel bg-sage/50 px-2.5 py-0.5 rounded-full">
+                    {calcsInCat.length}
                   </span>
-                )}
+                </div>
+                <Link
+                  href={`/calculators/${catKey}`}
+                  className="text-xs font-bold text-steel hover:text-navy flex items-center gap-1"
+                >
+                  View Category <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
-              <h2 className="font-extrabold text-base text-navy mb-1">{item.name}</h2>
-              <p className="text-xs text-navy/70 mb-4 line-clamp-2">{item.description}</p>
-            </div>
 
-            <Link
-              href={`/calculators/${item.slug}`}
-              className="w-full bg-steel hover:bg-steel/90 text-cream font-bold py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 text-xs transition-colors"
-            >
-              Calculate <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {calcsInCat.map((calc) => (
+                  <Link
+                    key={calc.id}
+                    href={`/calculators/${calc.slug}`}
+                    className="bg-white border border-navy/15 rounded-2xl p-4 hover:border-steel hover:shadow-md transition-all group flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-steel bg-sage/40 px-2 py-0.5 rounded">
+                          {catMeta.name}
+                        </span>
+                        {calc.popular && (
+                          <span className="text-[10px] font-bold text-navy bg-sand px-2 py-0.5 rounded-full">
+                            Popular
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-extrabold text-sm sm:text-base text-navy group-hover:text-steel transition-colors mb-1">
+                        {calc.name}
+                      </h3>
+                      <p className="text-xs text-navy/60 line-clamp-2 leading-relaxed mb-3">
+                        {calc.description}
+                      </p>
+                    </div>
+                    <div className="text-xs font-bold text-steel flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Open <ArrowRight className="w-3 h-3" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
-
-      {filtered.length === 0 && (
-        <div className="bg-sage rounded-2xl p-10 text-center border border-navy/10 my-8">
-          <Calculator className="w-10 h-10 text-navy/40 mx-auto mb-3" />
-          <h3 className="font-bold text-navy text-lg mb-1">No matching calculators found</h3>
-          <p className="text-xs text-navy/60 mb-4">Try checking your spelling or select another category filter.</p>
-          <button
-            onClick={() => {
-              setSearch("");
-              setSelectedCategory("all");
-            }}
-            className="bg-sand text-navy font-bold text-xs px-4 py-2 rounded-lg"
-          >
-            Clear Filters
-          </button>
-        </div>
-      )}
     </main>
   );
 }

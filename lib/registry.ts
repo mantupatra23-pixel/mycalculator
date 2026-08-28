@@ -76,6 +76,9 @@ export const CATEGORIES_META: Record<
   },
 };
 
+// Export CATEGORIES array for legacy and modern imports
+export const CATEGORIES = Object.keys(CATEGORIES_META) as CalculatorCategory[];
+
 export const CALCULATORS: CalculatorMeta[] = [
   // ==========================================
   // 1. FINANCE CALCULATORS (26 Calculators)
@@ -195,6 +198,14 @@ export const CALCULATORS: CalculatorMeta[] = [
     category: "finance",
     description: "Project retirement corpus from employee and employer monthly Employee Provident Fund contributions.",
     keywords: ["epf calculator", "provident fund corpus", "pf balance check", "retirement fund"],
+  },
+  {
+    id: "epf-passbook-calculator",
+    slug: "epf-passbook-calculator",
+    name: "EPF Passbook Balance Calculator",
+    category: "finance",
+    description: "Calculate accumulated PF interest and employee-employer ledger balance projections.",
+    keywords: ["epf passbook", "pf interest calculation", "epfo balance"],
   },
   {
     id: "nps-calculator",
