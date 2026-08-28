@@ -93,13 +93,13 @@ export default function CalculatorDetailPage({ params }: Props) {
   };
 
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-14 space-y-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb */}
+      {/* Breadcrumb with adequate top clearance */}
       <div className="flex items-center gap-2 text-xs font-semibold text-navy/60">
         <Link href="/" className="hover:text-navy">Home</Link>
         <span>/</span>
@@ -110,7 +110,7 @@ export default function CalculatorDetailPage({ params }: Props) {
         <span className="text-navy">{calc.name}</span>
       </div>
 
-      {/* Header Info */}
+      {/* Page Heading */}
       <div>
         <h1 className="text-3xl sm:text-4xl font-black text-navy mb-2 tracking-tight">
           {calc.name}
@@ -120,11 +120,11 @@ export default function CalculatorDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Modular Category Component */}
+      {/* Interactive Calculator Engine */}
       {renderCalculatorComponent()}
 
-      {/* SEO & Educational Guidance Section */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-6">
+      {/* Educational & FAQ Section */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
         <div className="md:col-span-8 space-y-8">
           <section className="bg-sage/20 border border-navy/10 rounded-2xl p-6">
             <h2 className="text-xl font-bold text-navy mb-3 flex items-center gap-2">
@@ -133,15 +133,15 @@ export default function CalculatorDetailPage({ params }: Props) {
             <ul className="space-y-2.5 text-xs sm:text-sm text-navy/80 leading-relaxed">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Enter your parameters in the input fields above.</span>
+                <span>Adjust parameters via numeric inputs or interactive sliders.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>The algorithm updates the primary metric and calculations in real-time.</span>
+                <span>The algorithm generates the complete tenure breakdown in real-time.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Use the &ldquo;Copy Result&rdquo; button to save and share the outcome.</span>
+                <span>Use &ldquo;Copy Result&rdquo; or &ldquo;Share&rdquo; to save calculation results.</span>
               </li>
             </ul>
           </section>
@@ -160,10 +160,10 @@ export default function CalculatorDetailPage({ params }: Props) {
             <div className="space-y-3">
               <div className="bg-white border border-navy/15 rounded-xl p-4">
                 <h3 className="font-bold text-sm text-navy mb-1">
-                  Are these calculations free and accurate?
+                  Does this schedule cover the entire loan tenure?
                 </h3>
                 <p className="text-xs text-navy/70">
-                  Yes, calculations are completely free and processed using strict mathematical formulas.
+                  Yes. If you choose 20 or 30 years, the complete year-by-year amortization breakdown will be rendered up to Year 20 or Year 30 with zero balance at completion.
                 </p>
               </div>
               <div className="bg-white border border-navy/15 rounded-xl p-4">
@@ -171,7 +171,7 @@ export default function CalculatorDetailPage({ params }: Props) {
                   Does this tool work offline?
                 </h3>
                 <p className="text-xs text-navy/70">
-                  Yes. Once loaded, all calculators operate locally inside your browser without needing an active connection for each calculation.
+                  Yes. Once loaded, all calculators operate locally inside your browser without needing an active connection.
                 </p>
               </div>
             </div>
