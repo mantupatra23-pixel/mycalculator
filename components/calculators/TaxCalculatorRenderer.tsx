@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { calculateIncomeTax } from "@/lib/calculators/tax";
 import { formatINR } from "@/lib/formatters";
+import { Disclaimer } from "@/components/Disclaimer";
 import { Copy, Check, Share2, RotateCcw, Landmark } from "lucide-react";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function TaxCalculatorRenderer({ slug, name }: Props) {
+  const [ay, setAy] = useState<"AY2026_27" | "AY2025_26">("AY2026_27");
   const [income, setIncome] = useState<number>(1200000);
   const [regime, setRegime] = useState<"new" | "old">("new");
   const [sec80C, setSec80C] = useState<number>(150000);
@@ -21,6 +23,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
 
   const result = useMemo(() => {
     return calculateIncomeTax({
+      assessmentYear: ay,
       annualIncome: income,
       regime,
       deductions80C: sec80C,
@@ -28,11 +31,11 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
       hraExemption: hra,
       otherDeductions,
     });
-  }, [income, regime, sec80C, sec80D, hra, otherDeductions]);
+  }, [ay, income, regime, sec80C, sec80D, hra, otherDeductions]);
 
-  // Comparison result for the alternative regime
   const altResult = useMemo(() => {
     return calculateIncomeTax({
+      assessmentYear: ay,
       annualIncome: income,
       regime: regime === "new" ? "old" : "new",
       deductions80C: sec80C,
@@ -40,13 +43,14 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
       hraExemption: hra,
       otherDeductions,
     });
-  }, [income, regime, sec80C, sec80D, hra, otherDeductions]);
+  }, [ay, income, regime, sec80C, sec80D, hra, otherDeductions]);
 
   const handleCopy = () => {
     const text =
       `MyCalculators - ${name}\n` +
+      `Assessment Year: ${ay.replace("_", "-")}\n` +
       `Gross Income: ${formatINR(income)}\n` +
-      `Selected Regime: ${regime.toUpperCase()} Tax Regime\n` +
+      `Selected Regime: ${regime.toUpperCase()} Regime\n` +
       `Estimated Tax: ${result.primaryValue}\n` +
       result.metrics.map((m) => `${m.label}: ${m.value}`).join("\n") +
       `\nCalculated on https://mycalculators.xyz/calculators/income-tax-calculator`;
@@ -73,17 +77,18 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
   };
 
   return (
-    <div className="bg-white border border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm space-y-8">
-      {/* Header */}
+    <div className="bg-white border-2 border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm space-y-8">
+      {/* Header Bar */}
       <div className="flex items-center justify-between pb-4 border-b border-navy/10">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-steel bg-sage/40 px-2.5 py-1 rounded-md">
-            Direct Tax Engine (FY 2025-26 & FY 2026-27)
+            Direct Tax Engine
           </span>
           <h2 className="text-xl sm:text-2xl font-black text-navy mt-1">{name}</h2>
         </div>
         <button
           onClick={() => {
+            setAy("AY2026_27");
             setIncome(1200000);
             setRegime("new");
             setSec80C(150000);
@@ -99,6 +104,35 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Inputs */}
         <div className="lg:col-span-7 space-y-6">
+          {/* Assessment Year Selector */}
+          <div>
+            <label className="block font-bold text-sm text-navy mb-2">Select Assessment Year (AY)</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setAy("AY2026_27")}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
+                  ay === "AY2026_27"
+                    ? "bg-navy text-cream border-navy shadow-sm"
+                    : "bg-white text-navy border-navy/20 hover:bg-sage/20"
+                }`}
+              >
+                AY 2026-27 (FY 2025-26)
+              </button>
+              <button
+                type="button"
+                onClick={() => setAy("AY2025_26")}
+                className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
+                  ay === "AY2025_26"
+                    ? "bg-navy text-cream border-navy shadow-sm"
+                    : "bg-white text-navy border-navy/20 hover:bg-sage/20"
+                }`}
+              >
+                AY 2025-26 (FY 2024-25)
+              </button>
+            </div>
+          </div>
+
           {/* Regime Switcher */}
           <div>
             <label className="block font-bold text-sm text-navy mb-2">Choose Tax Regime</label>
@@ -108,7 +142,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
                 onClick={() => setRegime("new")}
                 className={`py-3 px-4 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
                   regime === "new"
-                    ? "bg-navy text-cream border-navy shadow-sm"
+                    ? "bg-steel text-white border-steel shadow-sm"
                     : "bg-white text-navy border-navy/20 hover:bg-sage/20"
                 }`}
               >
@@ -119,11 +153,11 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
                 onClick={() => setRegime("old")}
                 className={`py-3 px-4 rounded-xl font-bold text-xs sm:text-sm border transition-all ${
                   regime === "old"
-                    ? "bg-navy text-cream border-navy shadow-sm"
+                    ? "bg-steel text-white border-steel shadow-sm"
                     : "bg-white text-navy border-navy/20 hover:bg-sage/20"
                 }`}
               >
-                Old Tax Regime (With Exemptions)
+                Old Tax Regime (Exemptions)
               </button>
             </div>
           </div>
@@ -131,7 +165,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
           {/* Annual Income */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="font-bold text-sm text-navy">Total Annual Gross Income (₹)</label>
+              <label className="font-bold text-sm text-navy">Total Annual Gross Salary / Income (₹)</label>
               <span className="text-xs font-extrabold text-navy bg-sand/30 px-2.5 py-1 rounded-md">
                 {formatINR(income)}
               </span>
@@ -197,9 +231,9 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
           ) : (
             <div className="bg-sage/20 border border-navy/10 rounded-2xl p-4 text-xs text-navy/80 space-y-1">
               <div className="font-bold text-navy flex items-center gap-1.5">
-                <Landmark className="w-4 h-4 text-steel" /> Standard Deduction ₹75,000 Applied Automatically
+                <Landmark className="w-4 h-4 text-steel" /> Standard Deduction ₹{ay === "AY2026_27" ? "75,000" : "50,000"} Applied
               </div>
-              <p>Under the New Tax Regime, no manual 80C or 80D proofs are required. Tax is 0 for income up to ₹7,00,000 (after 87A rebate).</p>
+              <p>Under the New Tax Regime, no manual 80C proofs are required. Zero tax applies up to ₹7,00,000 taxable income via Section 87A rebate.</p>
             </div>
           )}
         </div>
@@ -214,7 +248,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
               {result.primaryValue}
             </div>
 
-            {/* Metrics */}
+            {/* Metrics List */}
             <div className="space-y-3 text-sm border-t border-navy/10 pt-4">
               {result.metrics.map((m, idx) => (
                 <div key={idx} className="flex justify-between items-center">
@@ -226,7 +260,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
               ))}
             </div>
 
-            {/* Comparison Callout */}
+            {/* Regime Comparison Box */}
             <div className="mt-6 pt-4 border-t border-navy/10 bg-white/70 rounded-xl p-3.5 border border-navy/10">
               <div className="text-xs font-bold text-navy/60 uppercase">Alternative Regime Comparison</div>
               <div className="flex justify-between items-center mt-1 text-xs">
@@ -256,6 +290,8 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
           </div>
         </div>
       </div>
+
+      <Disclaimer type="tax" />
     </div>
   );
 }

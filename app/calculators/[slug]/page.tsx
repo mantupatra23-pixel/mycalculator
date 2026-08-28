@@ -2,7 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CALCULATORS } from "@/lib/registry";
+import { CALCULATORS, getRelatedCalculators } from "@/lib/registry";
 
 import { SalaryCalculatorRenderer } from "@/components/calculators/SalaryCalculatorRenderer";
 import { TaxCalculatorRenderer } from "@/components/calculators/TaxCalculatorRenderer";
@@ -14,8 +14,9 @@ import { TimeDateRenderer } from "@/components/calculators/TimeDateRenderer";
 import { HealthRenderer } from "@/components/calculators/HealthRenderer";
 import { BusinessRenderer } from "@/components/calculators/BusinessRenderer";
 import { OtherRenderer } from "@/components/calculators/OtherRenderer";
+import { Disclaimer } from "@/components/Disclaimer";
 
-import { CheckCircle2, HelpCircle, BookOpen, Layers, ArrowRight } from "lucide-react";
+import { CheckCircle2, HelpCircle, BookOpen, Layers, ArrowRight, Code2 } from "lucide-react";
 
 interface Props {
   params: {
@@ -33,15 +34,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const calc = CALCULATORS.find((c) => c.slug === params.slug);
   if (!calc) return { title: "Calculator Not Found - MyCalculators" };
 
+  const pageTitle = `${calc.name} - Free Online Tool | MyCalculators`;
+  const pageDesc = `${calc.description} Free, browser-native calculation with verified formulas, instant breakdown, and zero server latency.`;
+
   return {
-    title: `${calc.name} - Free Online Tool | MyCalculators`,
-    description: `${calc.description} Fast, browser-native calculation with verified formulas and real-time breakdowns.`,
+    title: pageTitle,
+    description: pageDesc,
     alternates: {
       canonical: `https://mycalculators.xyz/calculators/${calc.slug}`,
     },
     openGraph: {
-      title: `${calc.name} | MyCalculators`,
-      description: calc.description,
+      title: pageTitle,
+      description: pageDesc,
       url: `https://mycalculators.xyz/calculators/${calc.slug}`,
       siteName: "MyCalculators",
       locale: "en_IN",
@@ -54,27 +58,67 @@ export default function CalculatorDetailPage({ params }: Props) {
   const calc = CALCULATORS.find((c) => c.slug === params.slug);
   if (!calc) notFound();
 
-  const related = CALCULATORS.filter(
-    (c) => c.category === calc.category && c.slug !== calc.slug
-  ).slice(0, 4);
+  const related = getRelatedCalculators(calc, 4);
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: calc.name,
-    operatingSystem: "All",
-    applicationCategory: "UtilityApplication",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "INR",
-    },
-    description: calc.description,
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        name: calc.name,
+        applicationCategory: "UtilityApplication",
+        operatingSystem: "All",
+        url: `https://mycalculators.xyz/calculators/${calc.slug}`,
+        description: calc.description,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "INR",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://mycalculators.xyz",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: calc.category.toUpperCase(),
+            item: `https://mycalculators.xyz/calculators/${calc.category}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: calc.name,
+            item: `https://mycalculators.xyz/calculators/${calc.slug}`,
+          },
+        ],
+      },
+      ...(calc.faqs && calc.faqs.length > 0
+        ? [
+            {
+              "@type": "FAQPage",
+              mainEntity: calc.faqs.map((faq) => ({
+                "@type": "Question",
+                name: faq.q,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: faq.a,
+                },
+              })),
+            },
+          ]
+        : []),
+    ],
   };
 
-  // Complete Isolated Renderer Dispatch
   const renderCalculatorComponent = () => {
-    if (calc.slug === "salary-calculator" || calc.slug === "in-hand-salary-calculator") {
+    if (calc.slug === "salary-calculator") {
       return <SalaryCalculatorRenderer slug={calc.slug} name={calc.name} />;
     }
     if (calc.slug === "income-tax-calculator") {
@@ -109,8 +153,8 @@ export default function CalculatorDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-navy/60">
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-navy/60">
         <Link href="/" className="hover:text-navy">Home</Link>
         <span>/</span>
         <Link href={`/calculators/${calc.category}`} className="hover:text-navy uppercase tracking-wider">
@@ -118,7 +162,7 @@ export default function CalculatorDetailPage({ params }: Props) {
         </Link>
         <span>/</span>
         <span className="text-navy">{calc.name}</span>
-      </div>
+      </nav>
 
       {/* Page Header */}
       <div>
@@ -130,12 +174,13 @@ export default function CalculatorDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Isolated Interactive Calculator Component */}
+      {/* Interactive Calculator Engine */}
       {renderCalculatorComponent()}
 
-      {/* SEO & Educational Guidance Section */}
+      {/* SEO Content, Formula & FAQ Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
         <div className="md:col-span-8 space-y-8">
+          {/* How to Use Section */}
           <section className="bg-sage/20 border border-navy/10 rounded-2xl p-6">
             <h2 className="text-xl font-bold text-navy mb-3 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-steel" /> How to Use This Calculator
@@ -143,53 +188,83 @@ export default function CalculatorDetailPage({ params }: Props) {
             <ul className="space-y-2.5 text-xs sm:text-sm text-navy/80 leading-relaxed">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Enter your parameters or adjust the interactive sliders above.</span>
+                <span>Adjust your values in the input fields or drag the interactive sliders.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>The algorithm updates the primary metric and detailed schedules in real-time.</span>
+                <span>Calculations update immediately in real-time with full mathematical precision.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Click &ldquo;Copy Result&rdquo; to save formatted text results to your clipboard.</span>
+                <span>Use &ldquo;Copy Result&rdquo; to save formatted text results to your clipboard.</span>
               </li>
             </ul>
           </section>
 
-          <section className="space-y-3 text-navy">
-            <h2 className="text-xl font-bold">Calculation Methodology</h2>
-            <p className="text-xs sm:text-sm text-navy/80 leading-relaxed">
-              Calculations are performed locally in your browser using standard mathematical formulas and statutory provisions without sending sensitive data to remote servers.
-            </p>
-          </section>
+          {/* Formula Section */}
+          {calc.formulaDescription && (
+            <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-2">
+              <h2 className="text-lg font-bold text-navy flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-steel" /> Calculation Formula
+              </h2>
+              <div className="p-3 bg-sage/30 rounded-xl font-mono text-xs sm:text-sm font-bold text-navy break-all">
+                {calc.formulaDescription}
+              </div>
+            </section>
+          )}
 
+          {/* Assumptions Section */}
+          {calc.assumptions && calc.assumptions.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-xl font-bold text-navy">Important Assumptions</h2>
+              <ul className="list-disc pl-5 text-xs sm:text-sm text-navy/80 space-y-1 leading-relaxed">
+                {calc.assumptions.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {/* FAQ Section */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-navy flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-sand" /> Frequently Asked Questions
             </h2>
             <div className="space-y-3">
-              <div className="bg-white border border-navy/15 rounded-xl p-4">
-                <h3 className="font-bold text-sm text-navy mb-1">
-                  Are these calculation results accurate?
-                </h3>
-                <p className="text-xs text-navy/70 leading-relaxed">
-                  Yes, calculations are based on mathematical and statutory formulas. Actual financial, tax, or health outcomes may vary depending on individual policies and amendments.
-                </p>
-              </div>
-              <div className="bg-white border border-navy/15 rounded-xl p-4">
-                <h3 className="font-bold text-sm text-navy mb-1">
-                  Does this tool work offline?
-                </h3>
-                <p className="text-xs text-navy/70 leading-relaxed">
-                  Yes. Once loaded, all calculators operate locally inside your browser with zero latency.
-                </p>
-              </div>
+              {calc.faqs && calc.faqs.length > 0 ? (
+                calc.faqs.map((faq, idx) => (
+                  <div key={idx} className="bg-white border border-navy/15 rounded-xl p-4">
+                    <h3 className="font-bold text-sm text-navy mb-1">{faq.q}</h3>
+                    <p className="text-xs text-navy/70 leading-relaxed">{faq.a}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-white border border-navy/15 rounded-xl p-4">
+                  <h3 className="font-bold text-sm text-navy mb-1">Are these calculation results accurate?</h3>
+                  <p className="text-xs text-navy/70 leading-relaxed">
+                    Yes, calculations execute deterministically on standard mathematical and statutory formulas locally in your browser.
+                  </p>
+                </div>
+              )}
             </div>
           </section>
+
+          {/* Shared Unified Disclaimer */}
+          <Disclaimer
+            type={
+              calc.category === "finance"
+                ? calc.slug.includes("tax")
+                  ? "tax"
+                  : "financial"
+                : calc.category === "health"
+                ? "health"
+                : "general"
+            }
+          />
         </div>
 
-        {/* Sidebar: Related Calculators */}
-        <div className="md:col-span-4 space-y-6">
+        {/* Sidebar: Contextual Related Calculators */}
+        <aside className="md:col-span-4 space-y-6">
           <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-sm">
             <h3 className="font-bold text-sm text-navy mb-4 flex items-center gap-2">
               <Layers className="w-4 h-4 text-steel" /> Related Calculators
@@ -210,7 +285,7 @@ export default function CalculatorDetailPage({ params }: Props) {
               ))}
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </main>
   );

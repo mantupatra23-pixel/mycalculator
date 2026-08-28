@@ -2,6 +2,7 @@ import { formatINR } from "@/lib/formatters";
 import { CalculationResult } from "./finance";
 
 export interface IncomeTaxInput {
+  assessmentYear: "AY2026_27" | "AY2025_26";
   annualIncome: number;
   regime: "new" | "old";
   deductions80C?: number;
@@ -12,18 +13,20 @@ export interface IncomeTaxInput {
 
 export function calculateIncomeTax(input: IncomeTaxInput): CalculationResult {
   const income = Math.max(0, input.annualIncome);
+  const ay = input.assessmentYear || "AY2026_27";
 
   if (input.regime === "new") {
-    // FY 2025-26 / FY 2026-27 New Tax Regime Slabs
-    const standardDeduction = 75000;
+    // New Tax Regime Slabs (Standard Deduction ₹75,000 for AY 2026-27)
+    const standardDeduction = ay === "AY2026_27" ? 75000 : 50000;
     const taxableIncome = Math.max(0, income - standardDeduction);
     let tax = 0;
 
-    // Up to 3,00,000: Nil
-    // 3,00,001 - 7,00,000: 5%
-    // 7,00,001 - 10,00,000: 10%
-    // 10,00,001 - 12,00,000: 15%
-    // 12,00,001 - 15,00,000: 20%
+    // Slabs:
+    // 0 to 3,00,000: Nil
+    // 3,00,001 to 7,00,000: 5% (₹20,000)
+    // 7,00,001 to 10,00,000: 10% (₹30,000)
+    // 10,00,001 to 12,00,000: 15% (₹30,000)
+    // 12,00,001 to 15,00,000: 20% (₹60,000)
     // Above 15,00,000: 30%
 
     if (taxableIncome > 1500000) {
@@ -48,27 +51,37 @@ export function calculateIncomeTax(input: IncomeTaxInput): CalculationResult {
       tax += (taxableIncome - 300000) * 0.05;
     }
 
-    // Section 87A Rebate: Taxable income up to ₹7,00,000 -> Zero tax
+    // Section 87A Rebate: Taxable income up to ₹7,00,000 -> Tax is Nil
+    let rebate87A = 0;
     if (taxableIncome <= 700000) {
+      rebate87A = tax;
       tax = 0;
     }
 
-    const cess = tax * 0.04;
-    const totalTax = tax + cess;
+    // Surcharge
+    let surcharge = 0;
+    if (taxableIncome > 50000000) surcharge = tax * 0.25;
+    else if (taxableIncome > 20000000) surcharge = tax * 0.25;
+    else if (taxableIncome > 10000000) surcharge = tax * 0.15;
+    else if (taxableIncome > 5000000) surcharge = tax * 0.10;
+
+    const cess = (tax + surcharge) * 0.04;
+    const totalTax = tax + surcharge + cess;
     const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
 
     return {
-      primaryLabel: "Estimated Tax Payable (New Regime)",
+      primaryLabel: `Estimated Tax (${ay.replace("_", "-")} New Regime)`,
       primaryValue: formatINR(Math.round(totalTax)),
       metrics: [
         { label: "Total Gross Income", value: formatINR(income) },
         { label: "Standard Deduction", value: `-${formatINR(standardDeduction)}` },
         { label: "Net Taxable Income", value: formatINR(Math.round(taxableIncome)) },
-        { label: "Base Income Tax", value: formatINR(Math.round(tax)) },
+        { label: "Base Computed Tax", value: formatINR(Math.round(tax + rebate87A)) },
+        { label: "Section 87A Tax Rebate", value: `-${formatINR(Math.round(rebate87A))}` },
         { label: "Health & Education Cess (4%)", value: formatINR(Math.round(cess)), highlight: true },
-        { label: "Effective Tax Rate", value: `${effectiveRate.toFixed(2)}%` },
+        { label: "Effective Annual Tax Rate", value: `${effectiveRate.toFixed(2)}%` },
       ],
-      summaryText: `Under the New Tax Regime, your total estimated annual tax liability is ${formatINR(Math.round(totalTax))} on a gross income of ${formatINR(income)}.`,
+      summaryText: `Under ${ay.replace("_", "-")} New Tax Regime, your estimated tax liability is ${formatINR(Math.round(totalTax))} on a gross income of ${formatINR(income)}.`,
     };
   } else {
     // Old Tax Regime
@@ -82,9 +95,10 @@ export function calculateIncomeTax(input: IncomeTaxInput): CalculationResult {
     const taxableIncome = Math.max(0, income - totalDeductions);
     let tax = 0;
 
-    // Up to 2,50,000: Nil
-    // 2,50,001 - 5,00,000: 5%
-    // 5,00,001 - 10,00,000: 20%
+    // Old Slabs:
+    // 0 to 2,50,000: Nil
+    // 2,50,001 to 5,00,000: 5% (₹12,500)
+    // 5,00,001 to 10,00,000: 20% (₹1,00,000)
     // Above 10,00,000: 30%
 
     if (taxableIncome > 1000000) {
@@ -98,26 +112,36 @@ export function calculateIncomeTax(input: IncomeTaxInput): CalculationResult {
       tax += (taxableIncome - 250000) * 0.05;
     }
 
+    // Section 87A in Old Regime (Taxable income up to ₹5,00,000)
+    let rebate87A = 0;
     if (taxableIncome <= 500000) {
+      rebate87A = tax;
       tax = 0;
     }
 
-    const cess = tax * 0.04;
-    const totalTax = tax + cess;
+    let surcharge = 0;
+    if (taxableIncome > 50000000) surcharge = tax * 0.37;
+    else if (taxableIncome > 20000000) surcharge = tax * 0.25;
+    else if (taxableIncome > 10000000) surcharge = tax * 0.15;
+    else if (taxableIncome > 5000000) surcharge = tax * 0.10;
+
+    const cess = (tax + surcharge) * 0.04;
+    const totalTax = tax + surcharge + cess;
     const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
 
     return {
-      primaryLabel: "Estimated Tax Payable (Old Regime)",
+      primaryLabel: `Estimated Tax (${ay.replace("_", "-")} Old Regime)`,
       primaryValue: formatINR(Math.round(totalTax)),
       metrics: [
         { label: "Total Gross Income", value: formatINR(income) },
-        { label: "Total Eligible Deductions", value: `-${formatINR(totalDeductions)}` },
+        { label: "Eligible Deductions (80C+80D+HRA)", value: `-${formatINR(totalDeductions)}` },
         { label: "Net Taxable Income", value: formatINR(Math.round(taxableIncome)) },
-        { label: "Base Income Tax", value: formatINR(Math.round(tax)) },
+        { label: "Base Computed Tax", value: formatINR(Math.round(tax + rebate87A)) },
+        { label: "Section 87A Tax Rebate", value: `-${formatINR(Math.round(rebate87A))}` },
         { label: "Health & Education Cess (4%)", value: formatINR(Math.round(cess)), highlight: true },
-        { label: "Effective Tax Rate", value: `${effectiveRate.toFixed(2)}%` },
+        { label: "Effective Annual Tax Rate", value: `${effectiveRate.toFixed(2)}%` },
       ],
-      summaryText: `Under the Old Tax Regime with ${formatINR(totalDeductions)} in total deductions, your estimated tax liability is ${formatINR(Math.round(totalTax))}.`,
+      summaryText: `Under Old Tax Regime with ${formatINR(totalDeductions)} in exemptions, your estimated tax is ${formatINR(Math.round(totalTax))}.`,
     };
   }
 }
