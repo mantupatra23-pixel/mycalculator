@@ -74,7 +74,7 @@ Calculated on MyCalculators.xyz`;
           url: "https://mycalculators.xyz/calculators/emi-calculator",
         });
       } catch {
-        // Fallback to copy if user cancelled
+        // Fallback
       }
     } else {
       handleCopy();
@@ -82,17 +82,17 @@ Calculated on MyCalculators.xyz`;
   };
 
   return (
-    <div className="bg-cream border-2 border-navy/20 rounded-2xl p-5 sm:p-7 shadow-sm">
+    <div className="bg-white border border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-navy/10">
         <div>
-          <span className="inline-flex items-center gap-1 text-xs font-bold bg-sand/30 text-navy px-2.5 py-1 rounded-full uppercase tracking-wider mb-1">
+          <span className="inline-flex items-center gap-1 text-xs font-bold bg-cream text-navy px-3 py-1 rounded-full uppercase tracking-wider mb-1.5 border border-sand/40">
             <Sparkles className="w-3.5 h-3.5 text-sand" /> Featured Interactive Tool
           </span>
           <h3 className="text-xl sm:text-2xl font-black text-navy">Loan EMI Calculator</h3>
         </div>
         <button
           onClick={handleReset}
-          className="flex items-center gap-1.5 text-xs font-semibold text-navy/70 hover:text-navy px-3 py-1.5 rounded-lg border border-navy/15 hover:bg-sage/40 transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-navy/70 hover:text-navy px-3 py-1.5 rounded-lg border border-navy/15 hover:bg-sage/20 transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5" /> Reset
         </button>
@@ -105,7 +105,9 @@ Calculated on MyCalculators.xyz`;
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="font-bold text-sm text-navy">Loan Amount</label>
-              <span className="text-xs font-semibold text-steel">{formatInLakhCrore(principal)}</span>
+              <span className="text-xs font-bold text-steel bg-sage/30 px-2 py-0.5 rounded">
+                {formatInLakhCrore(principal)}
+              </span>
             </div>
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-navy/60">₹</span>
@@ -116,7 +118,7 @@ Calculated on MyCalculators.xyz`;
                 step="10000"
                 value={principal || ""}
                 onChange={(e) => setPrincipal(Number(e.target.value))}
-                className="w-full pl-9 pr-4 py-3 bg-cream rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel"
+                className="w-full pl-9 pr-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel"
               />
             </div>
             <input
@@ -126,7 +128,7 @@ Calculated on MyCalculators.xyz`;
               step="50000"
               value={principal}
               onChange={(e) => setPrincipal(Number(e.target.value))}
-              className="w-full mt-2 accent-steel cursor-pointer"
+              className="w-full mt-2.5 accent-steel cursor-pointer"
             />
           </div>
 
@@ -134,7 +136,7 @@ Calculated on MyCalculators.xyz`;
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="font-bold text-sm text-navy">Interest Rate (p.a)</label>
-              <span className="text-xs font-semibold text-steel">{rate}%</span>
+              <span className="text-xs font-bold text-steel bg-sage/30 px-2 py-0.5 rounded">{rate}%</span>
             </div>
             <div className="relative">
               <input
@@ -144,7 +146,7 @@ Calculated on MyCalculators.xyz`;
                 step="0.1"
                 value={rate || ""}
                 onChange={(e) => setRate(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-cream rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel"
+                className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-navy/60">%</span>
             </div>
@@ -155,7 +157,7 @@ Calculated on MyCalculators.xyz`;
               step="0.25"
               value={rate}
               onChange={(e) => setRate(Number(e.target.value))}
-              className="w-full mt-2 accent-steel cursor-pointer"
+              className="w-full mt-2.5 accent-steel cursor-pointer"
             />
           </div>
 
@@ -163,7 +165,9 @@ Calculated on MyCalculators.xyz`;
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="font-bold text-sm text-navy">Loan Tenure (Years)</label>
-              <span className="text-xs font-semibold text-steel">{tenureYears} Years ({tenureYears * 12} Months)</span>
+              <span className="text-xs font-bold text-steel bg-sage/30 px-2 py-0.5 rounded">
+                {tenureYears} Years ({tenureYears * 12} Months)
+              </span>
             </div>
             <input
               type="number"
@@ -171,7 +175,7 @@ Calculated on MyCalculators.xyz`;
               max="35"
               value={tenureYears || ""}
               onChange={(e) => setTenureYears(Number(e.target.value))}
-              className="w-full px-4 py-3 bg-cream rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel"
+              className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:outline-none focus:ring-2 focus:ring-steel"
             />
             <input
               type="range"
@@ -180,13 +184,13 @@ Calculated on MyCalculators.xyz`;
               step="1"
               value={tenureYears}
               onChange={(e) => setTenureYears(Number(e.target.value))}
-              className="w-full mt-2 accent-steel cursor-pointer"
+              className="w-full mt-2.5 accent-steel cursor-pointer"
             />
           </div>
         </div>
 
         {/* Right Output Card */}
-        <div className="lg:col-span-5 bg-sage rounded-2xl p-5 sm:p-6 border border-navy/15 flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-sage/40 rounded-2xl p-5 sm:p-6 border border-navy/15 flex flex-col justify-between">
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-navy/70 mb-1">
               Monthly Loan EMI
@@ -195,14 +199,14 @@ Calculated on MyCalculators.xyz`;
               {formatINR(calculation.monthlyEmi)}
             </div>
 
-            <div className="space-y-3.5 text-sm border-t border-navy/10 pt-4">
+            <div className="space-y-3 text-sm border-t border-navy/10 pt-4">
               <div className="flex justify-between items-center">
                 <span className="text-navy/75 font-medium">Principal Amount:</span>
                 <span className="font-bold text-navy">{formatINR(principal)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-navy/75 font-medium">Total Interest Payable:</span>
-                <span className="font-bold text-sand-dark text-[#b36932]">{formatINR(calculation.totalInterest)}</span>
+                <span className="font-bold text-[#b36932]">{formatINR(calculation.totalInterest)}</span>
               </div>
               <div className="flex justify-between items-center pt-2 border-t border-navy/10 text-base font-extrabold text-navy">
                 <span>Total Amount:</span>
@@ -229,14 +233,14 @@ Calculated on MyCalculators.xyz`;
           <div className="flex items-center gap-2 pt-6 mt-6 border-t border-navy/10">
             <button
               onClick={handleCopy}
-              className="flex-1 bg-cream hover:bg-cream/80 text-navy font-bold py-2.5 px-3 rounded-xl border border-navy/20 flex items-center justify-center gap-2 text-xs sm:text-sm transition-colors"
+              className="flex-1 bg-white hover:bg-white/80 text-navy font-bold py-2.5 px-3 rounded-xl border border-navy/20 flex items-center justify-center gap-2 text-xs sm:text-sm transition-colors shadow-sm"
             >
               {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
               {copied ? "Copied!" : "Copy Result"}
             </button>
             <button
               onClick={handleShare}
-              className="bg-navy hover:bg-navy/90 text-cream font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-colors"
+              className="bg-navy hover:bg-navy/90 text-cream font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm transition-colors shadow-sm"
             >
               <Share2 className="w-4 h-4" /> Share
             </button>

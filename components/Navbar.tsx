@@ -19,7 +19,7 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur-sm border-b border-navy/10">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-navy/10">
       {/* Top Accent Strip */}
       <div className="h-1 w-full bg-sand" />
 
@@ -56,7 +56,7 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <Link
             href="/calculators"
-            className="flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-semibold text-navy bg-sage/60 border border-navy/15 rounded-lg hover:bg-sage transition-colors"
+            className="flex items-center gap-2 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-navy bg-cream/70 border border-navy/15 rounded-lg hover:bg-cream transition-colors"
           >
             <Search className="w-4 h-4 text-steel" />
             <span className="hidden sm:inline">Search</span>
@@ -65,7 +65,7 @@ export function Navbar() {
           {/* Mobile Menu Trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg text-navy hover:bg-sage/50 focus:outline-none"
+            className="lg:hidden p-2 rounded-lg text-navy hover:bg-sage/30 focus:outline-none"
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -75,13 +75,13 @@ export function Navbar() {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-cream border-b border-navy/10 px-4 py-4 space-y-1 animate-fadeIn">
+        <div className="lg:hidden bg-white border-b border-navy/10 px-4 py-4 space-y-1 shadow-md">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-navy font-semibold hover:bg-sage/50 text-base"
+              className="flex items-center justify-between px-3 py-2.5 rounded-lg text-navy font-semibold hover:bg-sage/30 text-base"
             >
               <span>{link.label}</span>
               <ChevronRight className="w-4 h-4 text-navy/40" />

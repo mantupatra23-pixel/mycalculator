@@ -28,7 +28,7 @@ export function SearchSection() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search calculators (e.g., EMI, GST, SIP, Percentage, Age, BMI)..."
-          className="w-full pl-12 pr-10 py-4 bg-cream text-navy placeholder:text-navy/45 rounded-2xl border-2 border-navy/20 focus:outline-none focus:ring-2 focus:ring-steel text-base shadow-sm"
+          className="w-full pl-12 pr-10 py-4 bg-white text-navy placeholder:text-navy/45 rounded-2xl border border-navy/20 focus:outline-none focus:ring-2 focus:ring-steel text-base shadow-sm"
         />
         {query && (
           <button
@@ -43,13 +43,13 @@ export function SearchSection() {
 
       {/* Instant Dropdown Results */}
       {query.trim().length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-cream border-2 border-navy/15 rounded-2xl shadow-xl z-30 max-h-96 overflow-y-auto divide-y divide-navy/10 p-2">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-navy/15 rounded-2xl shadow-xl z-30 max-h-96 overflow-y-auto divide-y divide-navy/10 p-2">
           {filtered.length > 0 ? (
             filtered.map((item) => (
               <Link
                 key={item.id}
                 href={`/calculators/${item.slug}`}
-                className="flex items-center justify-between p-3.5 hover:bg-sage/40 rounded-xl transition-colors group"
+                className="flex items-center justify-between p-3.5 hover:bg-sage/30 rounded-xl transition-colors group"
               >
                 <div>
                   <div className="font-bold text-navy text-sm sm:text-base group-hover:text-steel transition-colors">
