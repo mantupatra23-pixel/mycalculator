@@ -15,13 +15,28 @@ import {
   RotateCcw,
   ArrowRightLeft,
   ChevronDown,
-  Delete,
-  Equal,
+  Plus,
+  Trash2,
+  GraduationCap,
 } from "lucide-react";
 
 export interface UniversalProps {
   slug: string;
   name: string;
+}
+
+interface CourseItem {
+  id: string;
+  name: string;
+  gradePoint: number;
+  credits: number;
+}
+
+interface SemesterItem {
+  id: string;
+  sem: number;
+  sgpa: number;
+  credits: number;
 }
 
 const TIMEZONES = [
@@ -40,22 +55,49 @@ const TIMEZONES = [
 export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
   const todayStr = "2026-08-28";
 
-  // Scientific Calculator State
-  const [sciDisplay, setSciDisplay] = useState<string>("0");
-  const [sciFormula, setSciFormula] = useState<string>("");
+  // --- EDUCATION STATES ---
+  // 1. Grade Calculator State
+  const [marksObtained, setMarksObtained] = useState<number>(85);
+  const [totalMaxMarks, setTotalMaxMarks] = useState<number>(100);
 
-  // Fraction State
+  // 2. GPA Semester Course State
+  const [courses, setCourses] = useState<CourseItem[]>([
+    { id: "1", name: "Mathematics", gradePoint: 4.0, credits: 4 },
+    { id: "2", name: "Physics / Computer", gradePoint: 3.5, credits: 3 },
+    { id: "3", name: "Data Structures", gradePoint: 3.7, credits: 4 },
+    { id: "4", name: "Technical Writing", gradePoint: 3.0, credits: 2 },
+  ]);
+
+  // 3. CGPA Multi-Semester State
+  const [semesters, setSemesters] = useState<SemesterItem[]>([
+    { id: "1", sem: 1, sgpa: 8.4, credits: 22 },
+    { id: "2", sem: 2, sgpa: 8.8, credits: 24 },
+    { id: "3", sem: 3, sgpa: 8.2, credits: 22 },
+    { id: "4", sem: 4, sgpa: 8.6, credits: 24 },
+  ]);
+
+  // 4. CGPA to Percentage (India)
+  const [cgpaInput, setCgpaInput] = useState<number>(8.5);
+
+  // 5. Percentage to CGPA
+  const [percentInput, setPercentInput] = useState<number>(82);
+
+  // --- SCIENTIFIC CALCULATOR STATE ---
+  const [sciDisplay, setSciDisplay] = useState<string>("0");
+  const [sciFormula, setSciFormula] = useState<string>(" ");
+
+  // --- FRACTION STATE ---
   const [fracN1, setFracN1] = useState<number>(3);
   const [fracD1, setFracD1] = useState<number>(4);
   const [fracOp, setFracOp] = useState<string>("+");
   const [fracN2, setFracN2] = useState<number>(2);
   const [fracD2, setFracD2] = useState<number>(5);
 
-  // Countdown State
+  // --- COUNTDOWN STATE ---
   const [countdownDate, setCountdownDate] = useState<string>("2027-01-01T00:00");
   const [countdownTitle, setCountdownTitle] = useState<string>("New Year 2027");
 
-  // Unit Converter State
+  // --- CONVERTER STATE ---
   const [convCat, setConvCat] = useState<any>(() => {
     if (slug.includes("weight") || slug.includes("kg") || slug.includes("pound")) return "weight";
     if (slug.includes("temperature") || slug.includes("celsius") || slug.includes("fahrenheit")) return "temperature";
@@ -91,23 +133,21 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
   });
   const [convVal, setConvVal] = useState<number>(10);
 
-  // Time Zone states
+  // --- TIME ZONE STATES ---
   const [tzTime, setTzTime] = useState<string>("14:30");
   const [sourceTz, setSourceTz] = useState<string>("IST");
   const [targetTz, setTargetTz] = useState<string>("EST");
 
-  // Date states
+  // --- DATE & TIME STATES ---
   const [dob, setDob] = useState<string>("2000-01-01");
   const [targetDate, setTargetDate] = useState<string>(todayStr);
   const [startDate, setStartDate] = useState<string>("2026-01-01");
   const [endDate, setEndDate] = useState<string>(todayStr);
 
-  // Date Add / Subtract states
   const [baseDate, setBaseDate] = useState<string>(todayStr);
   const [addQty, setAddQty] = useState<number>(30);
   const [addUnit, setAddUnit] = useState<"days" | "weeks" | "months" | "years">("days");
 
-  // Time duration states
   const [startTime, setStartTime] = useState<string>("09:00");
   const [endTime, setEndTime] = useState<string>("17:30");
   const [breakMins, setBreakMins] = useState<number>(30);
@@ -117,7 +157,6 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
     if (slug === "bmi-calculator") return 70;
     if (slug.includes("calorie") || slug.includes("bmr")) return 70;
     if (slug === "roas-calculator") return 150000;
-    if (slug === "cgpa-to-percentage") return 8.5;
     if (slug === "fuel-cost-calculator") return 300;
     if (slug === "mileage-calculator") return 450;
     if (slug === "electricity-bill-calculator") return 1500;
@@ -155,11 +194,50 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
 
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Scientific Calculator Key Actions
+  // Helper functions for Course / Semester lists
+  const addCourse = () => {
+    setCourses((prev) => [
+      ...prev,
+      { id: Date.now().toString(), name: `Subject ${prev.length + 1}`, gradePoint: 3.5, credits: 3 },
+    ]);
+  };
+
+  const removeCourse = (id: string) => {
+    if (courses.length > 1) {
+      setCourses((prev) => prev.filter((c) => c.id !== id));
+    }
+  };
+
+  const updateCourse = (id: string, field: keyof CourseItem, val: any) => {
+    setCourses((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, [field]: val } : c))
+    );
+  };
+
+  const addSemester = () => {
+    setSemesters((prev) => [
+      ...prev,
+      { id: Date.now().toString(), sem: prev.length + 1, sgpa: 8.0, credits: 22 },
+    ]);
+  };
+
+  const removeSemester = (id: string) => {
+    if (semesters.length > 1) {
+      setSemesters((prev) => prev.filter((s) => s.id !== id));
+    }
+  };
+
+  const updateSemester = (id: string, field: keyof SemesterItem, val: any) => {
+    setSemesters((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, [field]: val } : s))
+    );
+  };
+
+  // Scientific Keypad Handler
   const handleSciKey = (key: string) => {
     if (key === "C") {
       setSciDisplay("0");
-      setSciFormula("");
+      setSciFormula(" ");
     } else if (key === "DEL") {
       setSciDisplay((prev) => (prev.length > 1 ? prev.slice(0, -1) : "0"));
     } else if (key === "=") {
@@ -170,7 +248,6 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
           .replace(/π/g, `${Math.PI}`)
           .replace(/e/g, `${Math.E}`);
 
-        // Math functions safely
         expression = expression.replace(/sin\(([^)]+)\)/g, "Math.sin(($1) * Math.PI / 180)");
         expression = expression.replace(/cos\(([^)]+)\)/g, "Math.cos(($1) * Math.PI / 180)");
         expression = expression.replace(/tan\(([^)]+)\)/g, "Math.tan(($1) * Math.PI / 180)");
@@ -178,7 +255,6 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
         expression = expression.replace(/log\(([^)]+)\)/g, "Math.log10($1)");
         expression = expression.replace(/ln\(([^)]+)\)/g, "Math.log($1)");
 
-        // Safe evaluation with Function constructor
         const evalResult = Function(`'use strict'; return (${expression})`)();
         setSciFormula(`${sciDisplay} =`);
         setSciDisplay(isNaN(evalResult) || !isFinite(evalResult) ? "Error" : `${parseFloat(evalResult.toFixed(6))}`);
@@ -194,17 +270,140 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
 
   // Calculate Result
   const result = useMemo(() => {
-    // Fraction Calculator
+    // --- 1. EDUCATION: GRADE CALCULATOR ---
+    if (slug === "grade-calculator") {
+      const marks = Math.max(0, marksObtained);
+      const total = Math.max(1, totalMaxMarks);
+      const pct = (marks / total) * 100;
+
+      let grade = "A+";
+      let gpa = "4.0";
+      let status = "Distinction / Outstanding";
+
+      if (pct >= 90) { grade = "A+"; gpa = "4.0"; status = "Outstanding (Grade O)"; }
+      else if (pct >= 80) { grade = "A"; gpa = "3.7"; status = "Excellent (Grade A+)"; }
+      else if (pct >= 70) { grade = "B+"; gpa = "3.3"; status = "Very Good (Grade A)"; }
+      else if (pct >= 60) { grade = "B"; gpa = "3.0"; status = "Good (Grade B+)"; }
+      else if (pct >= 50) { grade = "C"; gpa = "2.0"; status = "Average (Grade B)"; }
+      else if (pct >= 40) { grade = "D"; gpa = "1.0"; status = "Pass (Grade P)"; }
+      else { grade = "F"; gpa = "0.0"; status = "Fail (Needs Improvement)"; }
+
+      return {
+        primaryLabel: "Calculated Final Grade",
+        primaryValue: `${grade} (${pct.toFixed(2)}%)`,
+        metrics: [
+          { label: "Marks Scored", value: `${marks} / ${total}` },
+          { label: "Percentage Score", value: `${pct.toFixed(2)}%`, highlight: true },
+          { label: "4.0 Scale GPA Equivalent", value: `${gpa} / 4.0` },
+          { label: "Academic Standing", value: status },
+        ],
+        summaryText: `Scoring ${marks} out of ${total} (${pct.toFixed(2)}%) earns a letter grade of ${grade} with a ${gpa} GPA.`,
+      };
+    }
+
+    // --- 2. EDUCATION: GPA CALCULATOR ---
+    if (slug === "gpa-calculator") {
+      let totalQualityPoints = 0;
+      let totalCredits = 0;
+
+      courses.forEach((c) => {
+        const cred = Math.max(0, Number(c.credits) || 0);
+        const gp = Math.max(0, Number(c.gradePoint) || 0);
+        totalQualityPoints += gp * cred;
+        totalCredits += cred;
+      });
+
+      const gpa = totalCredits > 0 ? totalQualityPoints / totalCredits : 0;
+
+      return {
+        primaryLabel: "Semester GPA (SGPA)",
+        primaryValue: `${gpa.toFixed(2)} / 4.0`,
+        metrics: [
+          { label: "Total Credit Hours", value: `${totalCredits} Credits`, highlight: true },
+          { label: "Total Quality Points", value: totalQualityPoints.toFixed(2) },
+          { label: "Total Courses Included", value: `${courses.length} Subjects` },
+        ],
+        summaryText: `Based on ${courses.length} courses and ${totalCredits} credit hours, your semester GPA is ${gpa.toFixed(2)}.`,
+      };
+    }
+
+    // --- 3. EDUCATION: CGPA CALCULATOR ---
+    if (slug === "cgpa-calculator") {
+      let totalPoints = 0;
+      let totalCreds = 0;
+
+      semesters.forEach((s) => {
+        const cred = Math.max(0, Number(s.credits) || 0);
+        const sgpa = Math.max(0, Number(s.sgpa) || 0);
+        totalPoints += sgpa * cred;
+        totalCreds += cred;
+      });
+
+      const cgpa = totalCreds > 0 ? totalPoints / totalCreds : 0;
+      const equivalentPct = cgpa * 9.5;
+
+      return {
+        primaryLabel: "Cumulative CGPA",
+        primaryValue: `${cgpa.toFixed(2)} / 10.0`,
+        metrics: [
+          { label: "Equivalent Marks Percentage", value: `${equivalentPct.toFixed(2)}%`, highlight: true },
+          { label: "Total Credits Completed", value: `${totalCreds} Credits` },
+          { label: "Total Semesters Added", value: `${semesters.length} Semesters` },
+        ],
+        summaryText: `Across ${semesters.length} semesters, your cumulative CGPA is ${cgpa.toFixed(2)} (${equivalentPct.toFixed(2)}% marks).`,
+      };
+    }
+
+    // --- 4. EDUCATION: CGPA TO PERCENTAGE (INDIA) ---
+    if (slug === "cgpa-to-percentage") {
+      const cgpa = Math.max(0, Math.min(10, cgpaInput || 0));
+      const percentage = cgpa * 9.5;
+
+      let division = "First Class with Distinction";
+      if (percentage < 50) division = "Second Division / Pass";
+      else if (percentage < 60) division = "Second Division";
+      else if (percentage < 75) division = "First Division";
+
+      return {
+        primaryLabel: "Marks Percentage",
+        primaryValue: `${percentage.toFixed(2)}%`,
+        metrics: [
+          { label: "CGPA (10-Point Scale)", value: `${cgpa} / 10` },
+          { label: "Formula Applied", value: "CGPA × 9.5 (CBSE / AICTE)", highlight: true },
+          { label: "Degree Classification", value: division },
+        ],
+        summaryText: `A CGPA of ${cgpa} corresponds to ${percentage.toFixed(2)}% marks (${division}).`,
+      };
+    }
+
+    // --- 5. EDUCATION: PERCENTAGE TO CGPA ---
+    if (slug === "percentage-to-cgpa") {
+      const pct = Math.max(0, Math.min(100, percentInput || 0));
+      const cgpa = pct / 9.5;
+
+      return {
+        primaryLabel: "Equivalent CGPA",
+        primaryValue: `${cgpa.toFixed(2)} / 10.0`,
+        metrics: [
+          { label: "Entered Percentage", value: `${pct}%` },
+          { label: "Formula Applied", value: "Percentage ÷ 9.5", highlight: true },
+          { label: "Grading Scale", value: "Standard 10-Point Indian Scale" },
+        ],
+        summaryText: `${pct}% marks translates into a CGPA of ${cgpa.toFixed(2)}.`,
+      };
+    }
+
+    // --- FRACTION CALCULATOR ---
     if (slug === "fraction-calculator") {
       return calculateFraction(fracN1, fracD1, fracOp, fracN2, fracD2);
     }
 
-    // Countdown Calculator
+    // --- COUNTDOWN CALCULATOR ---
     if (slug === "countdown-calculator") {
       return calculateCountdown(countdownDate, countdownTitle);
     }
 
-    // Converters
+    // --- CONVERTERS ---
     if (
       slug.includes("converter") ||
       slug.includes("to-") ||
@@ -214,7 +413,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
       return calculateUnitConverter(convCat, convFrom, convTo, convVal);
     }
 
-    // Time Zone Converter
+    // --- TIME ZONE CONVERTER ---
     if (slug === "time-zone-calculator") {
       const srcObj = TIMEZONES.find((t) => t.id === sourceTz) || TIMEZONES[0];
       const tgtObj = TIMEZONES.find((t) => t.id === targetTz) || TIMEZONES[2];
@@ -266,7 +465,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
       };
     }
 
-    // Date Add / Subtract
+    // --- DATE ADD / SUBTRACT ---
     if (slug === "date-add-calculator" || slug === "date-subtract-calculator") {
       const isAdd = slug === "date-add-calculator";
       const dt = new Date(baseDate);
@@ -307,7 +506,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
       };
     }
 
-    // Time Duration & Hours
+    // --- TIME DURATION & HOURS ---
     if (slug === "time-duration-calculator" || slug === "hours-calculator") {
       const [startH, startM] = startTime.split(":").map(Number);
       const [endH, endM] = endTime.split(":").map(Number);
@@ -333,7 +532,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
       };
     }
 
-    // Date Difference
+    // --- DATE DIFFERENCE ---
     if (slug === "date-difference-calculator" || slug === "days-between-dates") {
       const d1 = new Date(startDate);
       const d2 = new Date(endDate);
@@ -353,7 +552,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
       };
     }
 
-    // Age Calculators
+    // --- AGE CALCULATOR ---
     if (slug === "age-calculator" || slug === "age-in-days-calculator") {
       const birth = new Date(dob);
       const target = new Date(targetDate);
@@ -407,6 +606,12 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
     return calculateUniversal(slug, v1, v2, v3);
   }, [
     slug,
+    marksObtained,
+    totalMaxMarks,
+    courses,
+    semesters,
+    cgpaInput,
+    percentInput,
     fracN1,
     fracD1,
     fracOp,
@@ -477,6 +682,13 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
   const isDateDiffCalculator = slug === "date-difference-calculator" || slug === "days-between-dates";
   const isAgeCalculator = slug === "age-calculator" || slug === "age-in-days-calculator";
 
+  // Education Calculator Flags
+  const isGrade = slug === "grade-calculator";
+  const isGpa = slug === "gpa-calculator";
+  const isCgpa = slug === "cgpa-calculator";
+  const isCgpaToPct = slug === "cgpa-to-percentage";
+  const isPctToCgpa = slug === "percentage-to-cgpa";
+
   return (
     <div className="bg-white border border-navy/15 rounded-3xl p-5 sm:p-8 shadow-sm">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-navy/10">
@@ -488,6 +700,10 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
         </div>
         <button
           onClick={() => {
+            setMarksObtained(85);
+            setTotalMaxMarks(100);
+            setCgpaInput(8.5);
+            setPercentInput(82);
             setV1(slug === "bmi-calculator" ? 70 : 100);
             setV2(slug === "bmi-calculator" ? 175 : 10);
             setV3(0);
@@ -498,7 +714,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
         </button>
       </div>
 
-      {/* --- 1. SCIENTIFIC CALCULATOR KEYPAD --- */}
+      {/* --- 1. SCIENTIFIC CALCULATOR --- */}
       {isScientific ? (
         <div className="max-w-md mx-auto bg-navy p-5 rounded-3xl shadow-xl text-cream">
           <div className="bg-sage/20 border border-cream/20 p-4 rounded-2xl mb-4 text-right">
@@ -536,11 +752,206 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Inputs */}
           <div className="lg:col-span-7 space-y-6">
-            {/* --- 2. FRACTION CALCULATOR UI --- */}
-            {isFraction ? (
+            {/* --- 2. GRADE CALCULATOR UI --- */}
+            {isGrade ? (
+              <>
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">Marks Scored / Obtained</label>
+                  <input
+                    type="number"
+                    value={marksObtained || ""}
+                    onChange={(e) => setMarksObtained(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-sm text-navy mb-2">Maximum Total Marks</label>
+                  <input
+                    type="number"
+                    value={totalMaxMarks || ""}
+                    onChange={(e) => setTotalMaxMarks(Number(e.target.value))}
+                    className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm"
+                  />
+                </div>
+              </>
+            ) : isGpa ? (
+              /* --- 3. GPA CALCULATOR UI --- */
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-sm text-navy">Courses / Subjects</label>
+                  <button
+                    type="button"
+                    onClick={addCourse}
+                    className="flex items-center gap-1 text-xs font-bold text-steel hover:text-navy bg-sage/30 px-3 py-1.5 rounded-lg border border-navy/10"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Subject
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {courses.map((course, idx) => (
+                    <div
+                      key={course.id}
+                      className="flex items-center gap-2 p-2.5 bg-sage/20 border border-navy/10 rounded-xl"
+                    >
+                      <input
+                        type="text"
+                        value={course.name}
+                        onChange={(e) => updateCourse(course.id, "name", e.target.value)}
+                        placeholder="Subject Name"
+                        className="flex-1 px-3 py-2 bg-white rounded-lg border border-navy/15 text-xs sm:text-sm font-semibold text-navy"
+                      />
+                      <div className="w-24">
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          max="4"
+                          value={course.gradePoint}
+                          onChange={(e) => updateCourse(course.id, "gradePoint", Number(e.target.value))}
+                          placeholder="Grade Pt"
+                          className="w-full px-2.5 py-2 bg-white rounded-lg border border-navy/15 text-xs sm:text-sm font-bold text-navy text-center"
+                        />
+                      </div>
+                      <div className="w-20">
+                        <input
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={course.credits}
+                          onChange={(e) => updateCourse(course.id, "credits", Number(e.target.value))}
+                          placeholder="Credits"
+                          className="w-full px-2.5 py-2 bg-white rounded-lg border border-navy/15 text-xs sm:text-sm font-bold text-navy text-center"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeCourse(course.id)}
+                        disabled={courses.length <= 1}
+                        className="p-2 text-navy/40 hover:text-rose-600 disabled:opacity-30"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : isCgpa ? (
+              /* --- 4. CGPA CALCULATOR UI --- */
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-sm text-navy">Semester Performance (SGPA)</label>
+                  <button
+                    type="button"
+                    onClick={addSemester}
+                    className="flex items-center gap-1 text-xs font-bold text-steel hover:text-navy bg-sage/30 px-3 py-1.5 rounded-lg border border-navy/10"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Semester
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {semesters.map((sem, idx) => (
+                    <div
+                      key={sem.id}
+                      className="flex items-center gap-2 p-2.5 bg-sage/20 border border-navy/10 rounded-xl"
+                    >
+                      <span className="w-20 font-bold text-xs text-navy">Sem {idx + 1}</span>
+                      <div className="flex-1">
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          max="10"
+                          value={sem.sgpa}
+                          onChange={(e) => updateSemester(sem.id, "sgpa", Number(e.target.value))}
+                          placeholder="SGPA (0-10)"
+                          className="w-full px-3 py-2 bg-white rounded-lg border border-navy/15 text-xs sm:text-sm font-bold text-navy"
+                        />
+                      </div>
+                      <div className="w-28">
+                        <input
+                          type="number"
+                          min="1"
+                          max="40"
+                          value={sem.credits}
+                          onChange={(e) => updateSemester(sem.id, "credits", Number(e.target.value))}
+                          placeholder="Credits"
+                          className="w-full px-3 py-2 bg-white rounded-lg border border-navy/15 text-xs sm:text-sm font-bold text-navy text-center"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeSemester(sem.id)}
+                        disabled={semesters.length <= 1}
+                        className="p-2 text-navy/40 hover:text-rose-600 disabled:opacity-30"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : isCgpaToPct ? (
+              /* --- 5. CGPA TO PERCENTAGE UI --- */
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <label className="font-bold text-sm text-navy">Enter CGPA (10-Point Scale)</label>
+                  <span className="text-xs font-bold text-steel bg-sage/40 px-2 py-0.5 rounded">
+                    {cgpaInput} / 10
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="10"
+                  value={cgpaInput || ""}
+                  onChange={(e) => setCgpaInput(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm"
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  value={cgpaInput}
+                  onChange={(e) => setCgpaInput(Number(e.target.value))}
+                  className="w-full accent-steel cursor-pointer"
+                />
+              </div>
+            ) : isPctToCgpa ? (
+              /* --- 6. PERCENTAGE TO CGPA UI --- */
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <label className="font-bold text-sm text-navy">Enter Marks Percentage (%)</label>
+                  <span className="text-xs font-bold text-steel bg-sage/40 px-2 py-0.5 rounded">
+                    {percentInput}%
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                  value={percentInput || ""}
+                  onChange={(e) => setPercentInput(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-white rounded-xl border border-navy/20 font-bold text-navy text-base focus:ring-2 focus:ring-steel shadow-sm"
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="0.5"
+                  value={percentInput}
+                  onChange={(e) => setPercentInput(Number(e.target.value))}
+                  className="w-full accent-steel cursor-pointer"
+                />
+              </div>
+            ) : isFraction ? (
+              /* --- 7. FRACTION CALCULATOR UI --- */
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3">
-                  {/* Fraction 1 */}
                   <div className="flex flex-col items-center gap-2">
                     <input
                       type="number"
@@ -557,7 +968,6 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                     />
                   </div>
 
-                  {/* Operator */}
                   <select
                     value={fracOp}
                     onChange={(e) => setFracOp(e.target.value)}
@@ -569,7 +979,6 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                     <option value="/">÷</option>
                   </select>
 
-                  {/* Fraction 2 */}
                   <div className="flex flex-col items-center gap-2">
                     <input
                       type="number"
@@ -588,7 +997,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </div>
             ) : isCountdown ? (
-              /* --- 3. COUNTDOWN CALCULATOR UI --- */
+              /* --- 8. COUNTDOWN UI --- */
               <div className="space-y-4">
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">Event Title</label>
@@ -610,7 +1019,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </div>
             ) : isConverter ? (
-              /* --- 4. UNIT CONVERTER UI --- */
+              /* --- 9. UNIT CONVERTER UI --- */
               <div className="space-y-4">
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">Amount to Convert</label>
@@ -752,7 +1161,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </div>
             ) : isTzCalculator ? (
-              /* --- 5. TIME ZONE UI --- */
+              /* --- 10. TIME ZONE UI --- */
               <>
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">Select Time</label>
@@ -812,7 +1221,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </>
             ) : isDateAddSubCalculator ? (
-              /* --- 6. DATE ADD / SUBTRACT UI --- */
+              /* --- 11. DATE ADD / SUBTRACT UI --- */
               <>
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">Starting Date</label>
@@ -856,7 +1265,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </>
             ) : isTimeCalculator ? (
-              /* --- 7. TIME DURATION UI --- */
+              /* --- 12. TIME DURATION UI --- */
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -893,7 +1302,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 )}
               </>
             ) : isDateDiffCalculator ? (
-              /* --- 8. DATE DIFFERENCE UI --- */
+              /* --- 13. DATE DIFFERENCE UI --- */
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">Start Date</label>
@@ -915,7 +1324,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </div>
             ) : isAgeCalculator ? (
-              /* --- 9. AGE UI --- */
+              /* --- 14. AGE UI --- */
               <>
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">Date of Birth (DOB)</label>
@@ -937,7 +1346,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                 </div>
               </>
             ) : (
-              /* --- 10. DEDICATED GENERAL UTILITY TOOLS UI --- */
+              /* --- 15. DEDICATED GENERAL UTILITY TOOLS UI --- */
               <>
                 <div>
                   <label className="block font-bold text-sm text-navy mb-2">
@@ -959,10 +1368,6 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                       ? "Body Weight (kg)"
                       : slug.includes("calorie") || slug.includes("water")
                       ? "Body Weight (kg)"
-                      : slug === "cgpa-to-percentage"
-                      ? "Enter CGPA (0 - 10 Scale)"
-                      : slug === "percentage-to-cgpa"
-                      ? "Enter Percentage (%)"
                       : slug === "roas-calculator"
                       ? "Total Campaign Revenue (₹)"
                       : "Primary Input Value"}
@@ -976,7 +1381,7 @@ export function UniversalCalculatorRenderer({ slug, name }: UniversalProps) {
                   />
                 </div>
 
-                {!slug.includes("cgpa") && !slug.includes("water") && (
+                {!slug.includes("water") && (
                   <div>
                     <label className="block font-bold text-sm text-navy mb-2">
                       {slug === "fuel-cost-calculator"
