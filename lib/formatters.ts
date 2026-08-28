@@ -1,27 +1,24 @@
-export function formatINR(val: number, decimals: number = 0): string {
-  if (isNaN(val) || !isFinite(val)) return "₹0";
+export function formatINR(amount: number, showDecimals: boolean = false): string {
+  if (isNaN(amount) || !isFinite(amount)) return "₹0";
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
-    maximumFractionDigits: decimals,
-    minimumFractionDigits: decimals,
-  }).format(val);
+    maximumFractionDigits: showDecimals ? 2 : 0,
+    minimumFractionDigits: showDecimals ? 2 : 0,
+  }).format(amount);
 }
 
-export function formatNumberIN(val: number, decimals: number = 2): string {
-  if (isNaN(val) || !isFinite(val)) return "0";
+export function formatNumberIN(value: number, decimals: number = 2): string {
+  if (isNaN(value) || !isFinite(value)) return "0";
   return new Intl.NumberFormat("en-IN", {
     maximumFractionDigits: decimals,
-  }).format(val);
+    minimumFractionDigits: 0,
+  }).format(value);
 }
 
-export function formatInLakhCrore(amount: number): string {
-  if (isNaN(amount) || amount === 0) return "₹0";
-  if (Math.abs(amount) >= 10000000) {
-    return `₹${(amount / 10000000).toFixed(2)} Cr`;
-  }
-  if (Math.abs(amount) >= 100000) {
-    return `₹${(amount / 100000).toFixed(2)} Lakh`;
-  }
-  return formatINR(amount, 0);
+export function parseCleanNumber(val: string | number, fallback: number = 0): number {
+  if (typeof val === "number") return isNaN(val) ? fallback : val;
+  const cleaned = val.replace(/[^0-9.-]+/g, "");
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? fallback : parsed;
 }

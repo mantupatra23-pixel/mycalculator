@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CALCULATORS } from "@/lib/registry";
 
+import { SalaryCalculatorRenderer } from "@/components/calculators/SalaryCalculatorRenderer";
+import { TaxCalculatorRenderer } from "@/components/calculators/TaxCalculatorRenderer";
 import { FinanceCalculatorRenderer } from "@/components/calculators/FinanceCalculatorRenderer";
 import { MathCalculatorRenderer } from "@/components/calculators/MathCalculatorRenderer";
 import { ConvertersRenderer } from "@/components/calculators/ConvertersRenderer";
@@ -33,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${calc.name} - Free Online Tool | MyCalculators`,
-    description: `${calc.description} Calculate instantly with accurate formulas, interactive sliders, and breakdown schedules.`,
+    description: `${calc.description} Fast, browser-native calculation with verified formulas and real-time breakdowns.`,
     alternates: {
       canonical: `https://mycalculators.xyz/calculators/${calc.slug}`,
     },
@@ -70,7 +72,15 @@ export default function CalculatorDetailPage({ params }: Props) {
     description: calc.description,
   };
 
+  // Complete Isolated Renderer Dispatch
   const renderCalculatorComponent = () => {
+    if (calc.slug === "salary-calculator" || calc.slug === "in-hand-salary-calculator") {
+      return <SalaryCalculatorRenderer slug={calc.slug} name={calc.name} />;
+    }
+    if (calc.slug === "income-tax-calculator") {
+      return <TaxCalculatorRenderer slug={calc.slug} name={calc.name} />;
+    }
+
     switch (calc.category) {
       case "finance":
         return <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />;
@@ -99,7 +109,7 @@ export default function CalculatorDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb with adequate top clearance */}
+      {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-xs font-semibold text-navy/60">
         <Link href="/" className="hover:text-navy">Home</Link>
         <span>/</span>
@@ -110,7 +120,7 @@ export default function CalculatorDetailPage({ params }: Props) {
         <span className="text-navy">{calc.name}</span>
       </div>
 
-      {/* Page Heading */}
+      {/* Page Header */}
       <div>
         <h1 className="text-3xl sm:text-4xl font-black text-navy mb-2 tracking-tight">
           {calc.name}
@@ -120,10 +130,10 @@ export default function CalculatorDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Interactive Calculator Engine */}
+      {/* Isolated Interactive Calculator Component */}
       {renderCalculatorComponent()}
 
-      {/* Educational & FAQ Section */}
+      {/* SEO & Educational Guidance Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
         <div className="md:col-span-8 space-y-8">
           <section className="bg-sage/20 border border-navy/10 rounded-2xl p-6">
@@ -133,15 +143,15 @@ export default function CalculatorDetailPage({ params }: Props) {
             <ul className="space-y-2.5 text-xs sm:text-sm text-navy/80 leading-relaxed">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Adjust parameters via numeric inputs or interactive sliders.</span>
+                <span>Enter your parameters or adjust the interactive sliders above.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>The algorithm generates the complete tenure breakdown in real-time.</span>
+                <span>The algorithm updates the primary metric and detailed schedules in real-time.</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-steel shrink-0 mt-0.5" />
-                <span>Use &ldquo;Copy Result&rdquo; or &ldquo;Share&rdquo; to save calculation results.</span>
+                <span>Click &ldquo;Copy Result&rdquo; to save formatted text results to your clipboard.</span>
               </li>
             </ul>
           </section>
@@ -149,7 +159,7 @@ export default function CalculatorDetailPage({ params }: Props) {
           <section className="space-y-3 text-navy">
             <h2 className="text-xl font-bold">Calculation Methodology</h2>
             <p className="text-xs sm:text-sm text-navy/80 leading-relaxed">
-              Calculations are executed deterministically on your device utilizing standard mathematical, banking, and statistical formulas. All operations happen client-side with zero external latency.
+              Calculations are performed locally in your browser using standard mathematical formulas and statutory provisions without sending sensitive data to remote servers.
             </p>
           </section>
 
@@ -160,18 +170,18 @@ export default function CalculatorDetailPage({ params }: Props) {
             <div className="space-y-3">
               <div className="bg-white border border-navy/15 rounded-xl p-4">
                 <h3 className="font-bold text-sm text-navy mb-1">
-                  Does this schedule cover the entire loan tenure?
+                  Are these calculation results accurate?
                 </h3>
-                <p className="text-xs text-navy/70">
-                  Yes. If you choose 20 or 30 years, the complete year-by-year amortization breakdown will be rendered up to Year 20 or Year 30 with zero balance at completion.
+                <p className="text-xs text-navy/70 leading-relaxed">
+                  Yes, calculations are based on mathematical and statutory formulas. Actual financial, tax, or health outcomes may vary depending on individual policies and amendments.
                 </p>
               </div>
               <div className="bg-white border border-navy/15 rounded-xl p-4">
                 <h3 className="font-bold text-sm text-navy mb-1">
                   Does this tool work offline?
                 </h3>
-                <p className="text-xs text-navy/70">
-                  Yes. Once loaded, all calculators operate locally inside your browser without needing an active connection.
+                <p className="text-xs text-navy/70 leading-relaxed">
+                  Yes. Once loaded, all calculators operate locally inside your browser with zero latency.
                 </p>
               </div>
             </div>
