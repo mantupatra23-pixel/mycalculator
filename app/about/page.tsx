@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "About Us | MyCalculators – Smart Calculators for Everyday Life",
   description: "Learn about MyCalculators, our mission to provide zero-latency, private, and deterministic browser-based calculations for finance, math, business, and health.",
   alternates: {
-    canonical: "https://mycalculators.xyz/about",
+    canonical: "https://mycalculator.xyz/about",
   },
 };
 

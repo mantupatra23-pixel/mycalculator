@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   description:
     "Explore 100+ free online calculators organized across Finance, Business, Math, Health, Time & Date, Converters, and Education.",
   alternates: {
-    canonical: "https://mycalculators.xyz/calculators",
+    canonical: "https://mycalculator.xyz/calculators",
   },
   openGraph: {
     title: "All Calculators Directory | MyCalculators",
     description: "Browse 100+ fast browser-native calculation tools.",
-    url: "https://mycalculators.xyz/calculators",
+    url: "https://mycalculator.xyz/calculators",
     siteName: "MyCalculators",
     locale: "en_IN",
     type: "website",

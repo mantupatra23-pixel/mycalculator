@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: "Calculator Resources, Formula Cheat Sheets & Embeds | MyCalculators",
   description: "Free calculation cheat sheets, Indian financial formulas, embeddable widgets, and practical math guides for bloggers, CAs, and educators.",
   alternates: {
-    canonical: "https://mycalculators.xyz/resources",
+    canonical: "https://mycalculator.xyz/resources",
   },
   openGraph: {
     title: "Financial & Math Calculation Resources | MyCalculators",
     description: "Formulas, embed widgets, and practical calculation guides.",
-    url: "https://mycalculators.xyz/resources",
+    url: "https://mycalculator.xyz/resources",
     siteName: "MyCalculators",
     locale: "en_IN",
     type: "website",
@@ -76,7 +76,7 @@ export default function ResourcesPage() {
             </p>
           </div>
           <div className="bg-sage/20 rounded-xl p-3 text-[11px] font-mono text-navy/80 break-all border border-navy/10">
-            &lt;iframe src=&quot;https://mycalculators.xyz/calculators/emi-calculator&quot; width=&quot;100%&quot; height=&quot;650&quot;&gt;&lt;/iframe&gt;
+            &lt;iframe src=&quot;https://mycalculator.xyz/calculators/emi-calculator&quot; width=&quot;100%&quot; height=&quot;650&quot;&gt;&lt;/iframe&gt;
           </div>
         </div>
 

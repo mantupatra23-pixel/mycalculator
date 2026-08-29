@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mycalculators.xyz"),
+  metadataBase: new URL("https://mycalculator.xyz"),
   title: {
     default: "MyCalculators – Free Online Calculators for Everyday Life",
     template: "%s | MyCalculators",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://mycalculators.xyz",
+    url: "https://mycalculator.xyz",
     siteName: "MyCalculators",
     title: "MyCalculators – Free Online Calculators for Everyday Life",
     description: "Fast, private, browser-based calculation tools.",
@@ -66,19 +66,19 @@ export default function RootLayout({
       {
         "@type": "Organization",
         name: "MyCalculators",
-        url: "https://mycalculators.xyz",
-        logo: "https://mycalculators.xyz/icon-512.png",
+        url: "https://mycalculator.xyz",
+        logo: "https://mycalculator.xyz/icon-512.png",
         sameAs: [],
       },
       {
         "@type": "WebSite",
         name: "MyCalculators",
-        url: "https://mycalculators.xyz",
+        url: "https://mycalculator.xyz",
         potentialAction: {
           "@type": "SearchAction",
           target: {
             "@type": "EntryPoint",
-            urlTemplate: "https://mycalculators.xyz/calculators?q={search_term_string}",
+            urlTemplate: "https://mycalculator.xyz/calculators?q={search_term_string}",
           },
           "query-input": "required name=search_term_string",
         },

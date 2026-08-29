@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Terms of Service | MyCalculators",
   description: "Review the Terms of Service governing the use of MyCalculators and its calculation tools.",
   alternates: {
-    canonical: "https://mycalculators.xyz/terms",
+    canonical: "https://mycalculator.xyz/terms",
   },
 };
 
@@ -36,7 +36,7 @@ export default function TermsPage() {
             <FileText className="w-4 h-4 text-steel" /> 1. Acceptance of Terms
           </h2>
           <p>
-            By accessing and using <strong>MyCalculators</strong> (<code>https://mycalculators.xyz</code>), you acknowledge and agree to comply with these Terms of Service. If you do not agree with any part of these terms, you should discontinue using the website.
+            By accessing and using <strong>MyCalculators</strong> (<code>https://mycalculator.xyz</code>), you acknowledge and agree to comply with these Terms of Service. If you do not agree with any part of these terms, you should discontinue using the website.
           </p>
         </section>
 

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Contact Us | MyCalculators Support & Inquiries",
   description: "Get in touch with the MyCalculators engineering team for feedback, calculator requests, or technical audits.",
   alternates: {
-    canonical: "https://mycalculators.xyz/contact",
+    canonical: "https://mycalculator.xyz/contact",
   },
 };
 

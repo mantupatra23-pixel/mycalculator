@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Calculation Methodology & Legal Disclaimer | MyCalculators",
   description: "Comprehensive legal disclaimer regarding financial, tax, health, and mathematical calculation estimates on MyCalculators.",
   alternates: {
-    canonical: "https://mycalculators.xyz/disclaimer",
+    canonical: "https://mycalculator.xyz/disclaimer",
   },
 };
 

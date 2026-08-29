@@ -12,7 +12,7 @@ export function EmbedModal({ slug, name }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const embedCode = `<iframe src="https://mycalculators.xyz/calculators/${slug}" width="100%" height="650" frameborder="0" style="border:1px solid #e2e8f0;border-radius:16px;max-width:650px;" title="${name} - MyCalculators"></iframe>\n<p style="font-size:12px;color:#64748b;margin-top:6px;">Powered by <a href="https://mycalculators.xyz/calculators/${slug}" target="_blank" rel="noopener" style="color:#2b6cb0;text-decoration:underline;">MyCalculators ${name}</a></p>`;
+  const embedCode = `<iframe src="https://mycalculator.xyz/calculators/${slug}" width="100%" height="650" frameborder="0" style="border:1px solid #e2e8f0;border-radius:16px;max-width:650px;" title="${name} - MyCalculators"></iframe>\n<p style="font-size:12px;color:#64748b;margin-top:6px;">Powered by <a href="https://mycalculator.xyz/calculators/${slug}" target="_blank" rel="noopener" style="color:#2b6cb0;text-decoration:underline;">MyCalculators ${name}</a></p>`;
 
   const handleCopy = () => {
     if (navigator.clipboard) {

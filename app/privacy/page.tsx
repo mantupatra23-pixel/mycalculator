@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy | MyCalculators",
   description: "Read the MyCalculators Privacy Policy. We prioritize browser-native execution without storing or transmitting your sensitive input data.",
   alternates: {
-    canonical: "https://mycalculators.xyz/privacy",
+    canonical: "https://mycalculator.xyz/privacy",
   },
 };
 
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
             <Lock className="w-4 h-4 text-steel" /> 1. Client-Side Execution & Zero Data Retention
           </h2>
           <p>
-            At <strong>MyCalculators</strong> (accessible via <code>https://mycalculators.xyz</code>), user privacy is fundamental to our system architecture. All calculation operations—including loan amounts, salary numbers, tax exemption records, and biometric measurements—are processed locally on your device via client-side JavaScript. We do not store, transmit, log, or monetize your inputs on remote servers.
+            At <strong>MyCalculators</strong> (accessible via <code>https://mycalculator.xyz</code>), user privacy is fundamental to our system architecture. All calculation operations—including loan amounts, salary numbers, tax exemption records, and biometric measurements—are processed locally on your device via client-side JavaScript. We do not store, transmit, log, or monetize your inputs on remote servers.
           </p>
         </section>
 
