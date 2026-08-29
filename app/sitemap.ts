@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { CALCULATORS, CATEGORIES_META, CalculatorCategory } from "@/lib/registry";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://mycalculator.xyz";
+  const baseUrl = "https://www.mycalculator.xyz";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${baseUrl}`, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
