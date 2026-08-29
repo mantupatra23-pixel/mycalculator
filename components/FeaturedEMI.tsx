@@ -71,7 +71,7 @@ Calculated on MyCalculators.xyz`;
         await navigator.share({
           title: "EMI Calculator Result - MyCalculators",
           text: `My monthly loan EMI is ${formatINR(calculation.monthlyEmi)} for a loan of ${formatINR(principal)} at ${rate}%.`,
-          url: "https://mycalculators.xyz/calculators/emi-calculator",
+          url: "https://www.mycalculator.xyz/calculators/emi-calculator",
         });
       } catch {
         // Fallback

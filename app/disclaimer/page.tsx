@@ -27,7 +27,7 @@ export default function DisclaimerPage() {
           Calculation Methodology & Legal Disclaimer
         </h1>
         <p className="text-xs sm:text-sm text-navy/60">
-          Last Reviewed: August 2026 | mycalculators.xyz
+          Last Reviewed: August 2026 | www.mycalculator.xyz
         </p>
       </div>
 

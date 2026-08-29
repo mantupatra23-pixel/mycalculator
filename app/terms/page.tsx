@@ -26,7 +26,7 @@ export default function TermsPage() {
           Terms of Service
         </h1>
         <p className="text-xs sm:text-sm text-navy/60">
-          Last Updated: August 2026 | Governing Domain: mycalculators.xyz
+          Last Updated: August 2026 | Governing Domain: www.mycalculator.xyz
         </p>
       </div>
 

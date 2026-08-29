@@ -58,7 +58,7 @@ export function TaxCalculatorRenderer({ slug, name }: Props) {
       `Base Slab Tax: ${formatINR(b.slabTax)}\n` +
       `Section 87A Rebate: -${formatINR(b.rebate87A)}\n` +
       `Final Estimated Tax: ${formatINR(b.finalTax)}\n` +
-      `\nCalculated on https://mycalculators.xyz/calculators/income-tax-calculator`;
+      `\nCalculated on https://www.mycalculator.xyz/calculators/income-tax-calculator`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);

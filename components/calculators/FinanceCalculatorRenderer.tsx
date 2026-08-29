@@ -92,7 +92,7 @@ export function FinanceCalculatorRenderer({ slug, name }: Props) {
       `MyCalculators - ${name}\n` +
       `${result.primaryLabel}: ${result.primaryValue}\n` +
       result.metrics.map((m) => `${m.label}: ${m.value}`).join("\n") +
-      `\nCalculated on https://mycalculators.xyz/calculators/${slug}`;
+      `\nCalculated on https://www.mycalculator.xyz/calculators/${slug}`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);

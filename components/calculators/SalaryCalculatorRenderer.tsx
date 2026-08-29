@@ -42,7 +42,7 @@ export function SalaryCalculatorRenderer({ slug, name }: Props) {
       `Annual CTC: ${formatINR(ctc)}\n` +
       `Monthly Take-Home: ${result.primaryValue}\n` +
       result.metrics.map((m) => `${m.label}: ${m.value}`).join("\n") +
-      `\nCalculated on https://mycalculators.xyz/calculators/salary-calculator`;
+      `\nCalculated on https://www.mycalculator.xyz/calculators/salary-calculator`;
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);

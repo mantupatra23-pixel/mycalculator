@@ -24,12 +24,12 @@ export const metadata: Metadata = {
   description:
     "Use 100+ free online calculators for EMI, GST, SIP returns, in-hand salary, percentages, age, unit conversions, and health metrics. Fast, private and mobile-friendly.",
   alternates: {
-    canonical: "https://mycalculators.xyz",
+    canonical: "https://www.mycalculator.xyz",
   },
   openGraph: {
     title: "Free Online Calculators for Everyday Life | MyCalculators",
     description: "100+ browser-native calculators for finance, math, business, and health.",
-    url: "https://mycalculators.xyz",
+    url: "https://www.mycalculator.xyz",
     siteName: "MyCalculators",
     locale: "en_IN",
     type: "website",
