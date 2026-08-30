@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { Copy, Share2, RotateCcw, Check, Sparkles, AlertCircle } from "lucide-react";
+import { Copy, Share2, RotateCcw, Check } from "lucide-react";
+import { calculateFiverr } from "@/lib/calculatorEngines";
 
 export function FiverrCalculatorRenderer() {
   const [calcMode, setCalcMode] = useState<"forward" | "reverse">("forward");
@@ -26,7 +27,6 @@ export function FiverrCalculatorRenderer() {
   const withdrawalInputId = useId();
   const fxInputId = useId();
   const tdsInputId = useId();
-  const expenseInputId = useId();
   const targetNetInputId = useId();
 
   const handleReset = () => {
@@ -44,49 +44,23 @@ export function FiverrCalculatorRenderer() {
     setTargetNet(500);
   };
 
-  let grossOrderValue = 0;
-  let fiverrFee = 0;
-  let afterPlatformFee = 0;
-  let estimatedTds = 0;
-  let fxFee = 0;
-  let totalDeductions = 0;
-  let netEarnings = 0;
-
-  if (calcMode === "forward") {
-    grossOrderValue = Math.max(0, (gigPrice + extras + tips) - refunds);
-    fiverrFee = (grossOrderValue * fiverrFeePct) / 100;
-    afterPlatformFee = Math.max(0, grossOrderValue - fiverrFee);
-    estimatedTds = (grossOrderValue * tdsPct) / 100;
-    fxFee = (afterPlatformFee * fxSpreadPct) / 100;
-    totalDeductions = fiverrFee + estimatedTds + withdrawalFee + fxFee + otherExpenses;
-    netEarnings = Math.max(0, grossOrderValue - totalDeductions);
-  } else {
-    // Reverse Mode: Target Net to Required Order Price
-    const desired = Math.max(0, isNaN(targetNet) ? 0 : targetNet);
-    const platformRate = fiverrFeePct / 100;
-    const tdsRate = tdsPct / 100;
-    const fxRate = (fxSpreadPct / 100) * (1 - platformRate);
-    const totalRate = platformRate + tdsRate + fxRate;
-
-    if (totalRate >= 1) {
-      grossOrderValue = 0;
-    } else {
-      grossOrderValue = (desired + withdrawalFee + otherExpenses) / (1 - totalRate);
-    }
-
-    fiverrFee = (grossOrderValue * fiverrFeePct) / 100;
-    afterPlatformFee = Math.max(0, grossOrderValue - fiverrFee);
-    estimatedTds = (grossOrderValue * tdsPct) / 100;
-    fxFee = (afterPlatformFee * fxSpreadPct) / 100;
-    totalDeductions = fiverrFee + estimatedTds + withdrawalFee + fxFee + otherExpenses;
-    netEarnings = desired;
-  }
-
-  const effectiveDeductionPct = grossOrderValue > 0 ? (totalDeductions / grossOrderValue) * 100 : 0;
-  const netMarginPct = grossOrderValue > 0 ? (netEarnings / grossOrderValue) * 100 : 0;
+  // Pure Shared Calculation Engine
+  const result = calculateFiverr({
+    mode: calcMode,
+    gigPrice,
+    extras,
+    tips,
+    refunds,
+    fiverrFeePct,
+    tdsPct,
+    fxSpreadPct,
+    withdrawalFee,
+    otherExpenses,
+    targetNet,
+  });
 
   const handleCopy = () => {
-    const text = `Fiverr Earnings Breakdown:\nGross Order Value: ${currency}${grossOrderValue.toFixed(2)}\nFiverr Fee (${fiverrFeePct}%): -${currency}${fiverrFee.toFixed(2)}\nEstimated TDS (${tdsPct}%): -${currency}${estimatedTds.toFixed(2)}\nWithdrawal & FX Fees: -${currency}${(withdrawalFee + fxFee).toFixed(2)}\nNet In-Pocket Earnings: ${currency}${netEarnings.toFixed(2)}\nNet Margin: ${netMarginPct.toFixed(2)}%\nCalculated on https://www.mycalculator.xyz/calculators/fiverr-net-earnings-calculator`;
+    const text = `Fiverr Earnings Breakdown:\nGross Order Value: ${currency}${result.grossOrderValue.toFixed(2)}\nFiverr Platform Fee (${fiverrFeePct}%): -${currency}${result.fiverrFee.toFixed(2)}\nEstimated TDS (${tdsPct}%): -${currency}${result.estimatedTds.toFixed(2)}\nWithdrawal & FX Fees: -${currency}${(result.withdrawalFee + result.fxFee).toFixed(2)}\nNet In-Pocket Earnings: ${currency}${result.netEarnings.toFixed(2)}\nNet Margin: ${result.netMarginPct.toFixed(2)}%\nCalculated on https://www.mycalculator.xyz/calculators/fiverr-net-earnings-calculator`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -216,7 +190,7 @@ export function FiverrCalculatorRenderer() {
             </div>
           )}
 
-          {/* Platform & Fee Controls */}
+          {/* Configurable Commission & Deductions */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
             <div className="space-y-1.5">
               <label htmlFor={fiverrFeeInputId} className="text-xs font-bold text-navy">
@@ -284,14 +258,14 @@ export function FiverrCalculatorRenderer() {
             </span>
             <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {currency}
-              {(calcMode === "forward" ? netEarnings : grossOrderValue).toLocaleString(undefined, {
+              {(calcMode === "forward" ? result.netEarnings : result.grossOrderValue).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
             </div>
             <div className="flex items-center gap-2 pt-1">
               <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-white/10 text-cream/90">
-                Net Margin: {netMarginPct.toFixed(1)}%
+                Net Margin: {result.netMarginPct.toFixed(1)}%
               </span>
             </div>
           </div>
@@ -301,33 +275,39 @@ export function FiverrCalculatorRenderer() {
             <div className="flex justify-between text-cream/80">
               <span>Gross Order Value</span>
               <span className="font-bold text-white">
-                {currency}{grossOrderValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.grossOrderValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between text-cream/80">
-              <span>Fiverr 20% Seller Commission</span>
+              <span>Fiverr Commission ({fiverrFeePct}%)</span>
               <span className="font-bold text-red-300">
-                -{currency}{fiverrFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{result.fiverrFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+            <div className="flex justify-between text-cream/80">
+              <span>Post-Platform Amount</span>
+              <span className="font-bold text-white">
+                {currency}{result.postPlatformAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             {tdsPct > 0 && (
               <div className="flex justify-between text-cream/80">
                 <span>Estimated TDS Withholding ({tdsPct}%)</span>
                 <span className="font-bold text-red-300">
-                  -{currency}{estimatedTds.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  -{currency}{result.estimatedTds.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             )}
             <div className="flex justify-between text-cream/80">
               <span>Withdrawal & FX Spread</span>
               <span className="font-bold text-red-300">
-                -{currency}{(withdrawalFee + fxFee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{(result.withdrawalFee + result.fxFee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-cream/15 font-black text-white text-base">
-              <span>Net Take-Home Earnings</span>
+              <span>Net In-Pocket Earnings</span>
               <span className="text-emerald-300">
-                {currency}{netEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.netEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { Copy, Share2, RotateCcw, Check, TrendingUp, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Copy, Share2, RotateCcw, Check, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { calculateEcommerceRoas } from "@/lib/calculatorEngines";
 
 export function EcommerceRoasCalculatorRenderer() {
   const [currency, setCurrency] = useState<"₹" | "$">("₹");
@@ -46,35 +47,24 @@ export function EcommerceRoasCalculatorRenderer() {
     setFixedCosts(10000);
   };
 
-  const validOrders = Math.max(0, isNaN(orders) ? 0 : orders);
-  const effectiveUnitPrice = sellingPrice * (1 - discountPct / 100);
-  const grossRevenue = validOrders * effectiveUnitPrice;
-  const netRevenue = grossRevenue * (1 - returnsRefundPct / 100);
-
-  // Unit and batch variable costs
-  const totalCogs = validOrders * productCost;
-  const totalShipping = validOrders * shippingCost;
-  const totalPackaging = validOrders * packagingCost;
-  const totalMarketplaceFees = (netRevenue * marketplaceFeePct) / 100;
-  const totalPgFees = (netRevenue * paymentGatewayFeePct) / 100;
-  const totalOtherVar = validOrders * otherVariableCost;
-
-  const totalNonAdVariableCosts = totalCogs + totalShipping + totalPackaging + totalMarketplaceFees + totalPgFees + totalOtherVar;
-  const contributionMargin = netRevenue - totalNonAdVariableCosts;
-  const contributionMarginPct = netRevenue > 0 ? (contributionMargin / netRevenue) * 100 : 0;
-
-  // Net Profit & ROAS metrics
-  const netProfit = contributionMargin - adSpend - fixedCosts;
-  const netProfitMarginPct = grossRevenue > 0 ? (netProfit / grossRevenue) * 100 : 0;
-  const actualRoas = adSpend > 0 ? grossRevenue / adSpend : 0;
-  
-  // Break-even ROAS is Revenue required to yield enough contribution margin to cover ad spend
-  const breakEvenRoas = contributionMargin > 0 ? grossRevenue / contributionMargin : 0;
-  const maxCac = validOrders > 0 ? Math.max(0, (contributionMargin - fixedCosts) / validOrders) : 0;
-  const currentCac = validOrders > 0 ? adSpend / validOrders : 0;
+  // Pure Shared Engine Execution
+  const result = calculateEcommerceRoas({
+    sellingPrice,
+    orders,
+    productCost,
+    shippingCost,
+    packagingCost,
+    marketplaceFeePct,
+    paymentGatewayFeePct,
+    adSpend,
+    returnsRefundPct,
+    discountPct,
+    otherVariableCost,
+    fixedCosts,
+  });
 
   const handleCopy = () => {
-    const text = `E-Commerce ROAS & Profitability Audit:\nGross Revenue: ${currency}${grossRevenue.toFixed(2)}\nTotal Ad Spend: ${currency}${adSpend.toFixed(2)}\nActual ROAS: ${actualRoas.toFixed(2)}x\nBreak-Even ROAS Target: ${breakEvenRoas.toFixed(2)}x\nNet Profit: ${currency}${netProfit.toFixed(2)} (${netProfitMarginPct.toFixed(2)}% Margin)\nMaximum Target CAC: ${currency}${maxCac.toFixed(2)}\nCalculated on https://www.mycalculator.xyz/calculators/ecommerce-roas-break-even-calculator`;
+    const text = `E-Commerce ROAS & Profitability Audit:\nGross Revenue: ${currency}${result.grossRevenue.toFixed(2)}\nTotal Ad Spend: ${currency}${adSpend.toFixed(2)}\nActual ROAS: ${result.actualRoas.toFixed(2)}x\nBreak-Even ROAS Target: ${result.breakEvenRoas.toFixed(2)}x\nNet Profit: ${currency}${result.netProfit.toFixed(2)} (${result.netProfitMarginPct.toFixed(2)}% Margin)\nMaximum Target CAC: ${currency}${result.maxCac.toFixed(2)}\nCalculated on https://www.mycalculator.xyz/calculators/ecommerce-roas-break-even-calculator`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -99,15 +89,15 @@ export function EcommerceRoasCalculatorRenderer() {
           <span className="text-xs font-bold text-navy">Profitability Status:</span>
           <span
             className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-black ${
-              netProfit > 0
+              result.netProfit > 0
                 ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                : netProfit === 0
+                : result.netProfit === 0
                 ? "bg-amber-100 text-amber-800 border border-amber-300"
                 : "bg-red-100 text-red-800 border border-red-300"
             }`}
           >
-            {netProfit > 0 ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
-            {netProfit > 0 ? "Profitable Operation" : netProfit === 0 ? "Exact Break-Even" : "Loss-Making Campaign"}
+            {result.netProfit > 0 ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
+            {result.netProfit > 0 ? "Profitable Operation" : result.netProfit === 0 ? "Exact Break-Even" : "Loss-Making Campaign"}
           </span>
         </div>
 
@@ -275,13 +265,13 @@ export function EcommerceRoasCalculatorRenderer() {
             <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#e89d67]">
               Net Profit / Bottom Line
             </span>
-            <div className={`text-3xl sm:text-4xl font-black tracking-tight ${netProfit >= 0 ? "text-emerald-300" : "text-rose-400"}`}>
+            <div className={`text-3xl sm:text-4xl font-black tracking-tight ${result.netProfit >= 0 ? "text-emerald-300" : "text-rose-400"}`}>
               {currency}
-              {netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {result.netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div className="flex items-center gap-2 pt-1">
               <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-white/10 text-cream/90">
-                Profit Margin: {netProfitMarginPct.toFixed(1)}%
+                Profit Margin: {result.netProfitMarginPct.toFixed(1)}%
               </span>
             </div>
           </div>
@@ -290,40 +280,40 @@ export function EcommerceRoasCalculatorRenderer() {
           <div className="grid grid-cols-2 gap-3 p-3.5 bg-white/5 rounded-2xl border border-cream/10 text-xs">
             <div>
               <span className="text-cream/60 block text-[10px] uppercase font-bold">Actual ROAS</span>
-              <strong className="text-lg text-white font-black">{actualRoas.toFixed(2)}x</strong>
+              <strong className="text-lg text-white font-black">{result.actualRoas.toFixed(2)}x</strong>
             </div>
             <div>
               <span className="text-cream/60 block text-[10px] uppercase font-bold">Break-Even ROAS</span>
-              <strong className="text-lg text-[#e89d67] font-black">{breakEvenRoas.toFixed(2)}x</strong>
+              <strong className="text-lg text-[#e89d67] font-black">{result.breakEvenRoas.toFixed(2)}x</strong>
             </div>
             <div>
               <span className="text-cream/60 block text-[10px] uppercase font-bold">Current CAC</span>
-              <strong className="text-sm text-white font-bold">{currency}{currentCac.toFixed(2)}</strong>
+              <strong className="text-sm text-white font-bold">{currency}{result.currentCac.toFixed(2)}</strong>
             </div>
             <div>
               <span className="text-cream/60 block text-[10px] uppercase font-bold">Maximum Target CAC</span>
-              <strong className="text-sm text-emerald-300 font-bold">{currency}{maxCac.toFixed(2)}</strong>
+              <strong className="text-sm text-emerald-300 font-bold">{currency}{result.maxCac.toFixed(2)}</strong>
             </div>
           </div>
 
           {/* Itemized P&L Rows */}
           <div className="space-y-2 pt-2 border-t border-cream/15 text-xs">
             <div className="flex justify-between text-cream/80">
-              <span>Gross Revenue ({validOrders} Orders)</span>
+              <span>Gross Revenue ({orders} Orders)</span>
               <span className="font-bold text-white">
-                {currency}{grossRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.grossRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between text-cream/80">
               <span>Returns & Adjustments ({returnsRefundPct}%)</span>
               <span className="font-bold text-red-300">
-                -{currency}{(grossRevenue - netRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{result.returnsAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between text-cream/80">
               <span>COGS, Shipping & Packaging</span>
               <span className="font-bold text-red-300">
-                -{currency}{(totalCogs + totalShipping + totalPackaging).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{(result.totalCogs + result.totalShipping + result.totalPackaging).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between text-cream/80">

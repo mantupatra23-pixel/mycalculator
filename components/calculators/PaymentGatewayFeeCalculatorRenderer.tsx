@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { Copy, Share2, RotateCcw, Check, ArrowRightLeft, CreditCard, ShieldCheck } from "lucide-react";
+import { Copy, Share2, RotateCcw, Check } from "lucide-react";
+import { calculatePaymentGateway } from "@/lib/calculatorEngines";
 
 interface GatewayPreset {
   name: string;
@@ -59,49 +60,18 @@ export function PaymentGatewayFeeCalculatorRenderer() {
     setConversionFeePct(0);
   };
 
-  // Calculations
-  let grossAmount = 0;
-  let baseFee = 0;
-  let taxOnFee = 0;
-  let totalGatewayFee = 0;
-  let conversionFee = 0;
-  let totalDeduction = 0;
-  let netReceived = 0;
-
-  const validAmount = Math.max(0, isNaN(amount) ? 0 : amount);
-
-  if (calcMode === "forward") {
-    grossAmount = validAmount;
-    baseFee = (grossAmount * feePct) / 100 + fixedFee;
-    taxOnFee = (baseFee * taxPct) / 100;
-    totalGatewayFee = baseFee + taxOnFee;
-    conversionFee = (grossAmount * conversionFeePct) / 100;
-    totalDeduction = totalGatewayFee + conversionFee;
-    netReceived = Math.max(0, grossAmount - totalDeduction);
-  } else {
-    // Reverse: Target Net to Customer Charge
-    const targetNet = validAmount;
-    const effectiveFeeRate = (feePct / 100) * (1 + taxPct / 100) + conversionFeePct / 100;
-    const fixedWithTax = fixedFee * (1 + taxPct / 100);
-    
-    if (effectiveFeeRate >= 1) {
-      grossAmount = 0;
-    } else {
-      grossAmount = (targetNet + fixedWithTax) / (1 - effectiveFeeRate);
-    }
-    
-    baseFee = (grossAmount * feePct) / 100 + fixedFee;
-    taxOnFee = (baseFee * taxPct) / 100;
-    totalGatewayFee = baseFee + taxOnFee;
-    conversionFee = (grossAmount * conversionFeePct) / 100;
-    totalDeduction = totalGatewayFee + conversionFee;
-    netReceived = targetNet;
-  }
-
-  const effectiveFeePct = grossAmount > 0 ? (totalDeduction / grossAmount) * 100 : 0;
+  // Pure Shared Engine Execution
+  const result = calculatePaymentGateway({
+    mode: calcMode,
+    amount,
+    feePct,
+    fixedFee,
+    taxPct,
+    conversionFeePct,
+  });
 
   const handleCopy = () => {
-    const text = `Payment Gateway Fee Breakdown:\nMode: ${calcMode === "forward" ? "Standard Charge" : "Target Net Calculation"}\nCustomer Charge: ${currency}${grossAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\nTotal Gateway & Tax Fees: -${currency}${totalDeduction.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\nNet Amount Received: ${currency}${netReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\nEffective Fee: ${effectiveFeePct.toFixed(2)}%\nCalculated on https://www.mycalculator.xyz/calculators/payment-gateway-fee-calculator`;
+    const text = `Payment Gateway Fee Breakdown:\nMode: ${calcMode === "forward" ? "Standard Charge" : "Target Net Calculation"}\nCustomer Charge: ${currency}${result.grossAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\nTotal Gateway & Tax Fees: -${currency}${result.totalDeduction.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\nNet Amount Received: ${currency}${result.netReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\nEffective Fee: ${result.effectiveFeePct.toFixed(2)}%\nCalculated on https://www.mycalculator.xyz/calculators/payment-gateway-fee-calculator`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -287,14 +257,14 @@ export function PaymentGatewayFeeCalculatorRenderer() {
             </span>
             <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {currency}
-              {(calcMode === "forward" ? netReceived : grossAmount).toLocaleString(undefined, {
+              {(calcMode === "forward" ? result.netReceived : result.grossAmount).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
             </div>
             <div className="flex items-center gap-2 pt-1">
               <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-white/10 text-cream/90">
-                Effective Fee: {effectiveFeePct.toFixed(2)}%
+                Effective Fee: {result.effectiveFeePct.toFixed(2)}%
               </span>
             </div>
           </div>
@@ -304,20 +274,20 @@ export function PaymentGatewayFeeCalculatorRenderer() {
             <div className="flex justify-between text-cream/80">
               <span>Customer Transaction Amount</span>
               <span className="font-bold text-white">
-                {currency}{grossAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.grossAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between text-cream/80">
               <span>Base Gateway Fee ({feePct}% + {currency}{fixedFee})</span>
               <span className="font-bold text-red-300">
-                -{currency}{baseFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{result.baseFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             {taxPct > 0 && (
               <div className="flex justify-between text-cream/80">
                 <span>Tax / GST on Gateway ({taxPct}%)</span>
                 <span className="font-bold text-red-300">
-                  -{currency}{taxOnFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  -{currency}{result.taxOnFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             )}
@@ -325,20 +295,20 @@ export function PaymentGatewayFeeCalculatorRenderer() {
               <div className="flex justify-between text-cream/80">
                 <span>Currency FX Fee ({conversionFeePct}%)</span>
                 <span className="font-bold text-red-300">
-                  -{currency}{conversionFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  -{currency}{result.conversionFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             )}
             <div className="flex justify-between pt-2 border-t border-cream/15 font-extrabold text-white text-sm">
               <span>Total Deductions</span>
               <span className="text-red-300">
-                -{currency}{totalDeduction.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{result.totalDeduction.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between pt-1 font-black text-white text-base">
               <span>Net In-Pocket Payout</span>
               <span className="text-emerald-300">
-                {currency}{netReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.netReceived.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           </div>

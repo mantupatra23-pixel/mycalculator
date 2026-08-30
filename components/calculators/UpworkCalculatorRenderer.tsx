@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { Copy, Share2, RotateCcw, Check, UserCheck, ShieldAlert, Calendar } from "lucide-react";
+import { Copy, Share2, RotateCcw, Check } from "lucide-react";
+import { calculateUpwork } from "@/lib/calculatorEngines";
 
 export function UpworkCalculatorRenderer() {
   const [contractAmount, setContractAmount] = useState<number>(1000);
@@ -14,10 +15,12 @@ export function UpworkCalculatorRenderer() {
   const [fxSpreadPct, setFxSpreadPct] = useState<number>(1.5);
   const [otherExpenses, setOtherExpenses] = useState<number>(0);
   const [monthlyProjects, setMonthlyProjects] = useState<number>(4);
+  const [customTdsPct, setCustomTdsPct] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
 
   const contractInputId = useId();
   const upworkFeeInputId = useId();
+  const tdsInputId = useId();
   const withdrawalInputId = useId();
   const fxInputId = useId();
   const expenseInputId = useId();
@@ -34,36 +37,30 @@ export function UpworkCalculatorRenderer() {
     setFxSpreadPct(1.5);
     setOtherExpenses(0);
     setMonthlyProjects(4);
+    setCustomTdsPct(null);
   };
 
-  const grossInvoice = Math.max(0, isNaN(contractAmount) ? 0 : contractAmount);
-  const upworkServiceFee = (grossInvoice * upworkFeePct) / 100;
-  const afterUpworkFee = Math.max(0, grossInvoice - upworkServiceFee);
-
-  // Indian Section 194-O TDS logic
-  let tdsRate = 0;
-  if (country === "IN") {
-    if (panCompliant && aadhaarLinked) {
-      tdsRate = 1.0; // 1% under section 194-O
-    } else {
-      tdsRate = 5.0; // Higher withholding if PAN/compliance link missing
-    }
+  // Determine active TDS rate
+  let activeTdsRate = 0;
+  if (customTdsPct !== null) {
+    activeTdsRate = customTdsPct;
+  } else if (country === "IN") {
+    activeTdsRate = panCompliant && aadhaarLinked ? 1.0 : 5.0;
   }
 
-  const estimatedTds = (grossInvoice * tdsRate) / 100;
-  const fxFee = (afterUpworkFee * fxSpreadPct) / 100;
-  const totalDeductions = upworkServiceFee + estimatedTds + withdrawalFee + fxFee + otherExpenses;
-  const netPayout = Math.max(0, grossInvoice - totalDeductions);
-  const effectiveDeductionPct = grossInvoice > 0 ? (totalDeductions / grossInvoice) * 100 : 0;
-
-  // Annual Projections
-  const annualGross = grossInvoice * monthlyProjects * 12;
-  const annualUpworkFees = upworkServiceFee * monthlyProjects * 12;
-  const annualTds = estimatedTds * monthlyProjects * 12;
-  const annualNet = netPayout * monthlyProjects * 12;
+  // Pure Shared Engine Computation
+  const result = calculateUpwork({
+    invoiceAmount: contractAmount,
+    upworkFeePct,
+    tdsPct: activeTdsRate,
+    fxSpreadPct,
+    withdrawalFee,
+    otherExpenses,
+    monthlyProjects,
+  });
 
   const handleCopy = () => {
-    const text = `Upwork Net Earnings Breakdown:\nGross Invoice: ${currency}${grossInvoice.toFixed(2)}\nUpwork Service Fee (${upworkFeePct}%): -${currency}${upworkServiceFee.toFixed(2)}\nEstimated TDS (${tdsRate}%): -${currency}${estimatedTds.toFixed(2)}\nWithdrawal & FX Fees: -${currency}${(withdrawalFee + fxFee).toFixed(2)}\nNet Take-Home Payout: ${currency}${netPayout.toFixed(2)}\nEffective Deduction: ${effectiveDeductionPct.toFixed(2)}%\nAnnual Projected Net (${monthlyProjects} proj/mo): ${currency}${annualNet.toFixed(2)}\nCalculated on https://www.mycalculator.xyz/calculators/upwork-net-earnings-calculator`;
+    const text = `Upwork Net Earnings Breakdown:\nGross Invoice: ${currency}${result.grossInvoice.toFixed(2)}\nUpwork Service Fee (${upworkFeePct}%): -${currency}${result.upworkServiceFee.toFixed(2)}\nEstimated TDS (${activeTdsRate}%): -${currency}${result.estimatedTds.toFixed(2)}\nWithdrawal & FX Fees: -${currency}${(result.withdrawalFee + result.fxFee).toFixed(2)}\nNet Take-Home Payout: ${currency}${result.netPayout.toFixed(2)}\nEffective Deduction: ${result.effectiveDeductionPct.toFixed(2)}%\nAnnual Projected Net (${monthlyProjects} proj/mo): ${currency}${result.annualNet.toFixed(2)}\nCalculated on https://www.mycalculator.xyz/calculators/upwork-net-earnings-calculator`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -89,14 +86,20 @@ export function UpworkCalculatorRenderer() {
           <div className="inline-flex rounded-lg border border-navy/10 p-0.5 bg-sage/20">
             <button
               type="button"
-              onClick={() => setCountry("IN")}
+              onClick={() => {
+                setCountry("IN");
+                setCustomTdsPct(null);
+              }}
               className={`px-3 py-1 text-xs font-bold rounded-md ${country === "IN" ? "bg-white text-navy shadow-xs" : "text-navy/60"}`}
             >
               India (TDS 194-O)
             </button>
             <button
               type="button"
-              onClick={() => setCountry("OTHER")}
+              onClick={() => {
+                setCountry("OTHER");
+                setCustomTdsPct(0);
+              }}
               className={`px-3 py-1 text-xs font-bold rounded-md ${country === "OTHER" ? "bg-white text-navy shadow-xs" : "text-navy/60"}`}
             >
               Global / US / Other
@@ -179,19 +182,26 @@ export function UpworkCalculatorRenderer() {
             </div>
           </div>
 
-          {/* India Statutory Compliance Toggles */}
-          {country === "IN" && (
-            <div className="p-4 bg-sage/20 border border-navy/10 rounded-2xl space-y-3">
+          {/* Statutory Tax Compliance Section */}
+          <div className="p-4 bg-sage/20 border border-navy/10 rounded-2xl space-y-3">
+            <div className="flex items-center justify-between">
               <span className="text-xs font-extrabold uppercase tracking-wider text-navy block">
-                Indian Tax (Section 194-O TDS) Compliance
+                Estimated Tax / TDS Rate (%)
               </span>
+              <span className="text-[11px] font-bold text-steel">Active: {activeTdsRate}%</span>
+            </div>
+
+            {country === "IN" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={panCompliant}
-                    onChange={(e) => setPanCompliant(e.target.checked)}
-                    className="w-4 h-4 rounded text-steel focus:ring-steel"
+                    onChange={(e) => {
+                      setPanCompliant(e.target.checked);
+                      setCustomTdsPct(null);
+                    }}
+                    className="w-4 h-4 rounded text-steel"
                   />
                   <span className="font-semibold text-navy/80">Valid PAN Submitted</span>
                 </label>
@@ -199,21 +209,34 @@ export function UpworkCalculatorRenderer() {
                   <input
                     type="checkbox"
                     checked={aadhaarLinked}
-                    onChange={(e) => setAadhaarLinked(e.target.checked)}
-                    className="w-4 h-4 rounded text-steel focus:ring-steel"
+                    onChange={(e) => {
+                      setAadhaarLinked(e.target.checked);
+                      setCustomTdsPct(null);
+                    }}
+                    className="w-4 h-4 rounded text-steel"
                   />
                   <span className="font-semibold text-navy/80">Aadhaar Linked with PAN</span>
                 </label>
               </div>
-              <p className="text-[11px] text-navy/60 leading-relaxed">
-                {panCompliant && aadhaarLinked
-                  ? "Standard 1% TDS applies on gross freelance billings."
-                  : "Higher 5% withholding rate applies due to pending PAN/Aadhaar statutory linking."}
-              </p>
-            </div>
-          )}
+            )}
 
-          {/* Additional Fees */}
+            <div>
+              <label htmlFor={tdsInputId} className="text-[11px] text-navy/70 block mb-1">
+                Override / Custom Estimated TDS (%):
+              </label>
+              <input
+                id={tdsInputId}
+                type="number"
+                step="0.1"
+                min="0"
+                value={customTdsPct !== null ? customTdsPct : activeTdsRate}
+                onChange={(e) => setCustomTdsPct(parseFloat(e.target.value) || 0)}
+                className="w-full px-3 py-1.5 text-xs font-bold text-navy bg-white border border-navy/15 rounded-xl"
+              />
+            </div>
+          </div>
+
+          {/* Additional Charges */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="space-y-1">
               <label htmlFor={withdrawalInputId} className="text-[11px] font-bold text-navy">
@@ -281,11 +304,11 @@ export function UpworkCalculatorRenderer() {
             </span>
             <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
               {currency}
-              {netPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {result.netPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div className="flex items-center gap-2 pt-1">
               <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-white/10 text-cream/90">
-                Effective Deduction: {effectiveDeductionPct.toFixed(2)}%
+                Effective Deduction: {result.effectiveDeductionPct.toFixed(2)}%
               </span>
             </div>
           </div>
@@ -293,43 +316,43 @@ export function UpworkCalculatorRenderer() {
           {/* Itemized Deductions */}
           <div className="space-y-2.5 pt-3 border-t border-cream/15 text-xs">
             <div className="flex justify-between text-cream/80">
-              <span>Gross Project Value</span>
+              <span>Gross Project Invoice</span>
               <span className="font-bold text-white">
-                {currency}{grossInvoice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.grossInvoice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
             <div className="flex justify-between text-cream/80">
               <span>Upwork Service Fee ({upworkFeePct}%)</span>
               <span className="font-bold text-red-300">
-                -{currency}{upworkServiceFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{result.upworkServiceFee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
-            {country === "IN" && (
+            {activeTdsRate > 0 && (
               <div className="flex justify-between text-cream/80">
-                <span>Estimated TDS Section 194-O ({tdsRate}%)</span>
+                <span>Estimated TDS ({activeTdsRate}%)</span>
                 <span className="font-bold text-red-300">
-                  -{currency}{estimatedTds.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  -{currency}{result.estimatedTds.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             )}
             <div className="flex justify-between text-cream/80">
               <span>Withdrawal & FX Conversion</span>
               <span className="font-bold text-red-300">
-                -{currency}{(withdrawalFee + fxFee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                -{currency}{(result.withdrawalFee + result.fxFee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
-            {otherExpenses > 0 && (
+            {result.otherExpenses > 0 && (
               <div className="flex justify-between text-cream/80">
                 <span>Direct Business Expenses</span>
                 <span className="font-bold text-red-300">
-                  -{currency}{otherExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  -{currency}{result.otherExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             )}
             <div className="flex justify-between pt-2 border-t border-cream/15 font-black text-white text-base">
               <span>Net Take-Home Payout</span>
               <span className="text-emerald-300">
-                {currency}{netPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {currency}{result.netPayout.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           </div>
@@ -342,11 +365,11 @@ export function UpworkCalculatorRenderer() {
             <div className="grid grid-cols-2 gap-2 text-[11px]">
               <div>
                 <span className="text-cream/60 block">Annual Gross:</span>
-                <strong className="text-white">{currency}{annualGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+                <strong className="text-white">{currency}{result.annualGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
               </div>
               <div>
                 <span className="text-cream/60 block">Annual Net:</span>
-                <strong className="text-emerald-300">{currency}{annualNet.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
+                <strong className="text-emerald-300">{currency}{result.annualNet.toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>
               </div>
             </div>
           </div>
