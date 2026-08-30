@@ -99,7 +99,7 @@ export const CATEGORIES = Object.keys(CATEGORIES_META) as CalculatorCategory[];
 
 export const CALCULATORS: CalculatorMeta[] = [
   // ==========================================
-  // 1. FINANCE CALCULATORS (27 Calculators)
+  // 1. FINANCE CALCULATORS
   // ==========================================
   {
     id: "emi-calculator",
@@ -133,6 +133,73 @@ export const CALCULATORS: CalculatorMeta[] = [
       { q: "How is loan EMI calculated?", a: "EMI is computed using the reducing balance formula taking principal loan amount, monthly interest rate, and total monthly installments into account." },
       { q: "Does extending tenure increase total interest?", a: "Yes. Longer loan tenures reduce your monthly installment amount but significantly increase overall compound interest paid across the lifetime of the loan." },
       { q: "What happens if interest rates change?", a: "For floating-rate loans, an increase in benchmark interest rate generally increases the loan tenure or monthly EMI amount." },
+    ],
+  },
+  {
+    id: "upwork-net-earnings-calculator",
+    slug: "upwork-net-earnings-calculator",
+    name: "Upwork Net Earnings & Tax Calculator",
+    category: "finance",
+    description: "Calculate your exact take-home pay on Upwork after freelancer service fees, Indian Section 194-O TDS, forex conversion, and withdrawal charges.",
+    keywords: ["upwork fee calculator", "upwork earnings calculator", "upwork tds calculator", "upwork net income", "freelance take home calculator"],
+    popular: true,
+    featured: true,
+    lastUpdated: "August 2026",
+    formulaDescription: "Net Payout = Gross Invoice - (Upwork Service Fee + Estimated TDS + Withdrawal Fee + FX Conversion Spread + Business Overheads)",
+    formulaVariables: [
+      { symbol: "Gross Invoice", label: "Total Client Billed Amount" },
+      { symbol: "Service Fee", label: "Upwork Commission Rate (e.g. 10%)" },
+      { symbol: "TDS 194-O", label: "Income Tax Withholding (1% with PAN, 5% without)" },
+      { symbol: "FX Spread", label: "Currency Conversion Spread / Direct Bank Transfer Fees" },
+    ],
+    workedExample: {
+      scenario: "$1,000 Upwork Project delivered by a PAN-compliant Indian Freelancer",
+      inputs: { "Gross Invoice": "$1,000", "Upwork Fee": "10% ($100)", "Indian TDS (194-O)": "1% ($10)", "Withdrawal Fee": "$0.99" },
+      result: "Upwork Fee: -$100 | TDS: -$10 | Withdrawal: -$0.99 | Net Take-Home: $889.01",
+      explanation: "After deducting Upwork's 10% standard service fee and 1% statutory TDS withholding under Indian Section 194-O, the freelancer receives $889.01.",
+    },
+    assumptions: [
+      "Upwork service fee rate is configurable across standard historical tiers (10%, 5%, 0%, 15%).",
+      "Section 194-O TDS applies at 1% for verified PAN profiles and 5% for non-compliant profiles.",
+      "TDS deducted can be adjusted against total annual income tax liability during ITR filing.",
+    ],
+    relatedCalculators: ["fiverr-net-earnings-calculator", "freelance-hourly-rate", "salary-calculator", "income-tax-calculator"],
+    faqs: [
+      { q: "How much does Upwork take from freelancers?", a: "Upwork charges a standard flat 10% freelancer service fee on all eligible contracts." },
+      { q: "What is Section 194-O TDS for Indian Upwork freelancers?", a: "Under Indian Tax Laws, Upwork withholds 1% TDS on gross client billings for freelancers with a valid PAN on file." },
+      { q: "Can I claim a refund for Upwork TDS?", a: "Yes, TDS withheld is deposited with the Income Tax Department and appears in Form 26AS/AIS, which you can claim back or offset during annual ITR filing." },
+    ],
+  },
+  {
+    id: "fiverr-net-earnings-calculator",
+    slug: "fiverr-net-earnings-calculator",
+    name: "Fiverr Net Earnings & Tax Calculator",
+    category: "finance",
+    description: "Calculate your net profit from Fiverr gig sales, extras, and tips after 20% seller fees, Indian TDS withholding, and bank withdrawal fees.",
+    keywords: ["fiverr fee calculator", "fiverr earnings calculator", "fiverr net payout", "fiverr seller tax calculator", "fiverr reverse pricing"],
+    popular: true,
+    lastUpdated: "August 2026",
+    formulaDescription: "Net Payout = (Gig Base + Extras + Tips - Refunds) × (1 - Commission %) - (TDS + FX Spread + Withdrawal Fee)",
+    formulaVariables: [
+      { symbol: "Gross Order", label: "Total Order Amount (Base + Extras + Tips)" },
+      { symbol: "Commission", label: "Fiverr Marketplace Commission (20%)" },
+      { symbol: "TDS", label: "Indian Withholding Tax (1%)" },
+      { symbol: "FX Spread", label: "Currency Conversion Spread" },
+    ],
+    workedExample: {
+      scenario: "$150 Total Fiverr Order ($100 Base + $30 Extras + $20 Tip)",
+      inputs: { "Gross Order": "$150", "Fiverr Fee": "20% ($30)", "TDS": "1% ($1.50)", "Withdrawal": "$1.00" },
+      result: "Fiverr Fee: -$30 | TDS: -$1.50 | Net In-Pocket: $117.50 | Net Margin: 78.33%",
+      explanation: "Fiverr deducts 20% across base gigs, extras, and customer tips. Withholding tax and bank transfer charges settle the net balance at $117.50.",
+    },
+    assumptions: [
+      "Fiverr seller commission is standard 20% across all order components including tips.",
+      "Statutory tax withholding and bank withdrawal fees vary based on account location and payout channel.",
+    ],
+    relatedCalculators: ["upwork-net-earnings-calculator", "freelance-hourly-rate", "payment-gateway-fee-calculator", "profit-loss-calculator"],
+    faqs: [
+      { q: "Does Fiverr take 20% from tips?", a: "Yes, Fiverr charges a 20% commission on the entire order amount including buyer tips and gig extras." },
+      { q: "How do I calculate what to charge to receive an exact amount on Fiverr?", a: "Use the reverse calculation mode: Required Charge = (Desired Net + Fixed Fees) / (1 - Platform Fee Rate)." },
     ],
   },
   {
@@ -268,13 +335,13 @@ export const CALCULATORS: CalculatorMeta[] = [
     },
     assumptions: [
       "Salaried standard deduction of ₹75,000 applies under the New Tax Regime.",
-      "Section 87A rebate can provide full tax relief for eligible resident individuals with total income up to ₹12,00,000, subject to applicable rules.",
+      "Section 87A rebate provides full tax relief for eligible resident individuals with total income up to ₹12,00,000.",
       "Health & Education cess is uniformly applied at 4% on net income tax.",
     ],
     relatedCalculators: ["salary-calculator", "hra-calculator", "tds-calculator", "ppf-calculator", "gratuity-calculator"],
     faqs: [
       { q: "What is the standard deduction for AY 2026-27 in New Regime?", a: "The standard deduction for salaried individuals in the New Tax Regime is ₹75,000." },
-      { q: "Is tax zero up to ₹12 Lakhs in the New Tax Regime?", a: "For eligible resident individuals, Section 87A provides a rebate of income tax where total income does not exceed ₹12,00,000 under the AY 2026-27 New Tax Regime. The maximum rebate is ₹60,000. The actual result depends on taxable income and applicable rules." },
+      { q: "Is tax zero up to ₹12 Lakhs in the New Tax Regime?", a: "For eligible resident individuals, Section 87A provides a rebate of income tax where total income does not exceed ₹12,00,000 under the AY 2026-27 New Tax Regime." },
       { q: "Which tax regime should I choose?", a: "The New Tax Regime offers lower slab rates without exemptions, while the Old Tax Regime allows deductions like Section 80C, 80D, and HRA." },
     ],
   },
@@ -520,8 +587,74 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 
   // ==========================================
-  // 2. BUSINESS CALCULATORS (14 Calculators)
+  // 2. BUSINESS CALCULATORS
   // ==========================================
+  {
+    id: "payment-gateway-fee-calculator",
+    slug: "payment-gateway-fee-calculator",
+    name: "Payment Gateway Fee Calculator",
+    category: "business",
+    description: "Calculate transaction charges, fixed gateway fees, GST/taxes, and net payout for Stripe, PayPal, Razorpay, or custom payment processors.",
+    keywords: ["payment gateway fee calculator", "stripe fee calculator", "paypal fee calculator", "razorpay fee calculator", "merchant fee calculator", "reverse gateway fee"],
+    popular: true,
+    featured: true,
+    lastUpdated: "August 2026",
+    formulaDescription: "Forward: Net = Gross - [(Gross × Rate) + Fixed + Tax + FX] | Reverse: Gross = (Net Target + Fixed × (1 + Tax)) / (1 - Effective Rate)",
+    formulaVariables: [
+      { symbol: "Rate", label: "Variable Gateway Processing Rate (%)" },
+      { symbol: "Fixed", label: "Fixed Fee per Transaction" },
+      { symbol: "Tax", label: "GST or Value Added Tax on Gateway Fee (%)" },
+      { symbol: "FX", label: "Currency Cross-Border Conversion Spread (%)" },
+    ],
+    workedExample: {
+      scenario: "₹10,000 transaction processed via Razorpay India (2% gateway fee + 18% GST)",
+      inputs: { "Transaction Amount": "₹10,000", "Processing Rate": "2.0%", "GST on Fee": "18%" },
+      result: "Base Fee: ₹200 | GST on Fee: ₹36 | Total Fee: ₹236 | Net Payout Received: ₹9,764 | Effective Fee: 2.36%",
+      explanation: "The payment gateway deducts ₹200 processing commission plus 18% GST on the fee (₹36), crediting ₹9,764 directly to the merchant account.",
+    },
+    assumptions: [
+      "Rates vary based on payment method (UPI, Debit Card, International Credit Card, Netbanking).",
+      "GST at 18% applies on the gateway fee amount under Indian Tax Regulations.",
+    ],
+    relatedCalculators: ["ecommerce-roas-break-even-calculator", "invoice-total-calculator", "gst-calculator", "freelance-hourly-rate"],
+    faqs: [
+      { q: "How are payment gateway fees calculated?", a: "Gateway fees are computed by applying a percentage fee on gross transaction value, adding a fixed fee per transaction, and applying statutory taxes (like 18% GST in India) on the fee component." },
+      { q: "How do I calculate what to charge a client so I receive an exact net amount?", a: "Use the reverse calculation mode: Required Charge = (Net Target + Fixed Fee × (1 + Tax)) / (1 - Effective Fee Percentage)." },
+    ],
+  },
+  {
+    id: "ecommerce-roas-break-even-calculator",
+    slug: "ecommerce-roas-break-even-calculator",
+    name: "E-Commerce ROAS & Break-Even Margin Calculator",
+    category: "business",
+    description: "Determine your break-even ROAS, maximum target CAC, net profit margin, and non-ad unit costs across Meta, Google, and Amazon ad campaigns.",
+    keywords: ["ecommerce roas calculator", "break even roas calculator", "max cac calculator", "ecommerce profit margin calculator", "shopify profit calculator"],
+    popular: true,
+    featured: true,
+    lastUpdated: "August 2026",
+    formulaDescription: "Actual ROAS = Gross Revenue / Ad Spend | Break-Even ROAS = Gross Revenue / (Net Revenue - Non-Ad Variable Costs)",
+    formulaVariables: [
+      { symbol: "Gross Revenue", label: "Total Sales from Delivered Orders" },
+      { symbol: "Ad Spend", label: "Paid Advertising Expenditure (Meta/Google Ads)" },
+      { symbol: "Contribution Margin", label: "Revenue remaining after COGS, Shipping, Packaging, Gateway, and Marketplace fees" },
+      { symbol: "Max CAC", label: "Maximum allowable Customer Acquisition Cost to break even" },
+    ],
+    workedExample: {
+      scenario: "100 units sold at ₹1,499 with ₹400 COGS, ₹120 Shipping/Packaging, 10% returns, and ₹25,000 Ad Spend",
+      inputs: { "Selling Price": "₹1,499", "Delivered Orders": "100", "Ad Spend": "₹25,000", "COGS": "₹400/unit", "Returns": "10%" },
+      result: "Gross Revenue: ₹1,49,900 | Actual ROAS: 6.00x | Break-Even ROAS: 1.83x | Net Profit: ₹41,910 | Max CAC: ₹669",
+      explanation: "With a strong 6.00x actual ROAS against a 1.83x break-even requirement, the e-commerce campaign yields healthy net profitability after all non-ad fulfillment overheads.",
+    },
+    assumptions: [
+      "Break-even ROAS evaluates non-ad unit costs (COGS, pick & pack, shipping, return allowance, merchant fees).",
+      "Actual profitability depends on cash collection rates and return-to-origin (RTO) expenses.",
+    ],
+    relatedCalculators: ["roas-calculator", "break-even-calculator", "payment-gateway-fee-calculator", "profit-loss-calculator"],
+    faqs: [
+      { q: "What is Break-Even ROAS?", a: "Break-even ROAS is the minimum Return on Ad Spend required so that total revenue covers product cost, shipping, payment fees, returns, and marketing spend without losing money." },
+      { q: "What is Maximum Target CAC?", a: "Maximum CAC is the absolute highest dollar/rupee amount you can spend to acquire a single paying customer without making an operating loss." },
+    ],
+  },
   {
     id: "roas-calculator",
     slug: "roas-calculator",
@@ -531,7 +664,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     keywords: ["roas calculator", "return on ad spend", "marketing roi"],
     lastUpdated: "August 2026",
     formulaDescription: "ROAS = Total Campaign Revenue / Total Ad Spend",
-    relatedCalculators: ["break-even-calculator", "business-profit-calculator", "roi-calculator"],
+    relatedCalculators: ["ecommerce-roas-break-even-calculator", "break-even-calculator", "business-profit-calculator", "roi-calculator"],
   },
   {
     id: "break-even-calculator",
@@ -542,7 +675,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     keywords: ["break even calculator", "break even point", "contribution margin"],
     lastUpdated: "August 2026",
     formulaDescription: "Break-Even Units = Fixed Costs / (Price per Unit - Variable Cost per Unit)",
-    relatedCalculators: ["business-profit-calculator", "margin-calculator", "markup-calculator"],
+    relatedCalculators: ["ecommerce-roas-break-even-calculator", "business-profit-calculator", "margin-calculator", "markup-calculator"],
   },
   {
     id: "commission-calculator",
@@ -562,7 +695,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     description: "Determine ideal billing rate based on income goals, billable hours, and overheads.",
     keywords: ["freelance rate calculator", "hourly rate", "consultant pricing"],
     lastUpdated: "August 2026",
-    relatedCalculators: ["hourly-to-annual-salary", "salary-calculator", "overtime-pay-calculator"],
+    relatedCalculators: ["upwork-net-earnings-calculator", "fiverr-net-earnings-calculator", "hourly-to-annual-salary", "salary-calculator"],
   },
   {
     id: "hourly-to-annual-salary",
@@ -622,7 +755,7 @@ export const CALCULATORS: CalculatorMeta[] = [
     description: "Generate invoice totals with itemized line items, trade discounts, and GST taxes.",
     keywords: ["invoice calculator", "bill total", "gst invoice"],
     lastUpdated: "August 2026",
-    relatedCalculators: ["gst-calculator", "discount-calculator", "percentage-calculator"],
+    relatedCalculators: ["payment-gateway-fee-calculator", "gst-calculator", "discount-calculator", "percentage-calculator"],
   },
   {
     id: "business-profit-calculator",
@@ -667,7 +800,7 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 
   // ==========================================
-  // 3. MATH CALCULATORS (11 Calculators)
+  // 3. MATH CALCULATORS
   // ==========================================
   {
     id: "percentage-calculator",
@@ -788,7 +921,7 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 
   // ==========================================
-  // 4. HEALTH & FITNESS (7 Calculators)
+  // 4. HEALTH & FITNESS
   // ==========================================
   {
     id: "bmi-calculator",
@@ -868,7 +1001,7 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 
   // ==========================================
-  // 5. TIME & DATE (9 Calculators)
+  // 5. TIME & DATE
   // ==========================================
   {
     id: "age-calculator",
@@ -956,14 +1089,14 @@ export const CALCULATORS: CalculatorMeta[] = [
     slug: "time-zone-calculator",
     name: "Time Zone Converter",
     category: "time-date",
-    description: "Convert meeting times across IST, UTC, EST, PST, GMT, Dubai, Tokyo, and Sydney.",
+    description: "Convert meeting times across IST, practical international zones, and regional clocks.",
     keywords: ["time zone converter", "ist to est", "utc to ist converter"],
     lastUpdated: "August 2026",
     relatedCalculators: ["time-duration-calculator", "countdown-calculator"],
   },
 
   // ==========================================
-  // 6. UNIT CONVERTERS (20 Calculators)
+  // 6. UNIT CONVERTERS
   // ==========================================
   {
     id: "unit-converter",
@@ -1168,7 +1301,7 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 
   // ==========================================
-  // 7. EDUCATION CALCULATORS (5 Calculators)
+  // 7. EDUCATION CALCULATORS
   // ==========================================
   {
     id: "grade-calculator",
@@ -1229,7 +1362,7 @@ export const CALCULATORS: CalculatorMeta[] = [
   },
 
   // ==========================================
-  // 8. OTHER USEFUL TOOLS (8 Calculators)
+  // 8. OTHER USEFUL TOOLS
   // ==========================================
   {
     id: "fuel-cost-calculator",

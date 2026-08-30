@@ -6,6 +6,10 @@ import { CALCULATORS, getRelatedCalculators } from "@/lib/registry";
 
 import { SalaryCalculatorRenderer } from "@/components/calculators/SalaryCalculatorRenderer";
 import { TaxCalculatorRenderer } from "@/components/calculators/TaxCalculatorRenderer";
+import { PaymentGatewayFeeCalculatorRenderer } from "@/components/calculators/PaymentGatewayFeeCalculatorRenderer";
+import { UpworkCalculatorRenderer } from "@/components/calculators/UpworkCalculatorRenderer";
+import { FiverrCalculatorRenderer } from "@/components/calculators/FiverrCalculatorRenderer";
+import { EcommerceRoasCalculatorRenderer } from "@/components/calculators/EcommerceRoasCalculatorRenderer";
 import { FinanceCalculatorRenderer } from "@/components/calculators/FinanceCalculatorRenderer";
 import { MathCalculatorRenderer } from "@/components/calculators/MathCalculatorRenderer";
 import { ConvertersRenderer } from "@/components/calculators/ConvertersRenderer";
@@ -42,12 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pageTitle,
     description: pageDesc,
     alternates: {
-      canonical: `https://mycalculator.xyz/calculators/${calc.slug}`,
+      canonical: `https://www.mycalculator.xyz/calculators/${calc.slug}`,
     },
     openGraph: {
       title: pageTitle,
       description: pageDesc,
-      url: `https://mycalculator.xyz/calculators/${calc.slug}`,
+      url: `https://www.mycalculator.xyz/calculators/${calc.slug}`,
       siteName: "MyCalculators",
       locale: "en_IN",
       type: "website",
@@ -74,7 +78,7 @@ export default function CalculatorDetailPage({ params }: Props) {
         name: calc.name,
         applicationCategory: "UtilityApplication",
         operatingSystem: "All",
-        url: `https://mycalculator.xyz/calculators/${calc.slug}`,
+        url: `https://www.mycalculator.xyz/calculators/${calc.slug}`,
         description: calc.description,
         browserRequirements: "Requires JavaScript. Requires HTML5.",
         offers: {
@@ -90,19 +94,19 @@ export default function CalculatorDetailPage({ params }: Props) {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "https://mycalculator.xyz",
+            item: "https://www.mycalculator.xyz",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: calc.category.toUpperCase(),
-            item: `https://mycalculator.xyz/calculators/${calc.category}`,
+            item: `https://www.mycalculator.xyz/calculators/${calc.category}`,
           },
           {
             "@type": "ListItem",
             position: 3,
             name: calc.name,
-            item: `https://mycalculator.xyz/calculators/${calc.slug}`,
+            item: `https://www.mycalculator.xyz/calculators/${calc.slug}`,
           },
         ],
       },
@@ -125,13 +129,27 @@ export default function CalculatorDetailPage({ params }: Props) {
   };
 
   const renderCalculatorComponent = () => {
+    // 1. High-Value Custom Handlers
     if (calc.slug === "salary-calculator") {
       return <SalaryCalculatorRenderer slug={calc.slug} name={calc.name} />;
     }
     if (calc.slug === "income-tax-calculator") {
       return <TaxCalculatorRenderer slug={calc.slug} name={calc.name} />;
     }
+    if (calc.slug === "payment-gateway-fee-calculator") {
+      return <PaymentGatewayFeeCalculatorRenderer />;
+    }
+    if (calc.slug === "upwork-net-earnings-calculator") {
+      return <UpworkCalculatorRenderer />;
+    }
+    if (calc.slug === "fiverr-net-earnings-calculator") {
+      return <FiverrCalculatorRenderer />;
+    }
+    if (calc.slug === "ecommerce-roas-break-even-calculator") {
+      return <EcommerceRoasCalculatorRenderer />;
+    }
 
+    // 2. Category Dynamic Renderers
     switch (calc.category) {
       case "finance":
         return <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />;
@@ -282,7 +300,7 @@ export default function CalculatorDetailPage({ params }: Props) {
           {/* Frequently Asked Questions */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-navy flex items-center gap-2">
-              <HelpCircle className="w-5 h-5 text-sand" /> Frequently Asked Questions
+              <HelpCircle className="w-5 h-5 text-[#e89d67]" /> Frequently Asked Questions
             </h2>
             <div className="space-y-3">
               {calc.faqs && calc.faqs.length > 0 ? (
