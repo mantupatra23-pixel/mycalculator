@@ -6,6 +6,10 @@ import { getAllTradingTools, getTradingToolBySlug } from "@/lib/trading/registry
 import { PnLCalculatorRenderer } from "@/components/trading/renderers/PnLCalculatorRenderer";
 import { RiskCalculatorRenderer } from "@/components/trading/renderers/RiskCalculatorRenderer";
 import { BrokerageCalculatorRenderer } from "@/components/trading/renderers/BrokerageCalculatorRenderer";
+import { OptionsMechanicsRenderer } from "@/components/trading/renderers/OptionsMechanicsRenderer";
+import { OptionsStrategyRenderer } from "@/components/trading/renderers/OptionsStrategyRenderer";
+import { FuturesRenderer } from "@/components/trading/renderers/FuturesRenderer";
+import { ForexCryptoRenderer } from "@/components/trading/renderers/ForexCryptoRenderer";
 import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle, ArrowRight } from "lucide-react";
 
 interface Props {
@@ -75,6 +79,15 @@ export default function TradingToolDetailPage({ params }: Props) {
         return <RiskCalculatorRenderer toolSlug={tool.slug} />;
       case "brokerage":
         return <BrokerageCalculatorRenderer toolSlug={tool.slug} />;
+      case "options-mechanics":
+        return <OptionsMechanicsRenderer toolSlug={tool.slug} />;
+      case "options-strategy":
+        return <OptionsStrategyRenderer toolSlug={tool.slug} />;
+      case "futures":
+        return <FuturesRenderer toolSlug={tool.slug} />;
+      case "forex":
+      case "crypto":
+        return <ForexCryptoRenderer toolSlug={tool.slug} />;
       default:
         return (
           <div className="bg-white border border-navy/15 rounded-3xl p-8 text-center text-navy/60">
@@ -204,7 +217,7 @@ export default function TradingToolDetailPage({ params }: Props) {
               <BookOpen className="w-4 h-4 text-steel" /> Client-Side Execution
             </h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              All mathematical calculations run strictly in your web browser. No trade values, balances, or quantities are sent to remote servers.
+              All derivatives calculations execute in your browser runtime. No strategy legs, quantities, or order sizes are saved or transmitted to cloud databases.
             </p>
           </div>
 
@@ -213,7 +226,7 @@ export default function TradingToolDetailPage({ params }: Props) {
               <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Calculative Utility Notice
             </span>
             <p className="text-[11px] text-navy/70 leading-relaxed">
-              For mathematical planning and risk estimation only. This tool does not provide buy/sell signals or investment advice.
+              For mathematical planning and risk estimation only. Derivatives involve leverage risk and do not guarantee profits.
             </p>
           </div>
         </aside>

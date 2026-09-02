@@ -1,5 +1,5 @@
 // ============================================================================
-// MYCALCULATORS TRADING SYSTEM — CORE TYPES & CONTRACTS
+// MYCALCULATORS TRADING SYSTEM — CORE TYPES & CONTRACTS (PHASE 2)
 // ============================================================================
 
 export type TradingCategory =
@@ -27,8 +27,11 @@ export type RendererType =
   | "risk"
   | "position-size"
   | "brokerage"
-  | "options-payoff"
-  | "technical"
+  | "options-mechanics"
+  | "options-strategy"
+  | "futures"
+  | "forex"
+  | "crypto"
   | "generic-placeholder";
 
 export interface TradingCategoryMeta {
@@ -93,4 +96,39 @@ export interface TradingCalculationResult {
     summary: string;
   };
   notes?: string[];
+}
+
+// ----------------------------------------------------------------------------
+// Phase 2 Multi-Leg Options & Derivatives Data Contracts
+// ----------------------------------------------------------------------------
+export type OptionType = "call" | "put";
+export type PositionSide = "long" | "short";
+
+export interface OptionLeg {
+  id: string;
+  optionType: OptionType;
+  side: PositionSide;
+  strikePrice: number;
+  premium: number;
+  quantity: number;
+  contractMultiplier: number;
+}
+
+export interface PayoffPoint {
+  underlyingPrice: number;
+  payoff: number;
+  profit: number;
+}
+
+export interface StrategyPayoffResult {
+  name: string;
+  netPremium: number;
+  isNetCredit: boolean;
+  maxProfit: number | "Unlimited";
+  maxLoss: number | "Unlimited";
+  breakevens: number[];
+  riskRewardRatio: string;
+  selectedSpotPnL: number;
+  payoffCurve: PayoffPoint[];
+  profitZones: string[];
 }
