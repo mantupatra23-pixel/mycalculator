@@ -1,6 +1,6 @@
 // ============================================================================
-// PURE TYPESCRIPT OPTIONS & MULTI-LEG STRATEGY ENGINE (PHASE 2)
-// Deterministic payoff curves, numerical breakeven scanning, and Greeks math.
+// PURE TYPESCRIPT OPTIONS & MULTI-LEG STRATEGY ENGINE (PHASE 2 HARDENED)
+// Zero external chart libraries. Clean Indian Rupee formatting.
 // ============================================================================
 
 import {
@@ -30,10 +30,11 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
   const qty = Math.max(1, Math.floor(input.quantity || 1));
   const mult = Math.max(1, Math.floor(input.contractMultiplier || 1));
   const totalUnits = qty * mult;
-  const expiryS = input.targetPriceAtExpiry !== undefined && input.targetPriceAtExpiry > 0
+  const expiryS = input.targetPriceAtExpiry !== undefined && input.targetPriceAtExpiry >= 0
     ? input.targetPriceAtExpiry
     : S;
 
+  // 1. Intrinsic and Extrinsic (Time) Value
   let intrinsicPerUnit = 0;
   if (input.optionType === "call") {
     intrinsicPerUnit = Math.max(0, S - K);
@@ -42,6 +43,7 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
   }
   const timeValuePerUnit = Math.max(0, P - intrinsicPerUnit);
 
+  // 2. Moneyness Status
   let moneyness: "ITM" | "ATM" | "OTM" = "ATM";
   const diffPct = K > 0 ? ((S - K) / K) * 100 : 0;
   if (Math.abs(diffPct) < 0.25) {
@@ -52,6 +54,7 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
     moneyness = S < K ? "ITM" : "OTM";
   }
 
+  // 3. Breakeven Price at Expiry
   let breakeven = 0;
   if (input.optionType === "call") {
     breakeven = K + P;
@@ -59,6 +62,7 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
     breakeven = Math.max(0, K - P);
   }
 
+  // 4. Payoff & Profit at Expiry Price
   let payoffPerUnit = 0;
   if (input.optionType === "call") {
     payoffPerUnit = Math.max(0, expiryS - K);
@@ -76,14 +80,26 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
   const totalPremium = P * totalUnits;
   const returnOnPremium = totalPremium > 0 ? (totalPnL / totalPremium) * 100 : 0;
 
+  // Max Profit / Max Loss
   let maxProfitDesc = "";
   let maxLossDesc = "";
   if (input.side === "long") {
-    maxProfitDesc = input.optionType === "call" ? "Unlimited" : `₹${((K - P) * totalUnits).toFixed(2)}`;
-    maxLossDesc = `-₹${totalPremium.toFixed(2)} (Premium Paid)`;
+    if (input.optionType === "call") {
+      maxProfitDesc = "Unlimited";
+    } else {
+      const maxPutProfitTotal = Math.max(0, (K - P) * totalUnits);
+      maxProfitDesc = `₹${maxPutProfitTotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    maxLossDesc = `-₹${totalPremium.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (Premium Paid)`;
   } else {
-    maxProfitDesc = `+₹${totalPremium.toFixed(2)} (Premium Received)`;
-    maxLossDesc = input.optionType === "call" ? "Unlimited" : `-₹${((K - P) * totalUnits).toFixed(2)}`;
+    // Short position
+    maxProfitDesc = `+₹${totalPremium.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (Premium Received)`;
+    if (input.optionType === "call") {
+      maxLossDesc = "Unlimited";
+    } else {
+      const maxPutLossTotal = Math.max(0, (K - P) * totalUnits);
+      maxLossDesc = `-₹${maxPutLossTotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
   }
 
   return {
@@ -98,14 +114,14 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
       { label: "Breakeven at Expiry", value: breakeven, formatted: `₹${breakeven.toFixed(2)}`, highlight: "cyan" },
       { label: "Intrinsic Value / Unit", value: intrinsicPerUnit, formatted: `₹${intrinsicPerUnit.toFixed(2)}`, highlight: "neutral" },
       { label: "Extrinsic (Time) Value", value: timeValuePerUnit, formatted: `₹${timeValuePerUnit.toFixed(2)}`, highlight: "neutral" },
-      { label: "Max Potential Upside", value: 0, formatted: maxProfitDesc, highlight: "green" },
-      { label: "Max Downside Risk", value: 0, formatted: maxLossDesc, highlight: "red" },
+      { label: "Maximum Potential Upside", value: 0, formatted: maxProfitDesc, highlight: "green" },
+      { label: "Maximum Downside Risk", value: 0, formatted: maxLossDesc, highlight: "red" },
       { label: "Return on Premium", value: returnOnPremium, formatted: `${returnOnPremium >= 0 ? "+" : ""}${returnOnPremium.toFixed(1)}%`, highlight: returnOnPremium >= 0 ? "green" : "red" },
     ],
     breakdown: [
-      { item: "Total Premium Capital Outlay", amount: totalPremium, formatted: `₹${totalPremium.toFixed(2)}`, type: input.side === "long" ? "debit" : "credit" },
-      { item: "Per-Unit Gross Payoff at Expiry", amount: payoffPerUnit, formatted: `₹${payoffPerUnit.toFixed(2)}`, type: "neutral" },
-      { item: "Net Profit / Loss Realized", amount: totalPnL, formatted: `₹${totalPnL.toFixed(2)}`, type: totalPnL >= 0 ? "credit" : "debit" },
+      { item: "Total Premium Commitment", amount: totalPremium, formatted: `₹${totalPremium.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, type: input.side === "long" ? "debit" : "credit" },
+      { item: "Per-Unit Expiration Payoff", amount: payoffPerUnit, formatted: `₹${payoffPerUnit.toFixed(2)}`, type: "neutral" },
+      { item: "Net In-Pocket P&L", amount: totalPnL, formatted: `₹${totalPnL.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, type: totalPnL >= 0 ? "credit" : "debit" },
     ],
   };
 }

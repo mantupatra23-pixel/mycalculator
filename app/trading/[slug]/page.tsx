@@ -10,7 +10,7 @@ import { OptionsMechanicsRenderer } from "@/components/trading/renderers/Options
 import { OptionsStrategyRenderer } from "@/components/trading/renderers/OptionsStrategyRenderer";
 import { FuturesRenderer } from "@/components/trading/renderers/FuturesRenderer";
 import { ForexCryptoRenderer } from "@/components/trading/renderers/ForexCryptoRenderer";
-import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle, ArrowRight } from "lucide-react";
+import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle, ArrowRight, CheckCircle2 } from "lucide-react";
 
 interface Props {
   params: { slug: string };
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!tool) return { title: "Trading Tool Not Found | MyCalculators" };
 
   const title = `${tool.name} – Free Trading Calculator | MyCalculators`;
-  const description = `${tool.shortDescription} Browser-native calculation algorithm with formulas and live worked examples.`;
+  const description = `${tool.shortDescription} Free, browser-native mathematical calculations with step-by-step formulas and live worked examples.`;
 
   return {
     title,
@@ -89,11 +89,7 @@ export default function TradingToolDetailPage({ params }: Props) {
       case "crypto":
         return <ForexCryptoRenderer toolSlug={tool.slug} />;
       default:
-        return (
-          <div className="bg-white border border-navy/15 rounded-3xl p-8 text-center text-navy/60">
-            Engine module scheduled for upcoming phase rollout.
-          </div>
-        );
+        return null;
     }
   };
 
@@ -130,6 +126,28 @@ export default function TradingToolDetailPage({ params }: Props) {
       {/* Content & Formula Section */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
         <div className="md:col-span-8 space-y-6">
+          {/* Step-by-Step How it Works */}
+          <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-3 shadow-xs">
+            <h2 className="text-lg font-bold text-navy flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> How the Calculation Works
+            </h2>
+            <div className="space-y-2 text-xs text-navy/80 leading-relaxed">
+              <div className="p-3 bg-sage/20 rounded-xl border border-navy/10 space-y-1">
+                <span className="font-bold text-navy block">Step 1: Input Valuation</span>
+                <p>Read parameters and compute total exposure: multiply contracts by lot multiplier.</p>
+              </div>
+              <div className="p-3 bg-sage/20 rounded-xl border border-navy/10 space-y-1">
+                <span className="font-bold text-navy block">Step 2: Intrinsic Payoff Evaluation</span>
+                <p>Evaluate terminal payoff at the selected underlying price using strict mathematical boundary logic.</p>
+              </div>
+              <div className="p-3 bg-sage/20 rounded-xl border border-navy/10 space-y-1">
+                <span className="font-bold text-navy block">Step 3: Frictional &amp; Premium Netting</span>
+                <p>Deduct upfront capital commitments or net debits to produce final net profit or loss realization.</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Mathematical Formula */}
           {tool.formulaDescription && (
             <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-3 shadow-xs">
               <h2 className="text-lg font-bold text-navy flex items-center gap-2">
@@ -150,6 +168,7 @@ export default function TradingToolDetailPage({ params }: Props) {
             </section>
           )}
 
+          {/* Worked Example */}
           {tool.workedExample && (
             <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-3 shadow-xs">
               <h2 className="text-lg font-bold text-navy flex items-center gap-2">
@@ -163,6 +182,7 @@ export default function TradingToolDetailPage({ params }: Props) {
             </section>
           )}
 
+          {/* Assumptions */}
           {tool.assumptions && tool.assumptions.length > 0 && (
             <section className="space-y-2">
               <h2 className="text-sm font-bold text-navy">Assumptions &amp; Parameters</h2>
@@ -174,6 +194,7 @@ export default function TradingToolDetailPage({ params }: Props) {
             </section>
           )}
 
+          {/* Comprehensive FAQs */}
           {tool.faqs && tool.faqs.length > 0 && (
             <section className="space-y-3">
               <h2 className="text-xl font-bold text-navy flex items-center gap-2">
@@ -191,6 +212,7 @@ export default function TradingToolDetailPage({ params }: Props) {
           )}
         </div>
 
+        {/* Sidebar */}
         <aside className="md:col-span-4 space-y-4">
           {relatedTools.length > 0 && (
             <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
@@ -212,21 +234,23 @@ export default function TradingToolDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* Client-side privacy statement */}
           <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
             <h3 className="font-bold text-sm text-navy flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Execution
+              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Execution Guarantee
             </h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              All derivatives calculations execute in your browser runtime. No strategy legs, quantities, or order sizes are saved or transmitted to cloud databases.
+              Calculations run locally in your browser. Values entered into this calculator are not transmitted to our servers for the calculation.
             </p>
           </div>
 
+          {/* Financial Disclaimer */}
           <div className="bg-sage/40 border border-navy/10 rounded-2xl p-4 text-xs text-navy space-y-1">
             <span className="font-bold flex items-center gap-1">
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Calculative Utility Notice
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Educational Disclaimer
             </span>
             <p className="text-[11px] text-navy/70 leading-relaxed">
-              For mathematical planning and risk estimation only. Derivatives involve leverage risk and do not guarantee profits.
+              Educational calculator only. Results are mathematical estimates based on your inputs and do not constitute investment advice, trading signals, or a guarantee of returns. Actual charges, slippage, liquidity, margin requirements and execution prices may differ.
             </p>
           </div>
         </aside>

@@ -3,17 +3,35 @@
 import React, { useState } from "react";
 import { calculateSingleOptionMetrics } from "@/lib/trading/engines/optionsEngines";
 import { TradeResultCard } from "../ui/TradeResultCard";
+import { RotateCcw } from "lucide-react";
 
 export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
   const isPutDefault = toolSlug.includes("put");
-  const [spotPrice, setSpotPrice] = useState<number>(24500);
-  const [strikePrice, setStrikePrice] = useState<number>(24500);
-  const [premium, setPremium] = useState<number>(180);
+
+  const defaultSpot = 24500;
+  const defaultStrike = 24500;
+  const defaultPremium = 180;
+  const defaultExpirySpot = 24700;
+
+  const [spotPrice, setSpotPrice] = useState<number>(defaultSpot);
+  const [strikePrice, setStrikePrice] = useState<number>(defaultStrike);
+  const [premium, setPremium] = useState<number>(defaultPremium);
   const [quantity, setQuantity] = useState<number>(1);
   const [contractMultiplier, setContractMultiplier] = useState<number>(50);
   const [optionType, setOptionType] = useState<"call" | "put">(isPutDefault ? "put" : "call");
   const [side, setSide] = useState<"long" | "short">("long");
-  const [targetPriceAtExpiry, setTargetPriceAtExpiry] = useState<number>(24700);
+  const [targetPriceAtExpiry, setTargetPriceAtExpiry] = useState<number>(defaultExpirySpot);
+
+  const handleReset = () => {
+    setSpotPrice(defaultSpot);
+    setStrikePrice(defaultStrike);
+    setPremium(defaultPremium);
+    setQuantity(1);
+    setContractMultiplier(50);
+    setOptionType(isPutDefault ? "put" : "call");
+    setSide("long");
+    setTargetPriceAtExpiry(defaultExpirySpot);
+  };
 
   const result = calculateSingleOptionMetrics({
     spotPrice,
@@ -29,7 +47,17 @@ export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-navy/15 shadow-sm space-y-5">
-        {/* Call / Put and Long / Short Controls */}
+        <div className="flex items-center justify-between border-b border-navy/10 pb-3">
+          <span className="text-xs font-bold text-navy uppercase tracking-wider">Contract Parameters</span>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="text-xs font-semibold text-steel hover:text-navy inline-flex items-center gap-1"
+          >
+            <RotateCcw className="w-3.5 h-3.5" /> Reset Defaults
+          </button>
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div className="flex gap-1 p-1 bg-sage/20 rounded-xl border border-navy/10">
             <button
@@ -74,10 +102,9 @@ export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
           </div>
         </div>
 
-        {/* Core Option Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-navy">Current Underlying (₹)</label>
+            <label className="text-xs font-bold text-navy">Current Spot (₹)</label>
             <input
               type="number"
               value={spotPrice || ""}
@@ -97,7 +124,7 @@ export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-navy">Option Premium (₹)</label>
+            <label className="text-xs font-bold text-navy">Premium (₹)</label>
             <input
               type="number"
               value={premium || ""}
@@ -107,10 +134,9 @@ export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
           </div>
         </div>
 
-        {/* Quantity & Multipliers */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-navy">Contracts / Lots</label>
+            <label className="text-xs font-bold text-navy">Lots Traded</label>
             <input
               type="number"
               min="1"
@@ -121,7 +147,7 @@ export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-navy">Lot Multiplier</label>
+            <label className="text-xs font-bold text-navy">Lot Size Multiplier</label>
             <input
               type="number"
               min="1"
@@ -149,3 +175,5 @@ export function OptionsMechanicsRenderer({ toolSlug }: { toolSlug: string }) {
     </div>
   );
 }
+
+export default OptionsMechanicsRenderer;
