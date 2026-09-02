@@ -34,7 +34,6 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
     ? input.targetPriceAtExpiry
     : S;
 
-  // 1. Intrinsic and Extrinsic (Time) Value
   let intrinsicPerUnit = 0;
   if (input.optionType === "call") {
     intrinsicPerUnit = Math.max(0, S - K);
@@ -43,7 +42,6 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
   }
   const timeValuePerUnit = Math.max(0, P - intrinsicPerUnit);
 
-  // 2. Moneyness Status
   let moneyness: "ITM" | "ATM" | "OTM" = "ATM";
   const diffPct = K > 0 ? ((S - K) / K) * 100 : 0;
   if (Math.abs(diffPct) < 0.25) {
@@ -54,7 +52,6 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
     moneyness = S < K ? "ITM" : "OTM";
   }
 
-  // 3. Breakeven Price at Expiry
   let breakeven = 0;
   if (input.optionType === "call") {
     breakeven = K + P;
@@ -62,7 +59,6 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
     breakeven = Math.max(0, K - P);
   }
 
-  // 4. Payoff & Profit at Expiry Price
   let payoffPerUnit = 0;
   if (input.optionType === "call") {
     payoffPerUnit = Math.max(0, expiryS - K);
@@ -214,6 +210,9 @@ export function calculateStrategyPayoff(
   const isUnlimitedProfit = totalFarRight > maxPnL * 1.5 || totalFarLeft > maxPnL * 1.5;
   const isUnlimitedLoss = totalFarRight < minPnL * 1.5 || totalFarLeft < minPnL * 1.5;
 
+  const finalMaxProfit: number | "Unlimited" = isUnlimitedProfit ? "Unlimited" : Math.round(maxPnL * 100) / 100;
+  const finalMaxLoss: number | "Unlimited" = isUnlimitedLoss ? "Unlimited" : Math.abs(Math.round(minPnL * 100) / 100);
+
   const currentPnL = legs.reduce((acc, leg) => acc + calculateLegPnLAtPrice(leg, currentSpot), 0);
 
   const zones: string[] = [];
@@ -232,17 +231,19 @@ export function calculateStrategyPayoff(
     }
   }
 
+  const rrRatio =
+    typeof finalMaxProfit === "number" && typeof finalMaxLoss === "number" && finalMaxLoss > 0
+      ? `1 : ${(finalMaxProfit / finalMaxLoss).toFixed(2)}`
+      : "Asymmetric / Dynamic";
+
   return {
     name: strategyName,
     netPremium: Math.abs(netPremium),
     isNetCredit,
-    maxProfit: isUnlimitedProfit ? "Unlimited" : Math.round(maxPnL * 100) / 100,
-    maxLoss: isUnlimitedLoss ? "Unlimited" : Math.abs(Math.round(minPnL * 100) / 100),
+    maxProfit: finalMaxProfit,
+    maxLoss: finalMaxLoss,
     breakevens: Array.from(new Set(breakevens)),
-    riskRewardRatio:
-      typeof maxProfit === "number" && typeof maxLoss === "number" && maxLoss > 0
-        ? `1 : ${(maxProfit / maxLoss).toFixed(2)}`
-        : "Asymmetric / Dynamic",
+    riskRewardRatio: rrRatio,
     selectedSpotPnL: Math.round(currentPnL * 100) / 100,
     payoffCurve,
     profitZones: zones,
