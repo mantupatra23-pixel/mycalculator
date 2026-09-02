@@ -4,9 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllTradingTools, getTradingToolBySlug } from "@/lib/trading/registry";
 import { PnLCalculatorRenderer } from "@/components/trading/renderers/PnLCalculatorRenderer";
-import { PositionSizeRenderer } from "@/components/trading/renderers/PositionSizeRenderer";
-import { BrokerageRenderer } from "@/components/trading/renderers/BrokerageRenderer";
-import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle } from "lucide-react";
+import { RiskCalculatorRenderer } from "@/components/trading/renderers/RiskCalculatorRenderer";
+import { BrokerageCalculatorRenderer } from "@/components/trading/renderers/BrokerageCalculatorRenderer";
+import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle, ArrowRight } from "lucide-react";
 
 interface Props {
   params: { slug: string };
@@ -29,6 +29,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://www.mycalculator.xyz/trading/${tool.slug}`,
     },
+    openGraph: {
+      title,
+      description,
+      url: `https://www.mycalculator.xyz/trading/${tool.slug}`,
+      siteName: "MyCalculators Trading Suite",
+      locale: "en_IN",
+      type: "website",
+    },
   };
 }
 
@@ -36,21 +44,55 @@ export default function TradingToolDetailPage({ params }: Props) {
   const tool = getTradingToolBySlug(params.slug);
   if (!tool) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        name: tool.name,
+        applicationCategory: "FinanceApplication",
+        operatingSystem: "All",
+        url: `https://www.mycalculator.xyz/trading/${tool.slug}`,
+        description: tool.shortDescription,
+        browserRequirements: "Requires JavaScript. Requires HTML5.",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://www.mycalculator.xyz" },
+          { "@type": "ListItem", position: 2, name: "Trading", item: "https://www.mycalculator.xyz/trading" },
+          { "@type": "ListItem", position: 3, name: tool.name, item: `https://www.mycalculator.xyz/trading/${tool.slug}` },
+        ],
+      },
+    ],
+  };
+
   const renderActiveTool = () => {
     switch (tool.renderer) {
       case "pnl":
         return <PnLCalculatorRenderer toolSlug={tool.slug} />;
-      case "position-size":
-        return <PositionSizeRenderer toolSlug={tool.slug} />;
+      case "risk":
+        return <RiskCalculatorRenderer toolSlug={tool.slug} />;
       case "brokerage":
-        return <BrokerageRenderer toolSlug={tool.slug} />;
+        return <BrokerageCalculatorRenderer toolSlug={tool.slug} />;
       default:
-        return null;
+        return (
+          <div className="bg-white border border-navy/15 rounded-3xl p-8 text-center text-navy/60">
+            Engine module scheduled for upcoming phase rollout.
+          </div>
+        );
     }
   };
 
+  const allTools = getAllTradingTools();
+  const relatedTools = (tool.relatedTradingSlugs || [])
+    .map((s) => allTools.find((t) => t.slug === s))
+    .filter((t): t is typeof tool => t !== undefined);
+
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-16 space-y-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-navy/60">
         <Link href="/" className="hover:text-navy transition-colors">Home</Link>
@@ -101,10 +143,21 @@ export default function TradingToolDetailPage({ params }: Props) {
                 <Calculator className="w-4 h-4 text-steel" /> Example Calculation
               </h2>
               <p className="text-xs font-semibold text-steel">{tool.workedExample.scenario}</p>
-              <div className="bg-sage/20 border border-navy/10 rounded-xl p-3.5 text-xs text-navy/85">
+              <div className="bg-sage/20 border border-navy/10 rounded-xl p-3.5 text-xs text-navy/85 space-y-1.5">
                 Outcome: <strong className="text-navy">{tool.workedExample.result}</strong>
+                <p className="text-[11px] text-navy/70 leading-relaxed">{tool.workedExample.explanation}</p>
               </div>
-              <p className="text-xs text-navy/70 leading-relaxed">{tool.workedExample.explanation}</p>
+            </section>
+          )}
+
+          {tool.assumptions && tool.assumptions.length > 0 && (
+            <section className="space-y-2">
+              <h2 className="text-sm font-bold text-navy">Assumptions &amp; Parameters</h2>
+              <ul className="list-disc pl-5 text-xs text-navy/80 space-y-1">
+                {tool.assumptions.map((a, i) => (
+                  <li key={i}>{a}</li>
+                ))}
+              </ul>
             </section>
           )}
 
@@ -126,21 +179,41 @@ export default function TradingToolDetailPage({ params }: Props) {
         </div>
 
         <aside className="md:col-span-4 space-y-4">
+          {relatedTools.length > 0 && (
+            <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
+              <h3 className="font-bold text-sm text-navy">Related Trading Tools</h3>
+              <div className="space-y-2">
+                {relatedTools.map((rel) => (
+                  <Link
+                    key={rel.slug}
+                    href={`/trading/${rel.slug}`}
+                    className="block p-2.5 rounded-xl bg-sage/20 hover:bg-cream border border-navy/10 transition-colors group"
+                  >
+                    <div className="font-bold text-xs text-navy group-hover:text-steel flex items-center justify-between">
+                      <span>{rel.name}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-navy/40 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
             <h3 className="font-bold text-sm text-navy flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Privacy
+              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Execution
             </h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              All trading calculations run locally in your web browser. No trade values or quantities are stored on external servers.
+              All mathematical calculations run strictly in your web browser. No trade values, balances, or quantities are sent to remote servers.
             </p>
           </div>
 
           <div className="bg-sage/40 border border-navy/10 rounded-2xl p-4 text-xs text-navy space-y-1">
             <span className="font-bold flex items-center gap-1">
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Important Notice
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Calculative Utility Notice
             </span>
             <p className="text-[11px] text-navy/70 leading-relaxed">
-              For mathematical planning and risk estimation only. Not trading or investment advice.
+              For mathematical planning and risk estimation only. This tool does not provide buy/sell signals or investment advice.
             </p>
           </div>
         </aside>
