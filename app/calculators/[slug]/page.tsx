@@ -10,6 +10,10 @@ import { PaymentGatewayFeeCalculatorRenderer } from "@/components/calculators/Pa
 import { UpworkCalculatorRenderer } from "@/components/calculators/UpworkCalculatorRenderer";
 import { FiverrCalculatorRenderer } from "@/components/calculators/FiverrCalculatorRenderer";
 import { EcommerceRoasCalculatorRenderer } from "@/components/calculators/EcommerceRoasCalculatorRenderer";
+import { ParcelRealEarningsCalculatorRenderer } from "@/components/calculators/ParcelRealEarningsCalculatorRenderer";
+import { TravelRealCostCalculatorRenderer } from "@/components/calculators/TravelRealCostCalculatorRenderer";
+import { ConstructionMaterialCalculatorRenderer } from "@/components/calculators/ConstructionMaterialCalculatorRenderer";
+
 import { FinanceCalculatorRenderer } from "@/components/calculators/FinanceCalculatorRenderer";
 import { MathCalculatorRenderer } from "@/components/calculators/MathCalculatorRenderer";
 import { ConvertersRenderer } from "@/components/calculators/ConvertersRenderer";
@@ -148,8 +152,17 @@ export default function CalculatorDetailPage({ params }: Props) {
     if (calc.slug === "ecommerce-roas-break-even-calculator") {
       return <EcommerceRoasCalculatorRenderer />;
     }
+    if (calc.slug === "parcel-real-earnings-calculator") {
+      return <ParcelRealEarningsCalculatorRenderer />;
+    }
+    if (calc.slug === "travel-real-cost-calculator") {
+      return <TravelRealCostCalculatorRenderer />;
+    }
+    if (calc.slug === "construction-material-price-calculator") {
+      return <ConstructionMaterialCalculatorRenderer />;
+    }
 
-    // 2. Category Dynamic Renderers
+    // 2. Category Dynamic Fallbacks
     switch (calc.category) {
       case "finance":
         return <FinanceCalculatorRenderer slug={calc.slug} name={calc.name} />;

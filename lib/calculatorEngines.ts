@@ -373,3 +373,364 @@ export function calculateEcommerceRoas(inputs: EcommerceRoasInputs): EcommerceRo
     maxCac,
   };
 }
+
+// ----------------------------------------------------------------------------
+// 5. PARCEL REAL EARNINGS ENGINE ("Parcel आया तो असल में कितना मिलेगा?")
+// ----------------------------------------------------------------------------
+export interface ParcelEarningsInputs {
+  sellingPrice: number;
+  discount: number;
+  productCost: number;
+  shippingCost: number;
+  packagingCost: number;
+  marketplaceFeePct: number;
+  paymentFeePct: number;
+  fixedPaymentFee: number;
+  returnRatePct: number;
+  rtoRatePct: number;
+  avgReturnCost: number;
+  gstOnFeesPct: number;
+  otherExpense: number;
+  monthlyOrders?: number;
+}
+
+export interface ParcelEarningsResult {
+  grossRevenue: number;
+  effectiveReturnRatePct: number;
+  expectedRevenue: number;
+  marketplaceFee: number;
+  paymentFee: number;
+  fixedPaymentFee: number;
+  totalPlatformCommission: number;
+  taxOnFees: number;
+  expectedReturnRtoCost: number;
+  totalDirectCost: number;
+  totalDeductions: number;
+  expectedNetEarnings: number;
+  profitMarginPct: number;
+  revenueRetainedPct: number;
+  totalLeakagePct: number;
+  monthlyOrders: number;
+  monthlyNetEarnings: number;
+}
+
+export function calculateParcelRealEarnings(inputs: ParcelEarningsInputs): ParcelEarningsResult {
+  const sellingPrice = Math.max(0, inputs.sellingPrice || 0);
+  const discount = Math.max(0, inputs.discount || 0);
+  const grossRevenue = Math.max(0, sellingPrice - discount);
+
+  const productCost = Math.max(0, inputs.productCost || 0);
+  const shippingCost = Math.max(0, inputs.shippingCost || 0);
+  const packagingCost = Math.max(0, inputs.packagingCost || 0);
+  const otherExpense = Math.max(0, inputs.otherExpense || 0);
+
+  const marketplaceFeePct = Math.max(0, inputs.marketplaceFeePct || 0);
+  const paymentFeePct = Math.max(0, inputs.paymentFeePct || 0);
+  const fixedPaymentFee = Math.max(0, inputs.fixedPaymentFee || 0);
+  const gstOnFeesPct = Math.max(0, inputs.gstOnFeesPct || 0);
+
+  const returnRatePct = Math.max(0, inputs.returnRatePct || 0);
+  const rtoRatePct = Math.max(0, inputs.rtoRatePct || 0);
+  const avgReturnCost = Math.max(0, inputs.avgReturnCost || 0);
+  const monthlyOrders = Math.max(1, inputs.monthlyOrders || 100);
+
+  const effectiveReturnRatePct = Math.min(100, returnRatePct + rtoRatePct);
+  const expectedRevenue = grossRevenue * (1 - effectiveReturnRatePct / 100);
+
+  const marketplaceFee = (grossRevenue * marketplaceFeePct) / 100;
+  const paymentFee = (grossRevenue * paymentFeePct) / 100;
+  const totalPlatformCommission = marketplaceFee + paymentFee + fixedPaymentFee;
+  const taxOnFees = (totalPlatformCommission * gstOnFeesPct) / 100;
+
+  const expectedReturnRtoCost = (effectiveReturnRatePct / 100) * avgReturnCost;
+  const totalDirectCost = productCost + shippingCost + packagingCost + otherExpense;
+
+  const totalDeductions =
+    totalDirectCost + totalPlatformCommission + taxOnFees + expectedReturnRtoCost;
+
+  const expectedNetEarnings = expectedRevenue - totalDeductions;
+  const profitMarginPct = grossRevenue > 0 ? (expectedNetEarnings / grossRevenue) * 100 : 0;
+  const revenueRetainedPct = grossRevenue > 0 ? (Math.max(0, expectedNetEarnings) / grossRevenue) * 100 : 0;
+  const totalLeakagePct = 100 - profitMarginPct;
+  const monthlyNetEarnings = expectedNetEarnings * monthlyOrders;
+
+  return {
+    grossRevenue,
+    effectiveReturnRatePct,
+    expectedRevenue,
+    marketplaceFee,
+    paymentFee,
+    fixedPaymentFee,
+    totalPlatformCommission,
+    taxOnFees,
+    expectedReturnRtoCost,
+    totalDirectCost,
+    totalDeductions,
+    expectedNetEarnings,
+    profitMarginPct,
+    revenueRetainedPct,
+    totalLeakagePct,
+    monthlyOrders,
+    monthlyNetEarnings,
+  };
+}
+
+// ----------------------------------------------------------------------------
+// 6. TRAVEL REAL COST ENGINE ("Trip ka actual total kharcha kitna hoga?")
+// ----------------------------------------------------------------------------
+export interface TravelCostInputs {
+  travelers: number;
+  days: number;
+  nights: number;
+  flightTrainTotal: number;
+  localTransportPerDay: number;
+  airportTransfers: number;
+  fuelTollParking: number;
+  hotelPerNight: number;
+  rooms: number;
+  foodPerPersonPerDay: number;
+  snacksPerDay: number;
+  sightseeingTickets: number;
+  activitiesTotal: number;
+  shoppingBudget: number;
+  insuranceTotal: number;
+  visaPermits: number;
+  bookingFees: number;
+  emergencyBudget: number;
+  contingencyPct: number;
+  plannedBudget?: number;
+}
+
+export interface TravelCostResult {
+  accommodationTotal: number;
+  transportTotal: number;
+  foodTotal: number;
+  activitiesTotal: number;
+  shoppingTotal: number;
+  hiddenFeesTotal: number;
+  subtotal: number;
+  contingencyAmount: number;
+  totalRealCost: number;
+  costPerPerson: number;
+  costPerDay: number;
+  stayPctOfTotal: number;
+  hiddenCostTotal: number;
+  budgetStatus: "under" | "near" | "over" | "none";
+  budgetVariance: number;
+}
+
+export function calculateTravelRealCost(inputs: TravelCostInputs): TravelCostResult {
+  const travelers = Math.max(1, inputs.travelers || 1);
+  const days = Math.max(1, inputs.days || 1);
+  const nights = Math.max(0, inputs.nights || 0);
+  const rooms = Math.max(1, inputs.rooms || 1);
+
+  const accommodationTotal = Math.max(0, inputs.hotelPerNight || 0) * nights * rooms;
+
+  const totalLocalTransport = Math.max(0, inputs.localTransportPerDay || 0) * days;
+  const transportTotal =
+    Math.max(0, inputs.flightTrainTotal || 0) +
+    totalLocalTransport +
+    Math.max(0, inputs.airportTransfers || 0) +
+    Math.max(0, inputs.fuelTollParking || 0);
+
+  const foodTotal =
+    Math.max(0, inputs.foodPerPersonPerDay || 0) * travelers * days +
+    Math.max(0, inputs.snacksPerDay || 0) * days;
+
+  const activitiesTotal =
+    Math.max(0, inputs.sightseeingTickets || 0) + Math.max(0, inputs.activitiesTotal || 0);
+
+  const shoppingTotal = Math.max(0, inputs.shoppingBudget || 0);
+
+  const hiddenFeesTotal =
+    Math.max(0, inputs.insuranceTotal || 0) +
+    Math.max(0, inputs.visaPermits || 0) +
+    Math.max(0, inputs.bookingFees || 0) +
+    Math.max(0, inputs.emergencyBudget || 0);
+
+  const subtotal =
+    accommodationTotal + transportTotal + foodTotal + activitiesTotal + shoppingTotal + hiddenFeesTotal;
+
+  const contingencyPct = Math.max(0, inputs.contingencyPct || 0);
+  const contingencyAmount = (subtotal * contingencyPct) / 100;
+  const totalRealCost = subtotal + contingencyAmount;
+
+  const costPerPerson = totalRealCost / travelers;
+  const costPerDay = totalRealCost / days;
+  const stayPctOfTotal = totalRealCost > 0 ? (accommodationTotal / totalRealCost) * 100 : 0;
+  const hiddenCostTotal = hiddenFeesTotal + contingencyAmount;
+
+  const plannedBudget = inputs.plannedBudget ? Math.max(0, inputs.plannedBudget) : 0;
+  let budgetStatus: "under" | "near" | "over" | "none" = "none";
+  let budgetVariance = 0;
+
+  if (plannedBudget > 0) {
+    budgetVariance = plannedBudget - totalRealCost;
+    if (budgetVariance < 0) {
+      budgetStatus = "over";
+    } else if (budgetVariance <= plannedBudget * 0.05) {
+      budgetStatus = "near";
+    } else {
+      budgetStatus = "under";
+    }
+  }
+
+  return {
+    accommodationTotal,
+    transportTotal,
+    foodTotal,
+    activitiesTotal,
+    shoppingTotal,
+    hiddenFeesTotal,
+    subtotal,
+    contingencyAmount,
+    totalRealCost,
+    costPerPerson,
+    costPerDay,
+    stayPctOfTotal,
+    hiddenCostTotal,
+    budgetStatus,
+    budgetVariance,
+  };
+}
+
+// ----------------------------------------------------------------------------
+// 7. CONSTRUCTION MATERIAL PRICE INTELLIGENCE ENGINE
+// ----------------------------------------------------------------------------
+export interface MaterialRowItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  rate: number;
+  wastagePct: number;
+}
+
+export interface ConstructionMaterialInputs {
+  builtUpArea: number;
+  areaUnit: "sqft" | "sqm";
+  projectType: string;
+  floors: number;
+  materials: MaterialRowItem[];
+  labourCost: number;
+  consultantCost: number;
+  permitCost: number;
+  contingencyPct: number;
+  sensitivityRatePct?: number;
+}
+
+export interface MaterialRowCalculated extends MaterialRowItem {
+  effectiveQuantity: number;
+  materialCost: number;
+  wastageCost: number;
+  totalRowCost: number;
+  sharePct: number;
+}
+
+export interface ConstructionMaterialResult {
+  builtUpAreaSqFt: number;
+  builtUpAreaSqM: number;
+  calculatedRows: MaterialRowCalculated[];
+  totalRawMaterialCost: number;
+  totalWastageCost: number;
+  totalMaterialBudget: number;
+  costPerSqFtMaterial: number;
+  costPerSqMMaterial: number;
+  labourCost: number;
+  otherProjectCosts: number;
+  contingencyAmount: number;
+  totalProjectBudget: number;
+  costPerSqFtProject: number;
+  largestMaterialCategory: { name: string; cost: number; sharePct: number };
+  sensitivityIncreaseCost: number;
+  sensitivityTotalCost: number;
+  sensitivityRatePct: number;
+}
+
+export function calculateConstructionMaterial(
+  inputs: ConstructionMaterialInputs
+): ConstructionMaterialResult {
+  const area = Math.max(1, inputs.builtUpArea || 1000);
+  const isSqM = inputs.areaUnit === "sqm";
+  const builtUpAreaSqFt = isSqM ? area * 10.7639 : area;
+  const builtUpAreaSqM = isSqM ? area : area / 10.7639;
+
+  let totalRawMaterialCost = 0;
+  let totalWastageCost = 0;
+  let totalMaterialBudget = 0;
+
+  const preliminaryRows = (inputs.materials || []).map((m) => {
+    const qty = Math.max(0, m.quantity || 0);
+    const rate = Math.max(0, m.rate || 0);
+    const wastage = Math.max(0, m.wastagePct || 0);
+
+    const effectiveQuantity = qty * (1 + wastage / 100);
+    const materialCost = qty * rate;
+    const wastageCost = qty * (wastage / 100) * rate;
+    const totalRowCost = effectiveQuantity * rate;
+
+    totalRawMaterialCost += materialCost;
+    totalWastageCost += wastageCost;
+    totalMaterialBudget += totalRowCost;
+
+    return {
+      ...m,
+      effectiveQuantity,
+      materialCost,
+      wastageCost,
+      totalRowCost,
+      sharePct: 0,
+    };
+  });
+
+  let largestCategory = { name: "None", cost: 0, sharePct: 0 };
+
+  const calculatedRows: MaterialRowCalculated[] = preliminaryRows.map((row) => {
+    const sharePct = totalMaterialBudget > 0 ? (row.totalRowCost / totalMaterialBudget) * 100 : 0;
+    if (row.totalRowCost > largestCategory.cost) {
+      largestCategory = { name: row.name, cost: row.totalRowCost, sharePct };
+    }
+    return {
+      ...row,
+      sharePct,
+    };
+  });
+
+  const labourCost = Math.max(0, inputs.labourCost || 0);
+  const otherProjectCosts =
+    Math.max(0, inputs.consultantCost || 0) + Math.max(0, inputs.permitCost || 0);
+
+  const subtotalBeforeContingency = totalMaterialBudget + labourCost + otherProjectCosts;
+  const contingencyPct = Math.max(0, inputs.contingencyPct || 0);
+  const contingencyAmount = (subtotalBeforeContingency * contingencyPct) / 100;
+  const totalProjectBudget = subtotalBeforeContingency + contingencyAmount;
+
+  const costPerSqFtMaterial = builtUpAreaSqFt > 0 ? totalMaterialBudget / builtUpAreaSqFt : 0;
+  const costPerSqMMaterial = builtUpAreaSqM > 0 ? totalMaterialBudget / builtUpAreaSqM : 0;
+  const costPerSqFtProject = builtUpAreaSqFt > 0 ? totalProjectBudget / builtUpAreaSqFt : 0;
+
+  const sensitivityRatePct = Math.max(0, inputs.sensitivityRatePct ?? 5);
+  const sensitivityIncreaseCost = (totalMaterialBudget * sensitivityRatePct) / 100;
+  const sensitivityTotalCost = totalMaterialBudget + sensitivityIncreaseCost;
+
+  return {
+    builtUpAreaSqFt,
+    builtUpAreaSqM,
+    calculatedRows,
+    totalRawMaterialCost,
+    totalWastageCost,
+    totalMaterialBudget,
+    costPerSqFtMaterial,
+    costPerSqMMaterial,
+    labourCost,
+    otherProjectCosts,
+    contingencyAmount,
+    totalProjectBudget,
+    costPerSqFtProject,
+    largestMaterialCategory: largestCategory,
+    sensitivityIncreaseCost,
+    sensitivityTotalCost,
+    sensitivityRatePct,
+  };
+}
