@@ -97,7 +97,10 @@ export const CATEGORIES_META: Record<
 
 export const CATEGORIES = Object.keys(CATEGORIES_META) as CalculatorCategory[];
 
-export const CALCULATORS: CalculatorMeta[
+export const CALCULATORS: CalculatorMeta[] = [
+  // ==========================================
+  // 0. NEW HIGH-VALUE PRODUCTION TOOLS
+  // ==========================================
   {
     id: "parcel-real-earnings-calculator",
     slug: "parcel-real-earnings-calculator",
@@ -108,32 +111,57 @@ export const CALCULATORS: CalculatorMeta[
     popular: true,
     featured: true,
     lastUpdated: "September 2026",
-    formulaDescription: "Expected Net Earnings = Expected Revenue - (Direct Costs + Platform & Gateway Commission + GST on Fees + Expected Return/RTO Loss)",
+    formulaDescription: "Expected Net Earnings = Expected Revenue - (Direct Costs + Platform Fees + GST on Fees + Return/RTO Loss)",
     formulaVariables: [
       { symbol: "Gross Revenue", label: "Selling Price - Direct Customer Discount" },
-      { symbol: "Expected Revenue", label: "Gross Revenue × [1 - (Return Rate % + RTO Rate %)]" },
-      { symbol: "Total Commission", label: "(Gross Revenue × Marketplace %) + (Gross Revenue × Payment %) + Fixed Fee" },
-      { symbol: "GST on Fees", label: "Total Commission × GST Rate (18%)" },
-      { symbol: "Return/RTO Cost", label: "(Return Rate % + RTO Rate %) × Average Reverse Logistics Cost" },
-      { symbol: "Net Margin %", label: "(Expected Net Earnings / Gross Revenue) × 100" }
+      { symbol: "Expected Revenue", label: "Gross Revenue * [1 - (Return Rate % + RTO Rate %)]" },
+      { symbol: "Total Commission", label: "(Gross Revenue * Marketplace %) + (Gross Revenue * Payment %) + Fixed Fee" },
+      { symbol: "GST on Fees", label: "Total Commission * 18% GST" },
+      { symbol: "Return/RTO Cost", label: "(Return Rate % + RTO Rate %) * Average Reverse Logistics Cost" },
+      { symbol: "Net Margin %", label: "(Expected Net Earnings / Gross Revenue) * 100" }
     ],
     workedExample: {
-      scenario: "₹1,000 online parcel with ₹300 product cost, ₹70 shipping, ₹20 packaging, 10% marketplace fee, 2% payment fee, ₹10 fixed fee, 18% GST on fees, 5% customer returns, 10% courier RTO, and ₹100 reverse cost",
-      inputs: { "Selling Price": "₹1,000.00", "Product Cost": "₹300.00", "Forward Shipping & Pack": "₹90.00", "Marketplace & Pay Fees": "₹130.00", "GST on Fees (18%)": "₹23.40", "Expected Return/RTO Loss": "₹15.00 (15% × ₹100)", "Direct Expenses": "₹10.00" },
-      result: "Gross Order: ₹1,000.00 | Expected Revenue: ₹850.00 | Total Deductions: -₹568.40 | Expected Net Earnings: ₹281.60 | Profit Margin: 28.16%",
-      explanation: "With a 15% combined return and RTO rate, expected cash realization is ₹850. After fulfilling product cost (₹300), logistics (₹90), platform fees with 18% GST (₹153.40), return overheads (₹15), and expenses (₹10), you actually keep ₹281.60 per parcel with a 71.84% leakage rate."
+      scenario: "₹1,000 order with ₹300 COGS, ₹90 shipping/packing, 12% fees, 18% GST, and 15% return/RTO rate",
+      inputs: {
+        "Selling Price": "₹1,000.00",
+        "Product Cost": "₹300.00",
+        "Shipping & Pack": "₹90.00",
+        "Platform Fees": "₹130.00",
+        "GST on Fees (18%)": "₹23.40",
+        "Return/RTO Loss": "₹15.00",
+        "Direct Expenses": "₹10.00"
+      },
+      result: "Gross: ₹1,000.00 | Expected Revenue: ₹850.00 | Net Earnings: ₹281.60 | Profit Margin: 28.16%",
+      explanation: "After deducting COGS, forward shipping, platform commissions with 18% GST, and return loss, you keep ₹281.60 per parcel."
     },
     assumptions: [
       "Customer returns and courier RTOs eliminate gross cash collection on returned units.",
       "GST at 18% is uniformly applied strictly to the platform and payment gateway fee amounts.",
       "Average reverse cost reflects courier return freight, repacking, and transit damage allowance."
     ],
-    relatedCalculators: ["payment-gateway-fee-calculator", "ecommerce-roas-break-even-calculator", "gst-calculator", "profit-loss-calculator"],
+    relatedCalculators: [
+      "payment-gateway-fee-calculator",
+      "ecommerce-roas-break-even-calculator",
+      "gst-calculator",
+      "profit-loss-calculator"
+    ],
     faqs: [
-      { q: "How much profit do I actually make on each parcel?", a: "Your real profit is what remains after deducting product COGS, forward shipping, packaging, platform commissions, 18% GST on fees, and the statistical probability of return/RTO reverse freight losses." },
-      { q: "How does RTO affect profit?", a: "RTO (Return to Origin) wastes both forward shipping and reverse freight charges while zero revenue is collected, severely dragging down your effective net margin." },
-      { q: "Should shipping cost be included in product margin?", a: "Yes. Forward shipping and packaging are unavoidable variable costs that must be accounted for before determining unit profitability." },
-      { q: "What is the difference between revenue and actual earnings?", a: "Revenue is the customer invoice headline total. Actual net earnings is the real cash credited to your bank account after all deductions and reverse logistics." }
+      {
+        q: "How much profit do I actually make on each parcel?",
+        a: "Your real profit is what remains after deducting product COGS, forward shipping, packaging, platform commissions, 18% GST on fees, and reverse return freight losses."
+      },
+      {
+        q: "How does RTO affect profit?",
+        a: "RTO wastes both forward shipping and reverse freight charges while zero revenue is collected, severely reducing your profit margin."
+      },
+      {
+        q: "Should shipping cost be included in product margin?",
+        a: "Yes. Forward shipping and packaging are unavoidable variable costs that must be accounted for before determining unit profitability."
+      },
+      {
+        q: "What is the difference between revenue and actual earnings?",
+        a: "Revenue is the customer invoice headline total. Actual net earnings is the real cash credited to your bank account after all deductions and reverse logistics."
+      }
     ]
   },
   {
@@ -146,31 +174,57 @@ export const CALCULATORS: CalculatorMeta[
     popular: true,
     featured: true,
     lastUpdated: "September 2026",
-    formulaDescription: "Total Real Trip Cost = (Transport + Accommodation + Food + Activities + Shopping + Hidden Fees) × (1 + Contingency %)",
+    formulaDescription: "Total Real Trip Cost = (Transport + Accommodation + Food + Activities + Shopping + Hidden Fees) * (1 + Contingency %)",
     formulaVariables: [
-      { symbol: "Accommodation", label: "Hotel Rate per Night × Nights × Number of Rooms" },
-      { symbol: "Transport", label: "Flights/Train + (Local Transport/Day × Days) + Transfers + Fuel/Tolls" },
-      { symbol: "Food & Drinks", label: "(Food per Person per Day × Travelers × Days) + (Snacks/Day × Days)" },
+      { symbol: "Accommodation", label: "Hotel Rate per Night * Nights * Number of Rooms" },
+      { symbol: "Transport", label: "Flights/Train + (Local Transport/Day * Days) + Transfers + Fuel/Tolls" },
+      { symbol: "Food & Drinks", label: "(Food per Person per Day * Travelers * Days) + (Snacks/Day * Days)" },
       { symbol: "Activities & Shopping", label: "Sightseeing Tickets + Experiences + Shopping Budget" },
       { symbol: "Hidden & Contingency", label: "Insurance + Visa/Permits + Booking Fees + Emergency Buffer + Contingency %" }
     ],
     workedExample: {
-      scenario: "5-day, 4-night vacation for 2 travelers sharing 1 hotel room with flights, local cabs, food, sightseeing, and a 5% contingency buffer",
-      inputs: { "Travelers": "2 Persons", "Duration": "5 Days (4 Nights)", "Transport Total": "₹19,000.00", "Stay (₹3,000/night)": "₹12,000.00", "Food & Snacks": "₹10,000.00", "Activities & Shopping": "₹10,000.00", "Hidden Fees": "₹2,000.00", "Contingency (5%)": "₹2,650.00" },
+      scenario: "5-day, 4-night vacation for 2 travelers sharing 1 hotel room with flights, local cabs, food, and a 5% contingency buffer",
+      inputs: {
+        "Travelers": "2 Persons",
+        "Duration": "5 Days (4 Nights)",
+        "Transport Total": "₹19,000.00",
+        "Stay (₹3,000/night)": "₹12,000.00",
+        "Food & Snacks": "₹10,000.00",
+        "Activities & Shopping": "₹10,000.00",
+        "Hidden Fees": "₹2,000.00",
+        "Contingency (5%)": "₹2,650.00"
+      },
       result: "Total Real Trip Cost: ₹55,650.00 | Cost per Person: ₹27,825.00 | Cost per Day: ₹11,130.00",
-      explanation: "Subtotal of visible expenses is ₹53,000. Adding a prudent 5% contingency reserve (₹2,650) brings the true all-inclusive cost to ₹55,650 (₹27,825 per person)."
+      explanation: "Subtotal of visible expenses is ₹53,000. Adding a 5% contingency reserve (₹2,650) brings the true all-inclusive cost to ₹55,650."
     },
     assumptions: [
       "Hotel room count multiplies total lodging expenses uniformly across the booked nights.",
       "Contingency percentage protects against surge cab fares, unplanned dining, and baggage charges.",
       "Calculations are deterministic estimators based purely on user-entered local prices."
     ],
-    relatedCalculators: ["rent-split-calculator", "tip-calculator", "fuel-cost-calculator", "mileage-calculator"],
+    relatedCalculators: [
+      "rent-split-calculator",
+      "tip-calculator",
+      "fuel-cost-calculator",
+      "mileage-calculator"
+    ],
     faqs: [
-      { q: "What is the real cost of a trip?", a: "The real cost includes not just flights and hotels, but daily meals, local transit, baggage fees, permit charges, entry tickets, and an emergency contingency buffer." },
-      { q: "What expenses do people commonly forget?", a: "Travelers frequently forget airport cab surge fares, hotel tourism taxes, convenience booking fees, snacks/beverages, and shopping impulse spends." },
-      { q: "How much should I keep for miscellaneous expenses?", a: "Keeping a 5% to 10% contingency buffer over your planned subtotal prevents budget overruns during unexpected delays or medical needs." },
-      { q: "How do I calculate travel cost per person?", a: "Divide the final all-inclusive trip cost by the total number of travelers in your party." }
+      {
+        q: "What is the real cost of a trip?",
+        a: "The real cost includes flights, hotels, daily meals, local transit, baggage fees, permit charges, entry tickets, and an emergency contingency buffer."
+      },
+      {
+        q: "What expenses do people commonly forget?",
+        a: "Travelers frequently forget airport cab surge fares, hotel tourism taxes, convenience booking fees, snacks/beverages, and shopping impulse spends."
+      },
+      {
+        q: "How much should I keep for miscellaneous expenses?",
+        a: "Keeping a 5% to 10% contingency buffer over your planned subtotal prevents budget overruns during unexpected delays or medical needs."
+      },
+      {
+        q: "How do I calculate travel cost per person?",
+        a: "Divide the final all-inclusive trip cost by the total number of travelers in your party."
+      }
     ]
   },
   {
@@ -183,34 +237,59 @@ export const CALCULATORS: CalculatorMeta[
     popular: true,
     featured: true,
     lastUpdated: "September 2026",
-    formulaDescription: "Total Material Budget = ∑ [Quantity × (1 + Wastage %) × Local Rate] + Labour + Professional Fees + Contingency %",
+    formulaDescription: "Total Material Budget = sum[Quantity * (1 + Wastage %) * Local Rate] + Labour + Professional Fees + Contingency %",
     formulaVariables: [
-      { symbol: "Effective Quantity", label: "Raw Bill of Quantities × (1 + Material Wastage %)" },
-      { symbol: "Material Subtotal", label: "Effective Quantity × Local User Rate per Unit" },
-      { symbol: "Wastage Cost", label: "Quantity × (Wastage % / 100) × Local Rate" },
+      { symbol: "Effective Quantity", label: "Raw Bill of Quantities * (1 + Material Wastage %)" },
+      { symbol: "Material Subtotal", label: "Effective Quantity * Local User Rate per Unit" },
+      { symbol: "Wastage Cost", label: "Quantity * (Wastage % / 100) * Local Rate" },
       { symbol: "Project Budget", label: "Total Materials + Labour Cost + Approvals/Consultancy + Contingency" },
-      { symbol: "Rate Sensitivity", label: "Total Material Budget × (1 + Inflation Rate %)" }
+      { symbol: "Rate Sensitivity", label: "Total Material Budget * (1 + Inflation Rate %)" }
     ],
     workedExample: {
       scenario: "1,000 sq ft residential structure with 10 standard materials plus labour and 5% contingency",
-      inputs: { "Built-up Area": "1,000 sq ft", "Raw Material Cost": "₹10,41,400.00", "Material Wastage Loss": "₹44,479.00", "Total Material Budget": "₹10,85,879.00", "Labour Cost": "₹3,50,000.00", "Consultant & Permits": "₹55,000.00", "Contingency (5%)": "₹74,544.00" },
+      inputs: {
+        "Built-up Area": "1,000 sq ft",
+        "Raw Material Cost": "₹10,41,400.00",
+        "Material Wastage Loss": "₹44,479.00",
+        "Total Material Budget": "₹10,85,879.00",
+        "Labour Cost": "₹3,50,000.00",
+        "Consultant & Permits": "₹55,000.00",
+        "Contingency (5%)": "₹74,544.00"
+      },
       result: "Total Material Budget: ₹10,85,879.00 (₹1,085.88/sq ft) | Total Project Budget: ₹15,65,423.00 (₹1,565.42/sq ft) | +5% Inflation Impact: +₹54,294.00",
-      explanation: "With local entered rates, base material cost is ₹10,41,400. Adding ₹44,479 in site cutting/handling wastage gives a total material budget of ₹10,85,879. Including labour, permits, and a 5% contingency yields an all-inclusive project budget of ₹15,65,423."
+      explanation: "With local entered rates, base material cost is ₹10,41,400. Adding ₹44,479 in site cutting/handling wastage gives a total material budget of ₹10,85,879."
     },
     assumptions: [
       "All rates must be entered based on current local market procurement prices (no fabricated pricing).",
       "Standard site wastage ranges between 3% to 8% depending on material handling efficiency.",
       "Civil construction guidelines vary based on structural design, soil conditions, and finish grades."
     ],
-    relatedCalculators: ["area-converter", "percentage-calculator", "break-even-calculator", "unit-converter"],
+    relatedCalculators: [
+      "area-converter",
+      "percentage-calculator",
+      "break-even-calculator",
+      "unit-converter"
+    ],
     faqs: [
-      { q: "How is construction material cost calculated?", a: "Cost is calculated by multiplying the estimated bill of quantities by your local supplier rate, adding site handling wastage allowance (3%-8%)." },
-      { q: "Are these live market prices?", a: "No. The calculator does not fabricate live rates. It calculates deterministic quantities and costs using the exact market rates entered by the user." },
-      { q: "How much wastage should I allow in construction?", a: "Typically allow 3% for cement, 4% for TMT steel bar cutting, 5% for sand and aggregate, 6% for bricks, and 8% for tiles." },
-      { q: "What is material cost per square foot?", a: "It is the total material budget divided by the total built-up floor area in square feet." }
+      {
+        q: "How is construction material cost calculated?",
+        a: "Cost is calculated by multiplying the estimated bill of quantities by your local supplier rate, adding site handling wastage allowance (3%-8%)."
+      },
+      {
+        q: "Are these live market prices?",
+        a: "No. The calculator does not fabricate live rates. It calculates deterministic quantities and costs using the exact market rates entered by the user."
+      },
+      {
+        q: "How much wastage should I allow in construction?",
+        a: "Typically allow 3% for cement, 4% for TMT steel bar cutting, 5% for sand and aggregate, 6% for bricks, and 8% for tiles."
+      },
+      {
+        q: "What is material cost per square foot?",
+        a: "It is the total material budget divided by the total built-up floor area in square feet."
+      }
     ]
   },
-] = [
+
   // ==========================================
   // 1. FINANCE CALCULATORS
   // ==========================================
@@ -726,7 +805,7 @@ export const CALCULATORS: CalculatorMeta[
     ],
     workedExample: {
       scenario: "₹10,000 Customer Payment processed via Razorpay (2.0% Processing Fee + 18% GST on Fee, 0% FX, ₹0 Fixed Fee)",
-      inputs: { "Transaction Amount": "₹10,000.00", "Processing Fee (2%)": "₹200.00", "GST on Fee (18%)": "₹36.00", "Fixed Fee": "₹0.00" },
+      inputs: { "Transaction Amount": "₹10,00,000", "Processing Fee (2%)": "₹200.00", "GST on Fee (18%)": "₹36.00", "Fixed Fee": "₹0.00" },
       result: "Customer Charge: ₹10,000.00 | Total Gateway & Tax Fees: -₹236.00 | Net Amount Received: ₹9,764.00 | Effective Fee: 2.36%",
       explanation: "Base gateway fee of 2% on ₹10,000 is ₹200. With 18% GST applied to the fee (₹36), total deduction is ₹236, yielding a net payout of ₹9,764.00.",
     },
