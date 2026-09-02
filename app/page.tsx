@@ -101,6 +101,80 @@ export default function HomePage() {
         <FeaturedEMI />
       </section>
 
+      
+      {/* Trading Tools High-Visibility Section */}
+      <section className="bg-gradient-to-br from-[#070d1a] to-[#0f172a] border border-[#1e293b] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl my-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-[#00f59b]/10 text-[#00f59b] text-[11px] font-black uppercase tracking-wider">
+              ✦ Real-Time Market Tools
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+              Trading & Stock Market Calculators
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              Calculate intraday P&amp;L, strict position sizes, and statutory Indian brokerage taxes (STT, GST, SEBI).
+            </p>
+          </div>
+          <Link
+            href="/trading"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#00f59b] hover:bg-[#00d989] text-[#050b14] text-xs font-black transition-colors shrink-0 shadow-md"
+          >
+            Explore All Trading Tools →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Link
+            href="/trading/intraday-pnl-calculator"
+            className="group bg-[#0b1222]/80 border border-[#1e293b] hover:border-[#00f59b]/60 rounded-2xl p-4 transition-all"
+          >
+            <div className="flex items-center justify-between text-[10px] font-black text-[#00f59b] uppercase mb-1.5">
+              <span>P&amp;L Engine</span>
+              <span>Open →</span>
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-[#00f59b] transition-colors">
+              Intraday P&amp;L Calculator
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
+              Calculate point moves, gross profit/loss, and trade return percentage.
+            </p>
+          </Link>
+
+          <Link
+            href="/trading/position-size-calculator"
+            className="group bg-[#0b1222]/80 border border-[#1e293b] hover:border-amber-400/60 rounded-2xl p-4 transition-all"
+          >
+            <div className="flex items-center justify-between text-[10px] font-black text-amber-400 uppercase mb-1.5">
+              <span>Risk Management</span>
+              <span>Open →</span>
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">
+              Position Size Calculator
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
+              Cap trade risk strictly at 1% to 2% to protect capital drawdown.
+            </p>
+          </Link>
+
+          <Link
+            href="/trading/brokerage-charges-calculator"
+            className="group bg-[#0b1222]/80 border border-[#1e293b] hover:border-rose-400/60 rounded-2xl p-4 transition-all"
+          >
+            <div className="flex items-center justify-between text-[10px] font-black text-rose-400 uppercase mb-1.5">
+              <span>Charges &amp; Taxes</span>
+              <span>Open →</span>
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-rose-400 transition-colors">
+              Brokerage &amp; Taxes Calculator
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">
+              Evaluate STT, Stamp Duty, SEBI turnover fees, and 18% GST friction.
+            </p>
+          </Link>
+        </div>
+      </section>
+
       {/* Popular Calculators Grid */}
       <section className="space-y-6">
         <div className="flex items-center justify-between pb-2 border-b border-navy/10">
