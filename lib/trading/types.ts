@@ -1,6 +1,5 @@
 // ============================================================================
-// MYCALCULATORS TRADING SYSTEM — CORE TYPES & CONTRACTS (PHASE 0)
-// Completely isolated from the general calculator registry.
+// MYCALCULATORS TRADING SYSTEM — CORE TYPES & CONTRACTS
 // ============================================================================
 
 export type TradingCategory =
@@ -25,6 +24,7 @@ export type RiskLevel = "low" | "moderate" | "high" | "critical";
 
 export type RendererType =
   | "pnl"
+  | "risk"
   | "position-size"
   | "brokerage"
   | "options-payoff"
