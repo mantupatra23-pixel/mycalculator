@@ -6,12 +6,10 @@ import { getAllTradingTools, getTradingToolBySlug } from "@/lib/trading/registry
 import { PnLCalculatorRenderer } from "@/components/trading/renderers/PnLCalculatorRenderer";
 import { PositionSizeRenderer } from "@/components/trading/renderers/PositionSizeRenderer";
 import { BrokerageRenderer } from "@/components/trading/renderers/BrokerageRenderer";
-import { BookOpen, Calculator, ShieldAlert, ArrowLeft, Code2, HelpCircle } from "lucide-react";
+import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle } from "lucide-react";
 
 interface Props {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 }
 
 export async function generateStaticParams() {
@@ -22,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tool = getTradingToolBySlug(params.slug);
   if (!tool) return { title: "Trading Tool Not Found | MyCalculators" };
 
-  const title = `${tool.name} – Trading Calculator | MyCalculators`;
-  const description = `${tool.shortDescription} Free, zero-latency trading algorithm with step-by-step mathematical breakdowns.`;
+  const title = `${tool.name} – Free Trading Calculator | MyCalculators`;
+  const description = `${tool.shortDescription} Browser-native calculation algorithm with formulas and live worked examples.`;
 
   return {
     title,
@@ -31,43 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://www.mycalculator.xyz/trading/${tool.slug}`,
     },
-    openGraph: {
-      title,
-      description,
-      url: `https://www.mycalculator.xyz/trading/${tool.slug}`,
-      siteName: "MyCalculators Trading Suite",
-      locale: "en_IN",
-      type: "website",
-    },
   };
 }
 
 export default function TradingToolDetailPage({ params }: Props) {
   const tool = getTradingToolBySlug(params.slug);
   if (!tool) notFound();
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        name: tool.name,
-        applicationCategory: "FinanceApplication",
-        operatingSystem: "All",
-        url: `https://www.mycalculator.xyz/trading/${tool.slug}`,
-        description: tool.shortDescription,
-        browserRequirements: "Requires JavaScript. Requires HTML5.",
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: "https://www.mycalculator.xyz" },
-          { "@type": "ListItem", position: 2, name: "Trading", item: "https://www.mycalculator.xyz/trading" },
-          { "@type": "ListItem", position: 3, name: tool.name, item: `https://www.mycalculator.xyz/trading/${tool.slug}` },
-        ],
-      },
-    ],
-  };
 
   const renderActiveTool = () => {
     switch (tool.renderer) {
@@ -78,125 +45,105 @@ export default function TradingToolDetailPage({ params }: Props) {
       case "brokerage":
         return <BrokerageRenderer toolSlug={tool.slug} />;
       default:
-        return (
-          <div className="bg-[#0b1222] border border-[#1e293b] rounded-3xl p-8 text-center text-slate-400">
-            Engine module scheduled for upcoming phase rollout.
-          </div>
-        );
+        return null;
     }
   };
 
   return (
-    <main className="min-h-screen bg-[#050b14] text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-16 space-y-8">
+      {/* Breadcrumbs */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-navy/60">
+        <Link href="/" className="hover:text-navy transition-colors">Home</Link>
+        <span>/</span>
+        <Link href="/trading" className="hover:text-navy uppercase tracking-wider transition-colors">Trading</Link>
+        <span>/</span>
+        <span className="text-navy">{tool.name}</span>
+      </nav>
 
-      <div className="max-w-5xl mx-auto space-y-8">
-        {/* Navigation Breadcrumbs */}
-        <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-xs text-slate-400">
-          <Link href="/" className="hover:text-white transition-colors">Home</Link>
-          <span>/</span>
-          <Link href="/trading" className="hover:text-[#00f59b] transition-colors">Trading</Link>
-          <span>/</span>
-          <span className="text-slate-200 font-semibold">{tool.name}</span>
-        </nav>
+      {/* Heading */}
+      <div className="space-y-1">
+        <span className="text-[11px] font-extrabold uppercase tracking-wider text-steel">
+          {tool.category}
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight">{tool.name}</h1>
+        <p className="text-sm sm:text-base text-navy/75 max-w-2xl leading-relaxed">{tool.shortDescription}</p>
+      </div>
 
-        {/* Heading & Meta */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Link
-              href="/trading"
-              className="p-1.5 rounded-lg border border-[#1e293b] text-slate-400 hover:text-white hover:bg-[#0b1222] transition-all inline-flex sm:hidden"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#00f59b] bg-[#00f59b]/10 px-2.5 py-0.5 rounded-md">
-              {tool.category}
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">{tool.name}</h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-3xl leading-relaxed">{tool.shortDescription}</p>
-        </div>
+      {/* Interactive Tool Component */}
+      {renderActiveTool()}
 
-        {/* Primary Interactive Engine Component */}
-        {renderActiveTool()}
-
-        {/* Content, Formula, Assumptions, & Safety Disclosures */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-6 border-t border-[#1e293b]">
-          <div className="md:col-span-8 space-y-6">
-            {/* Mathematical Formula */}
-            {tool.formulaDescription && (
-              <section className="bg-[#0b1222] border border-[#1e293b] rounded-2xl p-5 space-y-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Code2 className="w-4 h-4 text-[#00f59b]" /> Mathematical Formulation
-                </h2>
-                <div className="p-3 bg-[#0f172a] rounded-xl font-mono text-xs text-[#00f59b] border border-[#1e293b]">
-                  {tool.formulaDescription}
-                </div>
-                {tool.formulaVariables && (
-                  <ul className="space-y-1 text-xs text-slate-400 pt-1">
-                    {tool.formulaVariables.map((v, i) => (
-                      <li key={i}>
-                        <strong className="text-slate-200 font-mono">{v.symbol}:</strong> {v.label}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            )}
-
-            {/* Worked Example */}
-            {tool.workedExample && (
-              <section className="bg-[#0b1222] border border-[#1e293b] rounded-2xl p-5 space-y-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Calculator className="w-4 h-4 text-[#00d8f6]" /> Worked Mathematical Example
-                </h2>
-                <p className="text-xs text-slate-400">{tool.workedExample.scenario}</p>
-                <div className="bg-[#0f172a] p-3 rounded-xl border border-[#1e293b] text-xs font-semibold text-slate-200">
-                  {tool.workedExample.result}
-                </div>
-                <p className="text-[11px] text-slate-400">{tool.workedExample.explanation}</p>
-              </section>
-            )}
-
-            {/* FAQs */}
-            {tool.faqs && tool.faqs.length > 0 && (
-              <section className="space-y-3">
-                <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4 text-purple-400" /> Frequently Asked Questions
-                </h2>
-                <div className="space-y-2">
-                  {tool.faqs.map((faq, i) => (
-                    <div key={i} className="bg-[#0b1222] border border-[#1e293b] rounded-xl p-4">
-                      <h3 className="text-xs font-bold text-slate-200 mb-1">{faq.q}</h3>
-                      <p className="text-xs text-slate-400 leading-relaxed">{faq.a}</p>
-                    </div>
+      {/* Content & Formula Section */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
+        <div className="md:col-span-8 space-y-6">
+          {tool.formulaDescription && (
+            <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-3 shadow-xs">
+              <h2 className="text-lg font-bold text-navy flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-steel" /> Calculation Formula
+              </h2>
+              <div className="p-3.5 bg-sage/30 rounded-xl font-mono text-xs sm:text-sm font-bold text-navy break-all border border-navy/10">
+                {tool.formulaDescription}
+              </div>
+              {tool.formulaVariables && (
+                <ul className="space-y-1 text-xs text-navy/80 pt-1">
+                  {tool.formulaVariables.map((v, i) => (
+                    <li key={i}>
+                      <strong className="text-navy font-mono">{v.symbol}:</strong> {v.label}
+                    </li>
                   ))}
-                </div>
-              </section>
-            )}
+                </ul>
+              )}
+            </section>
+          )}
+
+          {tool.workedExample && (
+            <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-3 shadow-xs">
+              <h2 className="text-lg font-bold text-navy flex items-center gap-2">
+                <Calculator className="w-4 h-4 text-steel" /> Example Calculation
+              </h2>
+              <p className="text-xs font-semibold text-steel">{tool.workedExample.scenario}</p>
+              <div className="bg-sage/20 border border-navy/10 rounded-xl p-3.5 text-xs text-navy/85">
+                Outcome: <strong className="text-navy">{tool.workedExample.result}</strong>
+              </div>
+              <p className="text-xs text-navy/70 leading-relaxed">{tool.workedExample.explanation}</p>
+            </section>
+          )}
+
+          {tool.faqs && tool.faqs.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-xl font-bold text-navy flex items-center gap-2">
+                <HelpCircle className="w-5 h-5 text-[#e89d67]" /> Frequently Asked Questions
+              </h2>
+              <div className="space-y-2">
+                {tool.faqs.map((faq, i) => (
+                  <div key={i} className="bg-white border border-navy/15 rounded-xl p-4 shadow-xs">
+                    <h3 className="font-bold text-sm text-navy mb-1">{faq.q}</h3>
+                    <p className="text-xs text-navy/75 leading-relaxed">{faq.a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <aside className="md:col-span-4 space-y-4">
+          <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
+            <h3 className="font-bold text-sm text-navy flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Privacy
+            </h3>
+            <p className="text-xs text-navy/70 leading-relaxed">
+              All trading calculations run locally in your web browser. No trade values or quantities are stored on external servers.
+            </p>
           </div>
 
-          {/* Sidebar Guidelines */}
-          <aside className="md:col-span-4 space-y-4">
-            <div className="bg-[#0b1222] border border-[#1e293b] rounded-2xl p-5 space-y-3">
-              <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-[#00f59b]" /> Risk Parameters
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Calculations execute locally inside your browser runtime. No financial data, account numbers, or portfolio metrics are saved or transmitted to remote cloud databases.
-              </p>
-            </div>
-
-            <div className="bg-amber-950/20 border border-amber-500/20 rounded-2xl p-4 text-xs text-amber-300/80 space-y-1">
-              <span className="font-bold flex items-center gap-1 text-amber-300">
-                <ShieldAlert className="w-3.5 h-3.5" /> No Advisory Guarantee
-              </span>
-              <p className="text-[11px] text-amber-200/60 leading-relaxed">
-                Calculations are mathematical estimations for self-directed traders. Always confirm order parameters with your registered broker.
-              </p>
-            </div>
-          </aside>
-        </div>
+          <div className="bg-sage/40 border border-navy/10 rounded-2xl p-4 text-xs text-navy space-y-1">
+            <span className="font-bold flex items-center gap-1">
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Important Notice
+            </span>
+            <p className="text-[11px] text-navy/70 leading-relaxed">
+              For mathematical planning and risk estimation only. Not trading or investment advice.
+            </p>
+          </div>
+        </aside>
       </div>
     </main>
   );

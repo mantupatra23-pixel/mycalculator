@@ -14,13 +14,13 @@ export function PnLCalculatorRenderer({ toolSlug }: { toolSlug: string }) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <div className="lg:col-span-7 bg-[#0b1222] border border-[#1e293b] rounded-3xl p-6 space-y-4">
-        <div className="flex gap-2 p-1 bg-[#0f172a] rounded-xl border border-[#1e293b]">
+      <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-navy/15 shadow-sm space-y-5">
+        <div className="flex gap-2 p-1 bg-sage/20 rounded-xl border border-navy/10">
           <button
             type="button"
             onClick={() => setTradeType("long")}
-            className={`flex-1 py-2 text-xs font-black rounded-lg transition-colors ${
-              tradeType === "long" ? "bg-[#00f59b] text-[#050b14]" : "text-slate-400"
+            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${
+              tradeType === "long" ? "bg-white text-navy shadow-xs" : "text-navy/60"
             }`}
           >
             BUY (Long)
@@ -28,8 +28,8 @@ export function PnLCalculatorRenderer({ toolSlug }: { toolSlug: string }) {
           <button
             type="button"
             onClick={() => setTradeType("short")}
-            className={`flex-1 py-2 text-xs font-black rounded-lg transition-colors ${
-              tradeType === "short" ? "bg-rose-500 text-white" : "text-slate-400"
+            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${
+              tradeType === "short" ? "bg-white text-navy shadow-xs" : "text-navy/60"
             }`}
           >
             SELL (Short)
@@ -38,30 +38,30 @@ export function PnLCalculatorRenderer({ toolSlug }: { toolSlug: string }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-300">Entry Price (₹)</label>
+            <label className="text-xs font-bold text-navy">Entry Price (₹)</label>
             <input
               type="number"
               value={entryPrice || ""}
               onChange={(e) => setEntryPrice(parseFloat(e.target.value) || 0)}
-              className="w-full px-3 py-2 bg-[#0f172a] border border-[#1e293b] rounded-xl text-white font-mono font-bold text-sm focus:outline-hidden focus:border-[#00f59b]"
+              className="w-full px-3 py-2 text-xs font-bold text-navy bg-sage/20 border border-navy/15 rounded-xl"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-300">Exit Price (₹)</label>
+            <label className="text-xs font-bold text-navy">Exit Price (₹)</label>
             <input
               type="number"
               value={exitPrice || ""}
               onChange={(e) => setExitPrice(parseFloat(e.target.value) || 0)}
-              className="w-full px-3 py-2 bg-[#0f172a] border border-[#1e293b] rounded-xl text-white font-mono font-bold text-sm focus:outline-hidden focus:border-[#00f59b]"
+              className="w-full px-3 py-2 text-xs font-bold text-navy bg-sage/20 border border-navy/15 rounded-xl"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-300">Quantity (Shares)</label>
+            <label className="text-xs font-bold text-navy">Quantity</label>
             <input
               type="number"
               value={quantity || ""}
               onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 bg-[#0f172a] border border-[#1e293b] rounded-xl text-white font-mono font-bold text-sm focus:outline-hidden focus:border-[#00f59b]"
+              className="w-full px-3 py-2 text-xs font-bold text-navy bg-sage/20 border border-navy/15 rounded-xl"
             />
           </div>
         </div>
