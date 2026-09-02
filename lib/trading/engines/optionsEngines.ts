@@ -10,6 +10,8 @@ import {
   TradingCalculationResult,
 } from "../types";
 
+export type { OptionLeg, PayoffPoint, StrategyPayoffResult } from "../types";
+
 export interface SingleOptionInput {
   spotPrice: number;
   strikePrice: number;
@@ -60,7 +62,7 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
     breakeven = Math.max(0, K - P);
   }
 
-  // 4. Payoff & Profit at Expiry Price (expiryS)
+  // 4. Payoff & Profit at Expiry Price
   let payoffPerUnit = 0;
   if (input.optionType === "call") {
     payoffPerUnit = Math.max(0, expiryS - K);
@@ -78,7 +80,6 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
   const totalPremium = P * totalUnits;
   const returnOnPremium = totalPremium > 0 ? (totalPnL / totalPremium) * 100 : 0;
 
-  // Max profit / loss descriptors
   let maxProfitDesc = "";
   let maxLossDesc = "";
   if (input.side === "long") {
@@ -113,9 +114,6 @@ export function calculateSingleOptionMetrics(input: SingleOptionInput): TradingC
   };
 }
 
-// ----------------------------------------------------------------------------
-// Multi-Leg Option Payoff Architecture
-// ----------------------------------------------------------------------------
 export function calculateLegPnLAtPrice(leg: OptionLeg, S: number): number {
   const K = leg.strikePrice;
   const P = leg.premium;
@@ -152,7 +150,6 @@ export function calculateStrategyPayoff(
     };
   }
 
-  // 1. Calculate Net Premium (Debit or Credit)
   let netPremium = 0;
   for (const leg of legs) {
     const cost = leg.premium * leg.quantity * leg.contractMultiplier;
@@ -160,7 +157,6 @@ export function calculateStrategyPayoff(
   }
   const isNetCredit = netPremium > 0;
 
-  // 2. Determine price evaluation domain
   const strikes = legs.map((l) => l.strikePrice);
   const minStrike = Math.min(...strikes, currentSpot);
   const maxStrike = Math.max(...strikes, currentSpot);
@@ -192,7 +188,6 @@ export function calculateStrategyPayoff(
     });
   }
 
-  // 3. Detect Numerical Breakevens via Bisection Scan
   const breakevens: number[] = [];
   for (let i = 0; i < payoffCurve.length - 1; i++) {
     const p1 = payoffCurve[i];
@@ -202,7 +197,6 @@ export function calculateStrategyPayoff(
       if (p1.profit === 0) {
         breakevens.push(p1.underlyingPrice);
       } else {
-        // Linear interpolation for exact zero crossing
         const fraction = Math.abs(p1.profit) / (Math.abs(p1.profit) + Math.abs(p2.profit));
         const be = p1.underlyingPrice + fraction * (p2.underlyingPrice - p1.underlyingPrice);
         breakevens.push(Math.round(be * 100) / 100);
@@ -210,8 +204,6 @@ export function calculateStrategyPayoff(
     }
   }
 
-  // 4. Check for theoretical unlimited upside or downside
-  const farRightPnL = calculateLegPnLAtPrice(legs[0], endPrice * 3);
   let totalFarRight = 0;
   let totalFarLeft = 0;
   for (const leg of legs) {
@@ -224,7 +216,6 @@ export function calculateStrategyPayoff(
 
   const currentPnL = legs.reduce((acc, leg) => acc + calculateLegPnLAtPrice(leg, currentSpot), 0);
 
-  // Formulate Profit Zones
   const zones: string[] = [];
   if (breakevens.length === 1) {
     if (payoffCurve[payoffCurve.length - 1].profit > 0) {
@@ -258,9 +249,6 @@ export function calculateStrategyPayoff(
   };
 }
 
-// ----------------------------------------------------------------------------
-// Pre-configured Multi-Leg Strategy Generators
-// ----------------------------------------------------------------------------
 export function createBullCallSpread(lowerK: number, upperK: number, lowerPrem: number, upperPrem: number, qty: number = 1, mult: number = 50): OptionLeg[] {
   return [
     { id: "leg-1", optionType: "call", side: "long", strikePrice: lowerK, premium: lowerPrem, quantity: qty, contractMultiplier: mult },

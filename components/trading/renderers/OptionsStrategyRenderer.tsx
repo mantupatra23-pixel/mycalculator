@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { OptionLeg, TradingCalculationResult } from "@/lib/trading/types";
 import {
-  OptionLeg,
   createBullCallSpread,
   createBearPutSpread,
   createLongStraddle,
@@ -15,7 +15,6 @@ import { StrategyPayoffChart } from "../ui/StrategyPayoffChart";
 export function OptionsStrategyRenderer({ toolSlug }: { toolSlug: string }) {
   const [currentSpot, setCurrentSpot] = useState<number>(24500);
 
-  // Initialize legs dynamically based on selected tool slug
   const getInitialLegs = (): OptionLeg[] => {
     if (toolSlug === "bear-put-spread-calculator") {
       return createBearPutSpread(24500, 24000, 160, 45, 1, 50);
@@ -26,7 +25,6 @@ export function OptionsStrategyRenderer({ toolSlug }: { toolSlug: string }) {
     if (toolSlug === "iron-condor-calculator") {
       return createIronCondor(23800, 24100, 24800, 25100, 30, 90, 85, 25, 1, 50);
     }
-    // Default: Bull Call Spread
     return createBullCallSpread(24500, 25000, 190, 60, 1, 50);
   };
 
@@ -34,7 +32,7 @@ export function OptionsStrategyRenderer({ toolSlug }: { toolSlug: string }) {
 
   const payoff = calculateStrategyPayoff(toolSlug.replace("-calculator", ""), legs, currentSpot);
 
-  const result = {
+  const result: TradingCalculationResult = {
     primaryMetric: {
       label: `Net Expiry P&L (at ₹${currentSpot.toLocaleString()})`,
       value: payoff.selectedSpotPnL,
@@ -42,17 +40,36 @@ export function OptionsStrategyRenderer({ toolSlug }: { toolSlug: string }) {
       isPositive: payoff.selectedSpotPnL >= 0,
     },
     secondaryMetrics: [
-      { label: "Net Premium Position", value: payoff.netPremium, formatted: `${payoff.isNetCredit ? "Net Credit: +" : "Net Debit: -"}₹${payoff.netPremium.toFixed(2)}`, highlight: payoff.isNetCredit ? "green" : "neutral" as const },
-      { label: "Maximum Upside", value: 0, formatted: typeof payoff.maxProfit === "number" ? `+₹${payoff.maxProfit.toFixed(2)}` : payoff.maxProfit, highlight: "green" as const },
-      { label: "Maximum Risk Outlay", value: 0, formatted: typeof payoff.maxLoss === "number" ? `-₹${payoff.maxLoss.toFixed(2)}` : payoff.maxLoss, highlight: "red" as const },
-      { label: "Breakeven Levels", value: 0, formatted: payoff.breakevens.length > 0 ? payoff.breakevens.map((b) => `₹${b.toFixed(0)}`).join(", ") : "None in range", highlight: "cyan" as const },
+      {
+        label: "Net Premium Position",
+        value: payoff.netPremium,
+        formatted: `${payoff.isNetCredit ? "Net Credit: +" : "Net Debit: -"}₹${payoff.netPremium.toFixed(2)}`,
+        highlight: payoff.isNetCredit ? "green" : "neutral",
+      },
+      {
+        label: "Maximum Upside",
+        value: 0,
+        formatted: typeof payoff.maxProfit === "number" ? `+₹${payoff.maxProfit.toFixed(2)}` : payoff.maxProfit,
+        highlight: "green",
+      },
+      {
+        label: "Maximum Risk Outlay",
+        value: 0,
+        formatted: typeof payoff.maxLoss === "number" ? `-₹${payoff.maxLoss.toFixed(2)}` : payoff.maxLoss,
+        highlight: "red",
+      },
+      {
+        label: "Breakeven Levels",
+        value: 0,
+        formatted: payoff.breakevens.length > 0 ? payoff.breakevens.map((b) => `₹${b.toFixed(0)}`).join(", ") : "None in range",
+        highlight: "cyan",
+      },
     ],
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <div className="lg:col-span-7 space-y-6">
-        {/* Legs Editor Panel */}
         <div className="bg-white rounded-3xl p-6 border border-navy/15 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-navy/10 pb-3">
             <h3 className="font-bold text-sm text-navy">Strategy Position Legs ({legs.length})</h3>
@@ -113,7 +130,6 @@ export function OptionsStrategyRenderer({ toolSlug }: { toolSlug: string }) {
           </div>
         </div>
 
-        {/* Lightweight SVG Payoff Chart */}
         <StrategyPayoffChart
           payoffCurve={payoff.payoffCurve}
           breakevens={payoff.breakevens}
@@ -129,3 +145,5 @@ export function OptionsStrategyRenderer({ toolSlug }: { toolSlug: string }) {
     </div>
   );
 }
+
+export default OptionsStrategyRenderer;
