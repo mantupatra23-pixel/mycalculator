@@ -24,7 +24,6 @@ export function BrokerageCalculatorRenderer({ toolSlug }: { toolSlug: string }) 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-navy/15 shadow-sm space-y-5">
-        {/* Preset Broker Selector */}
         <div className="space-y-1">
           <label className="text-xs font-bold text-navy">Select Broker</label>
           <div className="grid grid-cols-3 gap-2">
@@ -45,7 +44,6 @@ export function BrokerageCalculatorRenderer({ toolSlug }: { toolSlug: string }) 
           </div>
         </div>
 
-        {/* Segment Selector */}
         <div className="space-y-1">
           <label className="text-xs font-bold text-navy">Market Segment</label>
           <div className="grid grid-cols-2 gap-2">
@@ -74,7 +72,6 @@ export function BrokerageCalculatorRenderer({ toolSlug }: { toolSlug: string }) 
           </div>
         </div>
 
-        {/* Input Matrix */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-1">
             <label className="text-xs font-bold text-navy">Buy Price (₹)</label>
@@ -105,13 +102,11 @@ export function BrokerageCalculatorRenderer({ toolSlug }: { toolSlug: string }) 
           </div>
         </div>
 
-        {/* Break-Even Notice Card */}
         <div className="p-3.5 bg-sage/30 border border-navy/10 rounded-2xl flex items-center justify-between text-xs">
           <span className="text-navy/70">Break-even points to cover round-trip friction:</span>
           <strong className="text-navy font-mono text-sm">+₹{detailed.breakEvenPoints.toFixed(2)} / share</strong>
         </div>
 
-        {/* Itemized Statutory Breakdown Table */}
         {result.breakdown && <BrokerageBreakdown breakdown={result.breakdown} />}
       </div>
 
@@ -121,3 +116,5 @@ export function BrokerageCalculatorRenderer({ toolSlug }: { toolSlug: string }) 
     </div>
   );
 }
+
+export default BrokerageCalculatorRenderer;
