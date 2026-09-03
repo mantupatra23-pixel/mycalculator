@@ -10,738 +10,948 @@
     <loc>https://www.mycalculator.xyz/calculators</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.mycalculator.xyz/resources</loc>
+    <loc>https://www.mycalculator.xyz/trading</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/about</loc>
     <lastmod>2026-09-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/contact</loc>
     <lastmod>2026-09-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/privacy</loc>
     <lastmod>2026-09-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/terms</loc>
     <lastmod>2026-09-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/disclaimer</loc>
     <lastmod>2026-09-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/finance</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/business</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/math</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/health</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/time-date</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/converters</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/education</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.mycalculator.xyz/calculators/other</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/parcel-real-earnings-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/travel-real-cost-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/construction-material-price-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/emi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/upwork-net-earnings-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/fiverr-net-earnings-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/home-loan-emi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/car-loan-emi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/personal-loan-emi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/sip-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/lumpsum-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/gst-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/income-tax-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/salary-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/fd-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/rd-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/ppf-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/epf-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/epf-passbook-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/nps-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/hra-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/gratuity-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/tds-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/cagr-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/compound-interest-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/simple-interest-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/loan-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/roi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/inflation-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/mutual-fund-returns-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/sukanya-samriddhi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/ltv-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/payment-gateway-fee-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/ecommerce-roas-break-even-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/roas-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/break-even-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/commission-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/freelance-hourly-rate</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/hourly-to-annual-salary</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/overtime-pay-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/salary-hike-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/salary-increment-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/payroll-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/invoice-total-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/business-profit-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/business-margin-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/markup-vs-margin-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/rent-split-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/percentage-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/percentage-increase-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/percentage-decrease-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/discount-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/profit-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/loss-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/profit-loss-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/average-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/ratio-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/markup-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/margin-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/bmi-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/bmr-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/calorie-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/ideal-weight-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/body-fat-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/water-intake-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/macro-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/age-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/date-difference-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/days-between-dates</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/time-duration-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/hours-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/date-add-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/date-subtract-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/age-in-days-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/time-zone-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/unit-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/length-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/weight-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/height-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/area-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/volume-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/temperature-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/speed-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/time-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/data-storage-converter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/feet-to-meter</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/meter-to-feet</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/inch-to-cm</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/cm-to-inch</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/kg-to-pound</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/pound-to-kg</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/km-to-miles</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/miles-to-km</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/celsius-to-fahrenheit</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/fahrenheit-to-celsius</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/grade-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/gpa-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/cgpa-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/cgpa-to-percentage</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/percentage-to-cgpa</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/fuel-cost-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/mileage-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/electricity-bill-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/tip-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/savings-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/countdown-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/fraction-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.mycalculator.xyz/calculators/scientific-calculator</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/call-option-payoff-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/put-option-payoff-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/options-moneyness-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/options-breakeven-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/bull-call-spread-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/bear-put-spread-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/long-straddle-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/iron-condor-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/futures-pnl-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/futures-margin-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/liquidation-price-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/futures-risk-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/futures-contract-quantity-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/forex-pip-value-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/forex-position-size-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/crypto-dca-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/intraday-pnl-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/equity-pnl-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/target-profit-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/stop-loss-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/average-price-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/average-down-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/position-size-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/risk-reward-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/drawdown-recovery-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/daily-loss-limit-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/risk-of-ruin-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/brokerage-charges-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/break-even-after-brokerage-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/trade-expectancy-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/profit-factor-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/win-rate-breakeven-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/payoff-ratio-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/cagr-trading-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/sharpe-ratio-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/sortino-ratio-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/recovery-factor-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/atr-stop-loss-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/atr-position-size-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/trailing-stop-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/scale-out-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.mycalculator.xyz/trading/position-scaling-calculator</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

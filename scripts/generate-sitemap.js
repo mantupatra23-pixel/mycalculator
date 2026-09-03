@@ -1,73 +1,82 @@
 const fs = require('fs');
 const path = require('path');
 
-const baseUrl = "https://www.mycalculator.xyz";
-const today = new Date().toISOString().split('T')[0];
+const DOMAIN = 'https://www.mycalculator.xyz';
+const TODAY = new Date().toISOString().split('T')[0];
 
-const staticPages = [
-  "",
-  "/calculators",
-  "/resources",
-  "/about",
-  "/contact",
-  "/privacy",
-  "/terms",
-  "/disclaimer"
-];
+const urls = new Map();
 
-const categories = [
-  "finance",
-  "business",
-  "math",
-  "health",
-  "time-date",
-  "converters",
-  "education",
-  "other"
-];
+function addUrl(loc, changefreq = 'weekly', priority = '0.8') {
+  const cleanLoc = loc.endsWith('/') && loc !== `${DOMAIN}/` ? loc.slice(0, -1) : loc;
+  if (!urls.has(cleanLoc)) {
+    urls.set(cleanLoc, { loc: cleanLoc, lastmod: TODAY, changefreq, priority });
+  }
+}
 
-// Read calculators from lib/registry.ts
-const registryFile = fs.readFileSync(path.join(__dirname, '../lib/registry.ts'), 'utf8');
-const slugMatches = [...registryFile.matchAll(/slug:\s*["']([^"']+)["']/g)];
-const slugs = Array.from(new Set(slugMatches.map(m => m[1])));
+// 1. Core Static Hub & Company Pages
+addUrl(`${DOMAIN}`, 'daily', '1.0');
+addUrl(`${DOMAIN}/calculators`, 'daily', '0.9');
+addUrl(`${DOMAIN}/trading`, 'daily', '0.9');
+addUrl(`${DOMAIN}/about`, 'monthly', '0.5');
+addUrl(`${DOMAIN}/contact`, 'monthly', '0.5');
+addUrl(`${DOMAIN}/privacy`, 'monthly', '0.4');
+addUrl(`${DOMAIN}/terms`, 'monthly', '0.4');
+addUrl(`${DOMAIN}/disclaimer`, 'monthly', '0.4');
 
-let xml = `<?xml version="1.0" encoding="UTF-8"?>
+// 2. Parse Standard Calculators & Categories from lib/registry.ts
+const regPath = path.join(process.cwd(), 'lib/registry.ts');
+if (fs.existsSync(regPath)) {
+  const regText = fs.readFileSync(regPath, 'utf8');
+
+  // Categories
+  const catMatches = regText.matchAll(/['"`](finance|business|math|health|time-date|converters|education|other)['"`]:/g);
+  for (const m of catMatches) {
+    addUrl(`${DOMAIN}/calculators/${m[1]}`, 'weekly', '0.8');
+  }
+
+  // Calculator Slugs
+  const calcSlugMatches = regText.matchAll(/slug:\s*['"`]([^'"`]+)['"`]/g);
+  for (const m of calcSlugMatches) {
+    const slug = m[1].trim();
+    if (slug && !slug.includes('${')) {
+      addUrl(`${DOMAIN}/calculators/${slug}`, 'weekly', '0.8');
+    }
+  }
+}
+
+// 3. Parse All 42 Trading Tools from lib/trading/registry.ts
+const tradingRegPath = path.join(process.cwd(), 'lib/trading/registry.ts');
+if (fs.existsSync(tradingRegPath)) {
+  const tradingText = fs.readFileSync(tradingRegPath, 'utf8');
+
+  const tradingMatches = tradingText.matchAll(/slug:\s*['"`]([^'"`]+)['"`]/g);
+  for (const m of tradingMatches) {
+    const slug = m[1].trim();
+    if (slug && !slug.includes('${')) {
+      addUrl(`${DOMAIN}/trading/${slug}`, 'weekly', '0.8');
+    }
+  }
+}
+
+// 4. Generate Valid XML Output
+const urlList = Array.from(urls.values());
+
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlList
+  .map(
+    (u) => `  <url>
+    <loc>${u.loc}</loc>
+    <lastmod>${u.lastmod}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`
+  )
+  .join('\n')}
+</urlset>
 `;
 
-// 1. Static Pages
-staticPages.forEach(p => {
-  xml += `  <url>
-    <loc>${baseUrl}${p}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>${p === "" ? "1.0" : "0.8"}</priority>
-  </url>\n`;
-});
+const sitemapPath = path.join(process.cwd(), 'public/sitemap.xml');
+fs.writeFileSync(sitemapPath, sitemapXml.trim(), 'utf8');
 
-// 2. Categories
-categories.forEach(c => {
-  xml += `  <url>
-    <loc>${baseUrl}/calculators/${c}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>\n`;
-});
-
-// 3. All Calculators
-slugs.forEach(s => {
-  if (!categories.includes(s)) {
-    xml += `  <url>
-    <loc>${baseUrl}/calculators/${s}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>\n`;
-  }
-});
-
-xml += `</urlset>`;
-
-fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), xml);
-console.log(`[SUCCESS] Generated public/sitemap.xml with ${staticPages.length + categories.length + slugs.length} URLs`);
+console.log(`[SUCCESS] Generated public/sitemap.xml with ${urlList.length} verified URLs!`);
