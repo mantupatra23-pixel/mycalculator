@@ -25,16 +25,16 @@ export function Footer() {
             </h3>
             <ul className="space-y-2 text-xs text-slate-400">
               <li><Link href="/calculators/emi-calculator" className="hover:text-white transition-colors">EMI Calculator</Link></li>
-              <li><Link href="/calculators/home-loan-emi-calculator" className="hover:text-white transition-colors">Home Loan EMI</Link></li>
+              <li><Link href="/calculators/upwork-net-earnings-calculator" className="hover:text-white transition-colors">Upwork Net Earnings & Tax Calculator</Link></li>
+              <li><Link href="/calculators/fiverr-net-earnings-calculator" className="hover:text-white transition-colors">Fiverr Net Earnings & Tax Calculator</Link></li>
+              <li><Link href="/calculators/home-loan-emi-calculator" className="hover:text-white transition-colors">Home Loan EMI Calculator</Link></li>
+              <li><Link href="/calculators/car-loan-emi-calculator" className="hover:text-white transition-colors">Car Loan EMI Calculator</Link></li>
+              <li><Link href="/calculators/personal-loan-emi-calculator" className="hover:text-white transition-colors">Personal Loan EMI Calculator</Link></li>
               <li><Link href="/calculators/sip-calculator" className="hover:text-white transition-colors">SIP Calculator</Link></li>
-              <li><Link href="/calculators/gst-calculator" className="hover:text-white transition-colors">GST Calculator</Link></li>
-              <li><Link href="/calculators/income-tax-calculator" className="hover:text-white transition-colors">Income Tax (AY 26-27)</Link></li>
-              <li><Link href="/calculators/salary-calculator" className="hover:text-white transition-colors">Salary (In-Hand)</Link></li>
-              <li><Link href="/calculators/ltv-ratio-calculator" className="hover:text-white transition-colors">LTV Ratio</Link></li>
             </ul>
           </div>
 
-          {/* 2. TRADING & MARKETS */}
+          {/* 2. TRADING */}
           <div className="space-y-3">
             <h3 className="text-xs font-black uppercase tracking-wider text-[#00f59b]">
               TRADING
@@ -60,27 +60,27 @@ export function Footer() {
               BUSINESS &amp; MATH
             </h3>
             <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/calculators/parcel-real-earnings-calculator" className="hover:text-white transition-colors">Parcel Real Earnings Calculator</Link></li>
+              <li><Link href="/calculators/payment-gateway-fee-calculator" className="hover:text-white transition-colors">Payment Gateway Fee Calculator</Link></li>
+              <li><Link href="/calculators/ecommerce-roas-break-even-calculator" className="hover:text-white transition-colors">E-Commerce ROAS & Break-Even Margin Calculator</Link></li>
               <li><Link href="/calculators/roas-calculator" className="hover:text-white transition-colors">ROAS Calculator</Link></li>
-              <li><Link href="/calculators/break-even-point-calculator" className="hover:text-white transition-colors">Break-Even Point</Link></li>
-              <li><Link href="/calculators/percentage-calculator" className="hover:text-white transition-colors">Percentage Tool</Link></li>
-              <li><Link href="/calculators/discount-calculator" className="hover:text-white transition-colors">Discount Calculator</Link></li>
-              <li><Link href="/calculators/profit-and-loss-calculator" className="hover:text-white transition-colors">Profit &amp; Loss</Link></li>
-              <li><Link href="/calculators/ratio-simplifier-calculator" className="hover:text-white transition-colors">Ratio Simplifier</Link></li>
+              <li><Link href="/calculators/break-even-calculator" className="hover:text-white transition-colors">Break-Even Point Calculator</Link></li>
+              <li><Link href="/calculators/commission-calculator" className="hover:text-white transition-colors">Commission Calculator</Link></li>
             </ul>
           </div>
 
-          {/* 4. CONVERTERS */}
+          {/* 4. CONVERTERS & UTILITIES */}
           <div className="space-y-3">
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-200">
               CONVERTERS
             </h3>
             <ul className="space-y-2 text-xs text-slate-400">
-              <li><Link href="/calculators/all-in-one-converter" className="hover:text-white transition-colors">All-in-One Converter</Link></li>
-              <li><Link href="/calculators/length-distance-converter" className="hover:text-white transition-colors">Length &amp; Distance</Link></li>
-              <li><Link href="/calculators/weight-mass-converter" className="hover:text-white transition-colors">Weight &amp; Mass</Link></li>
+              <li><Link href="/calculators/travel-real-cost-calculator" className="hover:text-white transition-colors">Travel Real Cost Calculator</Link></li>
+              <li><Link href="/calculators/construction-material-price-calculator" className="hover:text-white transition-colors">Construction Material Price Intelligence Calculator</Link></li>
               <li><Link href="/calculators/age-calculator" className="hover:text-white transition-colors">Age Calculator</Link></li>
-              <li><Link href="/calculators/cgpa-to-percentage-calculator" className="hover:text-white transition-colors">CGPA to % (India)</Link></li>
-              <li><Link href="/calculators/formula-cheatsheets" className="text-amber-400 hover:underline">Formula Cheatsheets</Link></li>
+              <li><Link href="/calculators/date-difference-calculator" className="hover:text-white transition-colors">Date Difference Calculator</Link></li>
+              <li><Link href="/calculators/days-between-dates" className="hover:text-white transition-colors">Days Between Dates</Link></li>
+              <li><Link href="/calculators/time-duration-calculator" className="hover:text-white transition-colors">Time Duration Calculator</Link></li>
             </ul>
           </div>
 
