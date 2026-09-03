@@ -1,115 +1,108 @@
-// ============================================================================
-// INDEPENDENT TRADING REGISTRY — FULLY HARDENED (PHASES 1 & 2)
-// Complete with 6-8 unique FAQs per tool, formulas, and worked examples.
-// ============================================================================
-
 import { TradingCategory, TradingCategoryMeta, TradingToolDefinition } from "./types";
 
 export const TRADING_CATEGORIES: TradingCategoryMeta[] = [
-  {
-    id: "options",
-    name: "Options Trading",
-    tagline: "Options Mechanics",
-    description: "Call/Put payoffs, Moneyness (ITM/ATM/OTM), intrinsic value, and breakevens.",
-    badgeColor: "text-emerald-700",
-  },
-  {
-    id: "options-strategies",
-    name: "Options Strategy Tools",
-    tagline: "Multi-Leg Simulators",
-    description: "Bull Call Spread, Straddles, Strangles, and Iron Condors with SVG payoff curves.",
-    badgeColor: "text-cyan-700",
-  },
-  {
-    id: "futures-leverage",
-    name: "Futures & Leverage",
-    tagline: "Contract Derivatives",
-    description: "Futures margin, leverage multipliers, notional exposure, and liquidation points.",
-    badgeColor: "text-orange-700",
-  },
-  {
-    id: "forex-crypto",
-    name: "Forex & Crypto",
-    tagline: "Currency & Decentralized",
-    description: "Pip value calculators, lot sizing, and Dollar-Cost Averaging (DCA).",
-    badgeColor: "text-indigo-700",
-  },
-  {
-    id: "pnl-trades",
-    name: "P&L & Trade Calculators",
-    tagline: "Profit & Loss Modeling",
-    description: "Intraday, delivery, multi-entry averages, and target profit calculators.",
-    badgeColor: "text-steel",
-  },
-  {
-    id: "risk-management",
-    name: "Risk Management",
-    tagline: "Capital Preservation",
-    description: "Position sizing, risk-to-reward ratios, stop-loss limits, and ruin probability.",
-    badgeColor: "text-amber-700",
-  },
-  {
-    id: "charges-brokerage",
-    name: "Brokerage & Trading Charges",
-    tagline: "Regulatory Friction",
-    description: "STT, Exchange Turnover, SEBI fees, Stamp Duty, and 18% GST analysis.",
-    badgeColor: "text-rose-700",
-  },
-  {
-    id: "technical-analysis",
-    name: "Technical Analysis",
-    tagline: "Market Indicators",
-    description: "Pivots (CPR, Camarilla), Fibonacci retracements, and ATR volatility limits.",
-    badgeColor: "text-navy/50",
-  },
-  {
-    id: "portfolio-market",
-    name: "Portfolio & Market Tools",
-    tagline: "Asset Allocation",
-    description: "Portfolio rebalancing, stock weights, XIRR returns, and sector exposures.",
-    badgeColor: "text-navy/50",
-  },
+  { id: "options", name: "Options Trading", tagline: "Options Mechanics", description: "Payoffs, breakevens, and moneyness calculations.", badgeColor: "text-emerald-700" },
+  { id: "options-strategies", name: "Options Strategy Tools", tagline: "Multi-Leg Spreads", description: "Spreads, straddles, and condors with SVG curves.", badgeColor: "text-cyan-700" },
+  { id: "futures-leverage", name: "Futures & Leverage", tagline: "Derivatives Risk", description: "Futures P&L, contract sizes, and margin utilization.", badgeColor: "text-orange-700" },
+  { id: "forex-crypto", name: "Forex & Crypto", tagline: "Currency Tools", description: "Pip value calculators, lot sizing, and DCA.", badgeColor: "text-indigo-700" },
+  { id: "pnl-trades", name: "P&L & Trade Calculators", tagline: "Profit & Loss Modeling", description: "Intraday, delivery, and target profit calculators.", badgeColor: "text-steel" },
+  { id: "risk-management", name: "Risk Management", tagline: "Capital Preservation", description: "Position sizing, risk-to-reward ratios, and drawdown.", badgeColor: "text-amber-700" },
+  { id: "charges-brokerage", name: "Brokerage & Trading Charges", tagline: "Regulatory Friction", description: "STT, Exchange Turnover, SEBI fees, and GST.", badgeColor: "text-rose-700" },
+  { id: "performance", name: "Advanced Trade Analysis & Performance", tagline: "Expectancy & Strategy Audit", description: "Expectancy, profit factor, win rates, and ratios.", badgeColor: "text-emerald-800" },
+  { id: "trade-management", name: "Trade Management & Execution", tagline: "Volatility & Trailing Guardrails", description: "ATR stops, position scaling, and scale-out targets.", badgeColor: "text-teal-800" },
 ];
 
 export const TRADING_TOOLS: TradingToolDefinition[] = [
-  // --------------------------------------------------------------------------
-  // RISK MANAGEMENT TOOLS (PHASE 1) — HARDENED WITH 6-8 UNIQUE FAQS
-  // --------------------------------------------------------------------------
+  // 1. P&L & TRADE CALCULATORS (6 TOOLS)
+  {
+    slug: "intraday-pnl-calculator",
+    name: "Intraday P&L Calculator",
+    shortDescription: "Calculate gross and net profit/loss, point moves, and return on capital for day trading.",
+    category: "pnl-trades",
+    renderer: "pnl",
+    keywords: ["intraday pnl calculator", "day trading profit"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Long P&L = (Exit - Entry) × Qty - Charges | Short P&L = (Entry - Exit) × Qty - Charges",
+    workedExample: { scenario: "100 shares @ ₹500 sold @ ₹540 with ₹20 charges.", inputs: { "Entry": "₹500.00", "Exit": "₹540.00", "Quantity": "100" }, result: "Net Profit: +₹3,980.00 (+7.96% ROI)", explanation: "40 points on 100 shares gives ₹4,000 minus ₹20 fees = ₹3,980." },
+    faqs: [{ q: "How is intraday P&L calculated?", a: "Price movement multiplied by shares minus all transaction fees." }, { q: "What is gross vs net P&L?", a: "Gross is pure price gain; net deducts all taxes and broker commissions." }]
+  },
+  {
+    slug: "equity-pnl-calculator",
+    name: "Equity Delivery P&L Calculator",
+    shortDescription: "Calculate investment profit, cost basis, sale value, and capital gains for delivery holdings.",
+    category: "pnl-trades",
+    renderer: "pnl",
+    keywords: ["equity delivery calculator", "cnc pnl calculator"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Net Return = (Sell Price × Quantity) - (Buy Price × Quantity) - Charges",
+    workedExample: { scenario: "50 shares bought at ₹1,000 and sold at ₹1,200.", inputs: { "Buy": "₹1,000.00", "Sell": "₹1,200.00", "Quantity": "50" }, result: "Net Profit: +₹9,900.00 (+19.80% ROI)", explanation: "Capital gained ₹10,000 minus ₹100 fees leaves ₹9,900." },
+    faqs: [{ q: "What is equity delivery?", a: "Holding shares overnight in your demat account without intraday auto-square off." }]
+  },
+  {
+    slug: "target-profit-calculator",
+    name: "Target Profit Price Calculator",
+    shortDescription: "Determine the exact target exit price needed to hit your rupee profit goal.",
+    category: "pnl-trades",
+    renderer: "pnl",
+    keywords: ["target profit calculator", "target price exit"],
+    status: "active",
+    formulaDescription: "Required Target = Entry Price + [(Target Profit + Charges) / Quantity]",
+    workedExample: { scenario: "Buying 200 shares @ ₹250 targeting ₹5,000 profit.", inputs: { "Entry": "₹250.00", "Quantity": "200", "Target": "₹5,000.00" }, result: "Target Price: ₹275.25", explanation: "Need 25.25 points move to clear ₹5,000 net." },
+    faqs: [{ q: "How does target profit exit work?", a: "Calculates the exact exit price that covers costs and yields your goal." }]
+  },
+  {
+    slug: "stop-loss-calculator",
+    name: "Stop-Loss Price Calculator",
+    shortDescription: "Calculate exact stop-loss price corresponding to your maximum allowable rupee risk.",
+    category: "pnl-trades",
+    renderer: "pnl",
+    keywords: ["stop loss price calculator", "sl calculator"],
+    status: "active",
+    formulaDescription: "Stop-Loss = Entry Price - [(Capital × Risk %) / Quantity]",
+    workedExample: { scenario: "₹1,00,000 capital risking 1% on 100 shares @ ₹400.", inputs: { "Capital": "₹1,00,000", "Risk %": "1%", "Qty": "100" }, result: "Stop-Loss: ₹390.00 (10 pts risk)", explanation: "₹1,000 risk divided by 100 shares sets stop at ₹390." },
+    faqs: [{ q: "Why use a calculated stop-loss?", a: "Prevents emotional exits by strictly tying price distance to your risk budget." }]
+  },
+  {
+    slug: "average-price-calculator",
+    name: "Multi-Entry Average Price Calculator",
+    shortDescription: "Calculate weighted average purchase price and total investment across multiple trade legs.",
+    category: "pnl-trades",
+    renderer: "pnl",
+    keywords: ["average price calculator", "stock average"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Volume-Weighted Average = Σ(Price × Quantity) / Σ Quantity",
+    workedExample: { scenario: "100 shares @ ₹100 and 200 shares @ ₹85.", inputs: { "Leg 1": "100 @ 100", "Leg 2": "200 @ 85" }, result: "Weighted Avg: ₹90.00 (300 Shares)", explanation: "Total ₹27,000 invested across 300 shares equals ₹90.00/share." },
+    faqs: [{ q: "Why use weighted average instead of simple average?", a: "Weighted average correctly accounts for unequal share quantities across buy orders." }]
+  },
+  {
+    slug: "average-down-calculator",
+    name: "Average Down Calculator",
+    shortDescription: "Calculate new blended cost basis and additional shares needed to lower your average price.",
+    category: "pnl-trades",
+    renderer: "pnl",
+    keywords: ["average down calculator", "stock averaging down"],
+    status: "active",
+    formulaDescription: "New Average = (Initial Capital + New Capital) / (Initial Qty + New Qty)",
+    workedExample: { scenario: "100 shares @ ₹500; buying 100 more @ ₹400.", inputs: { "Holding": "100 @ ₹500", "Buy": "100 @ ₹400" }, result: "New Average: ₹450.00", explanation: "Investing ₹40,000 brings total to ₹90,000 across 200 shares." },
+    faqs: [{ q: "Is averaging down always recommended?", a: "No, averaging down increases exposure and should only be done with high-conviction risk limits." }]
+  },
+
+  // 2. RISK MANAGEMENT (5 TOOLS)
   {
     slug: "position-size-calculator",
     name: "Position Size Calculator",
     shortDescription: "Determine exact share quantity so trade loss is strictly capped at 1% to 2% of capital.",
     category: "risk-management",
     renderer: "risk",
-    keywords: ["position size calculator", "risk per trade calculator", "lot size calculator", "capital risk manager"],
+    keywords: ["position size calculator", "risk sizing"],
     popular: true,
     status: "active",
-    formulaDescription: "Allowable Quantity = ⌊(Account Capital × Risk %) / |Entry Price - Stop Loss Price|⌋",
-    formulaVariables: [
-      { symbol: "Account Capital", label: "Total active trading equity balance in rupees" },
-      { symbol: "Risk %", label: "Maximum percentage willing to risk on this trade (typically 1% to 2%)" },
-      { symbol: "Per Share Risk", label: "Absolute price difference between Entry and Stop-Loss" },
-    ],
-    workedExample: {
-      scenario: "₹2,00,000 capital risking 1.5% with entry at ₹450 and stop-loss at ₹435.",
-      inputs: { "Account Capital": "₹2,00,000.00", "Risk %": "1.5%", "Entry Price": "₹450.00", "Stop-Loss": "₹435.00" },
-      result: "Allowable Quantity: 200 Shares | Total Rupee Risk: ₹3,000.00 | Position Value: ₹90,000.00",
-      explanation: "Per share risk is ₹15. Allowable rupee risk is ₹3,000 (1.5% of ₹2.0L). Dividing ₹3,000 by ₹15 yields exactly 200 shares.",
-    },
-    assumptions: [
-      "Quantities are rounded down to conservative whole integers to prevent breaking account risk limits.",
-      "Adverse market opening gaps exceeding stop-loss levels are excluded from the baseline mathematical formula.",
-    ],
-    faqs: [
-      { q: "What is a position size calculator?", a: "A position size calculator determines the exact number of shares or lots you should trade to ensure your maximum financial risk on the trade matches your predetermined risk budget." },
-      { q: "Why should risk per trade be capped at 1% to 2%?", a: "Limiting risk to 1-2% protects your trading capital from catastrophic drawdown during inevitable losing streaks." },
-      { q: "How is position size computed mathematically?", a: "It is calculated by dividing your total allowable rupee risk (Capital × Risk %) by the risk per share (Entry Price minus Stop-Loss Price)." },
-      { q: "What happens if the stop-loss distance is very small?", a: "A tighter stop-loss increases the allowable share quantity for the same rupee risk budget. However, it also raises the probability of getting stopped out by routine market noise." },
-      { q: "Does position sizing guarantee trading profitability?", a: "No. Position sizing manages risk and capital preservation; overall profitability depends on your strategy's win rate and edge." },
-      { q: "Should I include brokerage and taxes in position sizing?", a: "While position sizing focuses on price stop-loss risk, factoring in expected brokerage and slippage ensures total friction does not breach your risk limit." },
-      { q: "How does account capital affect position sizing?", a: "Larger account capital permits larger absolute position sizes while maintaining the exact same percentage risk profile." },
-    ],
-    relatedTradingSlugs: ["risk-reward-calculator", "drawdown-recovery-calculator", "daily-loss-limit-calculator"],
+    formulaDescription: "Allowable Quantity = ⌊(Account Capital × Risk %) / |Entry Price - Stop Loss|⌋",
+    workedExample: { scenario: "₹2,00,000 capital risking 1.5% with entry ₹450 and stop ₹435.", inputs: { "Capital": "₹2,00,000", "Risk": "1.5%", "Gap": "₹15" }, result: "Quantity: 200 Shares | Risk: ₹3,000", explanation: "₹3,000 risk divided by ₹15 stop distance equals 200 shares." },
+    faqs: [{ q: "Why is position sizing important?", a: "Protects capital so no single losing trade causes catastrophic drawdown." }]
   },
   {
     slug: "risk-reward-calculator",
@@ -117,33 +110,12 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate risk-to-reward ratio, reward multiplier, and required break-even win rate.",
     category: "risk-management",
     renderer: "risk",
-    keywords: ["risk reward calculator", "rr ratio calculator", "reward to risk ratio"],
+    keywords: ["risk reward calculator", "rr ratio"],
     popular: true,
     status: "active",
-    formulaDescription: "Reward/Risk Ratio = |Target Price - Entry Price| / |Entry Price - Stop-Loss Price|",
-    formulaVariables: [
-      { symbol: "Risk Distance", label: "Absolute point distance from Entry to Stop-Loss" },
-      { symbol: "Reward Distance", label: "Absolute point distance from Entry to Profit Target" },
-      { symbol: "Break-Even Win Rate", label: "Minimum win rate needed to profit: 1 / (1 + RR Ratio)" },
-    ],
-    workedExample: {
-      scenario: "Long setup with Entry at ₹100, Stop Loss at ₹95, and Target at ₹115.",
-      inputs: { "Entry Price": "₹100.00", "Stop-Loss": "₹95.00", "Target Price": "₹115.00" },
-      result: "Risk Distance: 5.00 pts | Reward Distance: 15.00 pts | R:R Ratio: 1 : 3.00 | Break-Even Win Rate: 25.0%",
-      explanation: "Risk is 5 points and reward is 15 points, producing a 1:3 asymmetric risk/reward profile. This setup breaks even with only a 25% win rate over time.",
-    },
-    assumptions: [
-      "Calculations evaluate price point distances; execution slippage and commissions are excluded.",
-      "The break-even win rate assumes constant average win and loss sizes.",
-    ],
-    faqs: [
-      { q: "What is a risk-to-reward ratio?", a: "A risk-to-reward ratio compares the potential loss of a trade (distance to stop-loss) against its anticipated profit (distance to target)." },
-      { q: "What is considered a good risk/reward ratio?", a: "Professional traders typically seek a minimum risk-to-reward ratio of 1:2 or 1:3 to ensure winning trades comfortably outweigh losing ones." },
-      { q: "How is break-even win rate calculated from R:R?", a: "Break-even win rate equals 1 divided by (1 plus the Reward-to-Risk ratio). A 1:2 ratio requires a 33.3% win rate to break even." },
-      { q: "Can a low risk/reward trade still be profitable?", a: "Yes, if the strategy maintains an exceptionally high win rate (e.g., 80%), though a single adverse gap can wipe out multiple gains." },
-      { q: "Why is risk/reward asymmetry important?", a: "Asymmetry allows you to remain profitable even when your win rate is below 50%." },
-    ],
-    relatedTradingSlugs: ["position-size-calculator", "risk-of-ruin-calculator", "stop-loss-calculator"],
+    formulaDescription: "Reward/Risk = |Target - Entry| / |Entry - Stop Loss|",
+    workedExample: { scenario: "Entry ₹100, Stop ₹95, Target ₹115.", inputs: { "Entry": "₹100", "SL": "₹95", "Target": "₹115" }, result: "R:R Ratio: 1 : 3.00 | Break-Even Win Rate: 25%", explanation: "15 points reward against 5 points risk creates a 1:3 ratio." },
+    faqs: [{ q: "What is an ideal risk reward ratio?", a: "A 1:2 or 1:3 ratio allows profitability even with a sub-50% win rate." }]
   },
   {
     slug: "drawdown-recovery-calculator",
@@ -151,34 +123,12 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Determine the nonlinear percentage gain required to restore capital after an account drawdown.",
     category: "risk-management",
     renderer: "risk",
-    keywords: ["drawdown recovery calculator", "drawdown calculator", "loss recovery percentage"],
+    keywords: ["drawdown recovery calculator", "drawdown gain"],
     popular: true,
     status: "active",
-    formulaDescription: "Required Recovery % = [Drawdown % / (100 - Drawdown %)] × 100",
-    formulaVariables: [
-      { symbol: "Drawdown %", label: "Percentage equity loss sustained from peak capital" },
-      { symbol: "Capital Remaining", label: "Starting Capital × (1 - Drawdown %)" },
-      { symbol: "Recovery Gain %", label: "Percentage gain needed on remaining equity to restore initial peak" },
-    ],
-    workedExample: {
-      scenario: "An account suffers a 50% drawdown from ₹1,00,000 down to ₹50,000.",
-      inputs: { "Drawdown %": "50.0%", "Starting Capital": "₹1,00,000.00" },
-      result: "Capital Remaining: ₹50,000.00 | Required Recovery Gain: +100.00%",
-      explanation: "Because your capital base has halved, recovering back to ₹1,00,000 requires doubling your remaining equity (+100% gain).",
-    },
-    assumptions: [
-      "Recovery percentage assumes continuous compounding on remaining account equity.",
-      "Additional deposits into the trading account are not factored into the baseline recovery calculation.",
-    ],
-    faqs: [
-      { q: "Why is drawdown recovery nonlinear?", a: "Because losses are calculated from a larger capital base while gains are calculated from a depleted capital base, larger drawdowns require disproportionately larger percentage gains to recover." },
-      { q: "How much gain is needed to recover from a 20% loss?", a: "A 20% loss requires a 25% gain to restore your starting balance." },
-      { q: "What gain is needed to recover from a 50% loss?", a: "A 50% loss requires a 100% gain (doubling your money) just to break even." },
-      { q: "Why is preventing deep drawdowns critical?", a: "Deep drawdowns (e.g., 50%+) demand extraordinary performance, significantly increasing psychological pressure and risk of total account ruin." },
-      { q: "Does this calculator factor in trading fees during recovery?", a: "No. Brokerage charges and taxes incurred during recovery trades will further increase the required gross trading gains." },
-      { q: "How can traders minimize drawdown depth?", a: "By adhering strictly to 1-2% position sizing and enforcing daily/weekly loss limits." },
-    ],
-    relatedTradingSlugs: ["position-size-calculator", "daily-loss-limit-calculator", "risk-of-ruin-calculator"],
+    formulaDescription: "Required Gain % = [Drawdown % / (100 - Drawdown %)] × 100",
+    workedExample: { scenario: "Account suffers 50% drawdown down to ₹50,000.", inputs: { "Drawdown": "50%" }, result: "Required Recovery Gain: +100.00%", explanation: "Recovering to ₹1,00,000 requires doubling remaining funds." },
+    faqs: [{ q: "Why is recovery gain higher than drawdown?", a: "Losses are calculated on a larger base while recovery occurs on depleted capital." }]
   },
   {
     slug: "daily-loss-limit-calculator",
@@ -186,32 +136,11 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate daily loss thresholds and monitor remaining loss capacity to prevent overtrading.",
     category: "risk-management",
     renderer: "risk",
-    keywords: ["daily loss limit calculator", "overtrading prevention", "max loss limit"],
+    keywords: ["daily loss limit", "overtrading prevention"],
     status: "active",
-    formulaDescription: "Remaining Loss Buffer = (Capital × Max Daily Loss %) - Realized Loss Today",
-    formulaVariables: [
-      { symbol: "Max Daily Loss %", label: "Pre-committed maximum account loss allowed in a single trading session" },
-      { symbol: "Realized Loss", label: "Total closed losses incurred during the current session" },
-      { symbol: "Buffer Capacity", label: "Remaining rupee capital before trading must halt" },
-    ],
-    workedExample: {
-      scenario: "₹5,00,000 capital with a 2% daily loss rule, having lost ₹6,000 so far today.",
-      inputs: { "Account Capital": "₹5,00,000.00", "Max Daily Loss %": "2.0%", "Realized Loss Today": "₹6,000.00" },
-      result: "Max Daily Limit: ₹10,000.00 | Remaining Buffer: ₹4,000.00 (60.0% Capacity Consumed)",
-      explanation: "Your 2% daily limit is ₹10,000. Having lost ₹6,000, you have ₹4,000 in risk capacity left before discipline mandates closing your terminal.",
-    },
-    assumptions: [
-      "Loss calculations evaluate realized closing losses plus open unrealized trade drawdowns.",
-      "Discipline rules rely entirely on trader self-enforcement to close platforms upon breach.",
-    ],
-    faqs: [
-      { q: "What is a daily loss limit?", a: "A daily loss limit is a pre-determined risk rule that forces you to stop trading for the day once your losses reach a maximum acceptable threshold." },
-      { q: "Why is a daily loss limit important?", a: "It prevents revenge trading, emotional spirals, and catastrophic account wipeouts during difficult market sessions." },
-      { q: "How is the daily limit calculated?", a: "It is typically calculated as a fixed percentage (e.g., 1% to 2%) of your total active trading equity." },
-      { q: "What should I do when my daily loss limit is reached?", a: "Immediately close your trading platform, step away from screens, and review your trades only after emotions have settled." },
-      { q: "Can this calculator automatically lock my broker account?", a: "No. This tool calculates your thresholds mathematically. Account-level lockouts must be configured directly within your broker's risk settings." },
-    ],
-    relatedTradingSlugs: ["drawdown-recovery-calculator", "position-size-calculator", "risk-of-ruin-calculator"],
+    formulaDescription: "Remaining Buffer = (Capital × Daily Loss %) - Realized Loss",
+    workedExample: { scenario: "₹5L capital with 2% limit, lost ₹6,000 today.", inputs: { "Capital": "₹5,00,000", "Limit": "2%", "Loss": "₹6,000" }, result: "Remaining Buffer: ₹4,00,000", explanation: "₹4,000 capacity left before closing terminals." },
+    faqs: [{ q: "What should I do if my daily limit is hit?", a: "Stop trading immediately for the day to avoid emotional revenge trades." }]
   },
   {
     slug: "risk-of-ruin-calculator",
@@ -219,73 +148,26 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Simulate probability of account bankruptcy based on edge, win rate, and risk per trade.",
     category: "risk-management",
     renderer: "risk",
-    keywords: ["risk of ruin calculator", "gamblers ruin trading", "ruin probability"],
+    keywords: ["risk of ruin calculator", "gamblers ruin"],
     status: "active",
     formulaDescription: "Ruin Probability = [(1 - Edge) / (1 + Edge)]^(Capital Units)",
-    formulaVariables: [
-      { symbol: "Win Rate %", label: "Historical percentage of winning trades" },
-      { symbol: "Payoff Ratio", label: "Average Winning Trade / Average Losing Trade" },
-      { symbol: "Mathematical Edge", label: "Expected expectancy per trade: (Win Rate × Payoff) - Loss Rate" },
-    ],
-    workedExample: {
-      scenario: "55% win rate, 1.5 payoff ratio, and 2% risk per trade.",
-      inputs: { "Win Rate": "55.0%", "Payoff Ratio": "1.5", "Risk per Trade %": "2.0%" },
-      result: "Mathematical Edge: +0.375 | Statistical Risk of Ruin: < 0.01%",
-      explanation: "With a positive mathematical expectancy and conservative 2% risk per trade, the statistical probability of complete account ruin is negligible.",
-    },
-    assumptions: [
-      "Assumes independent, identically distributed trade outcomes with constant win rate and payoff ratio.",
-      "Does not account for non-stationary market regimes or psychological tilt.",
-    ],
-    faqs: [
-      { q: "What is the risk of ruin in trading?", a: "Risk of ruin is the mathematical probability that a trading system will result in total account bankruptcy over a series of trades." },
-      { q: "How does win rate affect risk of ruin?", a: "Higher win rates significantly reduce the risk of ruin, provided average losses do not excessively outstrip average wins." },
-      { q: "Why can a system with a positive win rate still go bankrupt?", a: "If position sizing is too aggressive (e.g., risking 20% per trade), a string of consecutive losses can wipe out equity before recovery occurs." },
-      { q: "What role does the payoff ratio play?", a: "A high payoff ratio allows a trading system to remain profitable and safe even with a win rate below 50%." },
-      { q: "How does position sizing impact risk of ruin?", a: "Lowering risk per trade (e.g., from 5% to 1%) exponentially decreases the statistical risk of ruin." },
-    ],
-    relatedTradingSlugs: ["risk-reward-calculator", "position-size-calculator", "drawdown-recovery-calculator"],
+    workedExample: { scenario: "55% win rate, 1.5 payoff ratio, 2% risk/trade.", inputs: { "Win Rate": "55%", "Payoff": "1.5", "Risk": "2%" }, result: "Risk of Ruin: < 0.01%", explanation: "Positive statistical edge keeps bankruptcy probability near zero." },
+    faqs: [{ q: "What is risk of ruin?", a: "The probability of losing so much capital that trading cannot continue." }]
   },
 
-  // --------------------------------------------------------------------------
-  // INDIAN BROKERAGE & TAXES TOOLS (PHASE 1) — HARDENED WITH 6-8 UNIQUE FAQS
-  // --------------------------------------------------------------------------
+  // 3. INDIAN BROKERAGE & TAXES (2 TOOLS)
   {
     slug: "brokerage-charges-calculator",
     name: "Indian Brokerage & Taxes Calculator",
     shortDescription: "Calculate STT, GST (18%), exchange turnover fees, SEBI charges, and net break-even for Zerodha, Groww, and Angel One.",
     category: "charges-brokerage",
     renderer: "brokerage",
-    keywords: ["zerodha brokerage calculator", "groww charges calculator", "stt calculator", "share market taxes india"],
+    keywords: ["brokerage calculator", "zerodha charges", "stt calculator"],
     popular: true,
     status: "active",
-    formulaDescription: "Total Frictions = Brokerage + STT + Exchange Charges + SEBI Fees + Stamp Duty + GST (18% on taxable services)",
-    formulaVariables: [
-      { symbol: "STT", label: "Securities Transaction Tax: 0.025% on sell side for intraday" },
-      { symbol: "Exchange Charges", label: "NSE/BSE turnover transaction fees (~0.00297%)" },
-      { symbol: "Stamp Duty", label: "State government levy on buy-side turnover (0.003% intraday)" },
-      { symbol: "GST", label: "18% tax applied strictly on Brokerage + Exchange + SEBI fees" },
-    ],
-    workedExample: {
-      scenario: "Buying 100 shares at ₹1,000 and selling at ₹1,050 intraday via Zerodha.",
-      inputs: { "Buy Price": "₹1,000.00", "Sell Price": "₹1,050.00", "Quantity": "100", "Broker": "Zerodha", "Segment": "Intraday" },
-      result: "Gross P&L: +₹5,000.00 | Total Charges: -₹83.63 | Net In-Pocket: +₹4,916.37",
-      explanation: "Turnover is ₹2,05,000. Brokerage is ₹40, STT is ₹26, Exchange fees are ₹6.09, SEBI fees are ₹0.21, Stamp Duty is ₹3, and GST on fees is ₹8.33, totaling ₹83.63 in charges.",
-    },
-    assumptions: [
-      "Statutory tax rates follow official schedules prescribed by NSE, BSE, SEBI, and Indian Stamp Act.",
-      "GST is calculated exclusively on taxable fee components and never on statutory taxes like STT or Stamp Duty.",
-    ],
-    faqs: [
-      { q: "How are Indian stock market brokerage charges calculated?", a: "Brokerage is calculated either as a flat fee per order (e.g. ₹20 on Zerodha) or a percentage of trade turnover depending on your broker and segment." },
-      { q: "What is STT and when is it levied?", a: "STT (Securities Transaction Tax) is a direct tax levied on all taxable securities transactions. For equity intraday, it is charged at 0.025% on the sell side only." },
-      { q: "Why is GST charged at 18%?", a: "GST at 18% is applied strictly to taxable service components (brokerage commission, exchange transaction charges, and SEBI turnover fees)." },
-      { q: "What is Stamp Duty?", a: "Stamp duty is a state government levy charged on the buy-side transaction value (0.003% for equity intraday, 0.015% for delivery)." },
-      { q: "What are SEBI turnover charges?", a: "SEBI turnover charges are regulatory fees levied at ₹10 per crore (0.0001%) on total trade turnover." },
-      { q: "Why do net break-even points matter?", a: "Break-even points show the exact price movement required just to cover all round-trip brokerage and taxes before generating actual net profit." },
-      { q: "Are charges identical across all brokers like Groww and Zerodha?", a: "No. While statutory taxes (STT, Stamp Duty, GST) are uniform, broker commissions vary between flat-fee discounters and traditional percentage brokers." },
-    ],
-    relatedTradingSlugs: ["break-even-after-brokerage-calculator", "intraday-pnl-calculator", "equity-pnl-calculator"],
+    formulaDescription: "Total Frictions = Brokerage + STT + Exchange Charges + SEBI Fees + Stamp Duty + GST (18%)",
+    workedExample: { scenario: "100 shares @ ₹1,000 sold @ ₹1,050 intraday.", inputs: { "Buy": "₹1,000", "Sell": "₹1,050", "Broker": "Zerodha" }, result: "Gross: ₹5,000 | Total Charges: -₹83.63 | Net: ₹4,916.37", explanation: "Brokerage is ₹40, STT is ₹26, GST is ₹8.33." },
+    faqs: [{ q: "What is STT in India?", a: "Securities Transaction Tax charged by the government on equity sales." }]
   },
   {
     slug: "break-even-after-brokerage-calculator",
@@ -293,64 +175,26 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate the exact ticks and exit price needed to fully recover all brokerage and regulatory taxes.",
     category: "charges-brokerage",
     renderer: "brokerage",
-    keywords: ["break even after charges", "zerodha breakeven calculator", "brokerage breakeven price"],
+    keywords: ["break even after charges", "zerodha breakeven"],
     status: "active",
-    formulaDescription: "Break-Even Exit Price = Buy Price + (Total Estimated Round-Trip Charges / Quantity)",
-    formulaVariables: [
-      { symbol: "Buy Price", label: "Initial execution purchase price" },
-      { symbol: "Total Charges", label: "Sum of brokerage, STT, exchange fees, stamp duty, and GST" },
-      { symbol: "Quantity", label: "Total number of shares traded" },
-    ],
-    workedExample: {
-      scenario: "Buying 500 shares of an equity stock at ₹200 intraday on Zerodha.",
-      inputs: { "Buy Price": "₹200.00", "Quantity": "500", "Segment": "Intraday", "Broker": "Zerodha" },
-      result: "Total Round-Trip Frictions: ₹80.50 | Break-Even Points: +₹0.16 | Min Profitable Exit: ₹200.16",
-      explanation: "Total round-trip charges amount to ₹80.50. Dividing by 500 shares requires a 16-paise upward move to fully absorb all taxes and breakeven.",
-    },
-    assumptions: [
-      "Calculations evaluate round-trip buy and sell execution frictions.",
-      "Assumes standard intraday broker rate schedules.",
-    ],
-    faqs: [
-      { q: "What is a break-even price after charges?", a: "It is the minimum exit price at which your trade revenue equals your total purchase cost plus all broker commissions and statutory taxes." },
-      { q: "Why is break-even higher than the buy price for long trades?", a: "Because you must pay brokerage and taxes on both entry and exit, the asset price must rise enough to cover those transaction costs." },
-      { q: "How are charges factored into the break-even formula?", a: "Total estimated round-trip charges are divided by the quantity of shares and added to the buy price." },
-      { q: "Does trading in larger quantities lower break-even points per share?", a: "Yes. Fixed flat brokerage fees get distributed across more shares, reducing the per-share frictional burden." },
-      { q: "Is this calculator useful for scalpers?", a: "Extremely useful. Scalpers must know their precise break-even ticks before entering short-duration trades." },
-    ],
-    relatedTradingSlugs: ["brokerage-charges-calculator", "intraday-pnl-calculator", "equity-pnl-calculator"],
+    formulaDescription: "Break-Even Exit = Buy Price + (Total Estimated Charges / Quantity)",
+    workedExample: { scenario: "500 shares bought @ ₹200 on Zerodha.", inputs: { "Buy": "₹200", "Qty": "500" }, result: "Break-Even Move: +₹0.16 | Exit: ₹200.16", explanation: "16-paise price increase covers all round-trip fees." },
+    faqs: [{ q: "Why does break-even matter?", a: "Ensures you know the minimum profit tick required before executing a trade." }]
   },
 
-  // --------------------------------------------------------------------------
-  // OPTIONS TRADING TOOLS (PHASE 2A)
-  // --------------------------------------------------------------------------
+  // 4. OPTIONS MECHANICS & STRATEGIES (8 TOOLS)
   {
     slug: "call-option-payoff-calculator",
     name: "Call Option Payoff Calculator",
     shortDescription: "Calculate intrinsic payoff, net profit/loss, and expiry breakeven for long and short call contracts.",
     category: "options",
     renderer: "options-mechanics",
-    keywords: ["call option payoff calculator", "call option profit calculator", "long call payoff"],
+    keywords: ["call option payoff", "call option calculator"],
     popular: true,
     status: "active",
-    formulaDescription: "Long Call Net P&L = [max(Underlying Expiry Price - Strike Price, 0) - Premium] × Quantity × Multiplier",
-    workedExample: {
-      scenario: "Buying 1 lot (50 units) of Nifty 24,500 Call at ₹180 premium with underlying expiring at 24,800.",
-      inputs: { "Strike Price": "₹24,500.00", "Option Premium": "₹180.00", "Expiry Spot Price": "₹24,800.00", "Contracts / Multiplier": "1 Lot × 50 Units" },
-      result: "Gross Payoff: ₹300.00/unit | Net Profit: +₹6,000.00 | Breakeven: ₹24,680.00",
-      explanation: "At 24,800, intrinsic value is ₹300 per unit. Subtracting ₹180 premium paid leaves ₹120 net profit per unit (₹6,000 total).",
-    },
-    assumptions: ["Calculation reflects deterministic intrinsic expiration value; pre-expiry time decay is excluded."],
-    faqs: [
-      { q: "What is a call option payoff?", a: "A call option payoff represents cash realization at expiration before deducting initial premium." },
-      { q: "How is call option profit calculated?", a: "Profit equals intrinsic expiration value minus per-unit premium paid, multiplied by total units." },
-      { q: "What is the breakeven price of a long call?", a: "Strike Price plus Premium Paid (K + P)." },
-      { q: "What happens if the underlying closes below the strike at expiry?", a: "The option expires OTM with zero intrinsic value. Loss is strictly capped at premium paid." },
-      { q: "What is the maximum risk on a long call?", a: "100% of the premium paid." },
-      { q: "Is the risk on a short call unlimited?", a: "Yes, because there is no statutory ceiling on asset prices." },
-      { q: "Does this calculator include brokerage?", a: "No. Use our Indian Brokerage Calculator for tax friction." },
-    ],
-    relatedTradingSlugs: ["put-option-payoff-calculator", "bull-call-spread-calculator", "options-breakeven-calculator"],
+    formulaDescription: "Long Call Profit = max(Spot - Strike, 0) - Premium",
+    workedExample: { scenario: "1 lot (50 units) 24,500 Call @ ₹180, expiring @ 24,800.", inputs: { "Strike": "24,500", "Prem": "180", "Spot": "24,800" }, result: "Net Profit: +₹6,000.00 | Breakeven: ₹24,680", explanation: "Intrinsic value ₹300 minus ₹180 premium = ₹120 net × 50 units." },
+    faqs: [{ q: "What is call option payoff?", a: "Cash realization at expiration before deducting purchase premium." }]
   },
   {
     slug: "put-option-payoff-calculator",
@@ -358,25 +202,12 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate put option intrinsic value, expiry profit/loss, and downside breakeven price.",
     category: "options",
     renderer: "options-mechanics",
-    keywords: ["put option payoff calculator", "put option profit calculator", "long put payoff"],
+    keywords: ["put option payoff", "put option calculator"],
     popular: true,
     status: "active",
-    formulaDescription: "Long Put Net P&L = [max(Strike Price - Underlying Expiry Price, 0) - Premium] × Quantity × Multiplier",
-    workedExample: {
-      scenario: "Buying 1 lot (50 units) of 24,500 Put at ₹180 premium with underlying expiring at 24,100.",
-      inputs: { "Strike": "24,500", "Premium": "₹180", "Expiry Spot": "24,100", "Multiplier": "50" },
-      result: "Intrinsic Payoff: ₹400/unit | Net Profit: +₹11,000.00 | Breakeven: ₹24,320.00",
-      explanation: "Intrinsic value is ₹400. Deducting ₹180 premium yields ₹220 net profit per unit (₹11,000 total). Max profit is ₹12,16,000 if asset drops to zero.",
-    },
-    assumptions: ["Reflects deterministic expiration intrinsic payoff."],
-    faqs: [
-      { q: "What is put option payoff?", a: "The value realized at expiration from the right to sell at strike." },
-      { q: "How is long put profit calculated?", a: "Intrinsic expiration value minus premium paid multiplied by units." },
-      { q: "What is the breakeven price?", a: "Strike Price minus Premium Paid." },
-      { q: "What is maximum profit for a long put?", a: "(Strike - Premium) × Quantity × Multiplier." },
-      { q: "What is maximum loss?", a: "Strictly limited to premium paid." },
-    ],
-    relatedTradingSlugs: ["call-option-payoff-calculator", "bear-put-spread-calculator", "options-breakeven-calculator"],
+    formulaDescription: "Long Put Profit = max(Strike - Spot, 0) - Premium",
+    workedExample: { scenario: "1 lot (50 units) 24,500 Put @ ₹180, expiring @ 24,100.", inputs: { "Strike": "24,500", "Prem": "180", "Spot": "24,100" }, result: "Net Profit: +₹11,000.00 | Breakeven: ₹24,320", explanation: "Intrinsic value ₹400 minus ₹180 premium = ₹220 net × 50 units." },
+    faqs: [{ q: "What is put option payoff?", a: "Value realized at expiration from the right to sell at strike." }]
   },
   {
     slug: "options-moneyness-calculator",
@@ -384,23 +215,11 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Determine In-The-Money (ITM), At-The-Money (ATM), and Out-of-The-Money (OTM) status and time value.",
     category: "options",
     renderer: "options-mechanics",
-    keywords: ["options moneyness calculator", "itm atm otm calculator", "intrinsic value calculator"],
+    keywords: ["options moneyness", "itm atm otm calculator"],
     status: "active",
-    formulaDescription: "Call Intrinsic = max(Spot - Strike, 0) | Time Value = Premium - Intrinsic Value",
-    workedExample: {
-      scenario: "Nifty at 24,620 with a 24,500 Call quoting at ₹210 premium.",
-      inputs: { "Spot": "24,620", "Strike": "24,500", "Premium": "₹210" },
-      result: "Status: ITM | Intrinsic Value: ₹120.00 | Time Value: ₹90.00",
-      explanation: "Spot exceeds strike by 120 points. Remaining ₹90 represents time value.",
-    },
-    assumptions: ["Options within ±0.25% of strike are classified as ATM."],
-    faqs: [
-      { q: "What does ITM mean?", a: "In-The-Money means the option has positive intrinsic value." },
-      { q: "What does ATM mean?", a: "At-The-Money means spot equals or is extremely close to strike." },
-      { q: "What does OTM mean?", a: "Out-of-The-Money means zero intrinsic value." },
-      { q: "Can an ITM option still lose money?", a: "Yes, if intrinsic value is less than premium originally paid." },
-    ],
-    relatedTradingSlugs: ["call-option-payoff-calculator", "options-breakeven-calculator"],
+    formulaDescription: "Call Intrinsic = max(Spot - Strike, 0) | Time Value = Premium - Intrinsic",
+    workedExample: { scenario: "Nifty @ 24,620 with 24,500 Call @ ₹210.", inputs: { "Spot": "24,620", "Strike": "24,500" }, result: "Status: ITM | Intrinsic: ₹120 | Time Value: ₹90", explanation: "Spot is 120 points above strike; remaining ₹90 is extrinsic time value." },
+    faqs: [{ q: "What does ITM mean?", a: "Option possesses positive immediate exercise value." }]
   },
   {
     slug: "options-breakeven-calculator",
@@ -408,50 +227,24 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate the exact underlying price needed at expiry to break even on Calls and Puts.",
     category: "options",
     renderer: "options-mechanics",
-    keywords: ["options breakeven calculator", "call breakeven", "put breakeven"],
+    keywords: ["options breakeven", "call breakeven", "put breakeven"],
     status: "active",
     formulaDescription: "Call BE = Strike + Premium | Put BE = Strike - Premium",
-    workedExample: {
-      scenario: "Buying 24,200 Strike Put at ₹140 premium.",
-      inputs: { "Strike": "24,200", "Premium": "₹140" },
-      result: "Breakeven Price: ₹24,060.00",
-      explanation: "Underlying must fall below ₹24,060 for net profit.",
-    },
-    assumptions: ["Breakeven calculation represents expiration parity."],
-    faqs: [
-      { q: "How is call breakeven calculated?", a: "Strike Price plus Premium Paid." },
-      { q: "How is put breakeven calculated?", a: "Strike Price minus Premium Paid." },
-      { q: "Why is breakeven different from strike?", a: "Upfront premium paid requires asset to move past strike to recover cost." },
-    ],
-    relatedTradingSlugs: ["call-option-payoff-calculator", "put-option-payoff-calculator"],
+    workedExample: { scenario: "Buying 24,200 Put @ ₹140 premium.", inputs: { "Strike": "24,200", "Premium": "₹140" }, result: "Breakeven: ₹24,060.00", explanation: "Underlying must drop below ₹24,060 for net profit." },
+    faqs: [{ q: "Why is breakeven different from strike?", a: "Underlying must move enough to recover the upfront premium paid." }]
   },
-
-  // --------------------------------------------------------------------------
-  // OPTIONS STRATEGY TOOLS (PHASE 2B)
-  // --------------------------------------------------------------------------
   {
     slug: "bull-call-spread-calculator",
     name: "Bull Call Spread Calculator",
     shortDescription: "Simulate two-leg debit call spread payoffs, maximum profit caps, and net debit risk with SVG charts.",
     category: "options-strategies",
     renderer: "options-strategy",
-    keywords: ["bull call spread calculator", "call spread calculator", "vertical spread"],
+    keywords: ["bull call spread", "call spread calculator"],
     popular: true,
     status: "active",
-    formulaDescription: "Max Profit = (Upper Strike - Lower Strike - Net Debit) × Qty | Max Loss = Net Debit",
-    workedExample: {
-      scenario: "Buy 24,500 Call at ₹190, Sell 25,000 Call at ₹60 on 50 units.",
-      inputs: { "Lower Strike": "24,500", "Upper Strike": "25,000", "Net Debit": "₹130" },
-      result: "Max Profit: +₹18,500.00 | Max Loss: -₹6,500.00 | Breakeven: ₹24,630.00",
-      explanation: "Spread width is 500 points minus 130 debit = 370 points max profit.",
-    },
-    assumptions: ["Both option legs share the same underlying and expiry."],
-    faqs: [
-      { q: "What is a bull call spread?", a: "A defined-risk, moderately bullish two-leg strategy." },
-      { q: "What is maximum profit?", a: "(Strike difference minus net debit) × quantity." },
-      { q: "What is maximum loss?", a: "Strictly limited to net debit paid." },
-    ],
-    relatedTradingSlugs: ["bear-put-spread-calculator", "long-straddle-calculator"],
+    formulaDescription: "Max Profit = (Upper K - Lower K - Net Debit) × Qty | Max Loss = Net Debit",
+    workedExample: { scenario: "Buy 24,500 Call @ 190, Sell 25,000 Call @ 60 on 50 units.", inputs: { "Lower K": "24,500", "Upper K": "25,000", "Net Debit": "130" }, result: "Max Profit: +₹18,500 | Max Risk: -₹6,500", explanation: "Spread width 500 minus 130 debit = 370 points × 50 = ₹18,500." },
+    faqs: [{ q: "What is a bull call spread?", a: "A defined-risk moderately bullish options strategy." }]
   },
   {
     slug: "bear-put-spread-calculator",
@@ -459,22 +252,12 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Simulate vertical debit put spread returns, capped downside profit, and breakeven levels.",
     category: "options-strategies",
     renderer: "options-strategy",
-    keywords: ["bear put spread calculator", "debit put spread"],
+    keywords: ["bear put spread", "debit put spread"],
     popular: true,
     status: "active",
-    formulaDescription: "Max Profit = (Upper Strike - Lower Strike - Net Debit) × Qty | Max Loss = Net Debit",
-    workedExample: {
-      scenario: "Buy 24,500 Put at ₹160, Sell 24,000 Put at ₹45 on 50 units.",
-      inputs: { "Upper Put": "24,500", "Lower Put": "24,000", "Net Debit": "₹115" },
-      result: "Max Profit: +₹19,250.00 | Max Loss: -₹5,750.00 | Breakeven: ₹24,385.00",
-      explanation: "Spread generates max profit if spot closes at or below 24,000.",
-    },
-    assumptions: ["Both legs share identical expiry and underlying."],
-    faqs: [
-      { q: "What is a bear put spread?", a: "A defined-risk bearish spread strategy." },
-      { q: "What is maximum profit?", a: "(Strike difference minus net debit) × units." },
-    ],
-    relatedTradingSlugs: ["bull-call-spread-calculator", "long-straddle-calculator"],
+    formulaDescription: "Max Profit = (Upper K - Lower K - Net Debit) × Qty | Max Loss = Net Debit",
+    workedExample: { scenario: "Buy 24,500 Put @ 160, Sell 24,000 Put @ 45 on 50 units.", inputs: { "Upper K": "24,500", "Lower K": "24,000", "Net Debit": "115" }, result: "Max Profit: +₹19,250 | Max Risk: -₹5,750", explanation: "385 points max gain if spot expires below 24,000." },
+    faqs: [{ q: "What is a bear put spread?", a: "A defined-risk moderately bearish vertical options spread." }]
   },
   {
     slug: "long-straddle-calculator",
@@ -482,22 +265,12 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate dual breakevens and unlimited volatility expansion payoffs on ATM Call + Put combinations.",
     category: "options-strategies",
     renderer: "options-strategy",
-    keywords: ["long straddle calculator", "straddle options calculator"],
+    keywords: ["long straddle", "straddle options"],
     popular: true,
     status: "active",
     formulaDescription: "Lower BE = Strike - Combined Premium | Upper BE = Strike + Combined Premium",
-    workedExample: {
-      scenario: "Buy 24,500 Call at ₹180 and 24,500 Put at ₹170 on 50 units.",
-      inputs: { "Strike": "24,500", "Total Premium": "₹350" },
-      result: "Lower BE: ₹24,150.00 | Upper BE: ₹24,850.00 | Max Loss: -₹17,500.00",
-      explanation: "Profitable if underlying finishes below 24,150 or above 24,850.",
-    },
-    assumptions: ["Call and put opened at same strike and expiry."],
-    faqs: [
-      { q: "What is a long straddle?", a: "A market-neutral high volatility strategy." },
-      { q: "What is maximum risk?", a: "100% of combined premium paid." },
-    ],
-    relatedTradingSlugs: ["iron-condor-calculator", "bull-call-spread-calculator"],
+    workedExample: { scenario: "Buy 24,500 Call @ 180 and Put @ 170 on 50 units.", inputs: { "Strike": "24,500", "Total Prem": "350" }, result: "Lower BE: ₹24,150 | Upper BE: ₹24,850 | Max Loss: -₹17,500", explanation: "Profits if spot finishes below 24,150 or above 24,850." },
+    faqs: [{ q: "When to use a straddle?", a: "When expecting explosive volatility regardless of direction." }]
   },
   {
     slug: "iron-condor-calculator",
@@ -505,49 +278,27 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Model 4-leg market-neutral credit condors with defined risk wings, dual breakevens, and net credit collection.",
     category: "options-strategies",
     renderer: "options-strategy",
-    keywords: ["iron condor calculator", "4 leg options strategy"],
+    keywords: ["iron condor calculator", "4 leg options"],
     popular: true,
     status: "active",
     formulaDescription: "Max Profit = Net Credit | Max Loss = Wing Width - Net Credit",
-    workedExample: {
-      scenario: "Sell 24,100 Put & 24,800 Call; Buy 23,800 Put & 25,100 Call. Net Credit: ₹110.",
-      inputs: { "Wing Width": "300 pts", "Net Credit": "₹110" },
-      result: "Max Profit: +₹5,500.00 | Max Loss: -₹9,500.00 | Profit Zone: ₹23,990 to ₹24,910",
-      explanation: "Retains max profit if underlying finishes between 24,100 and 24,800.",
-    },
-    assumptions: ["Symmetrical wing widths assumed unless customized."],
-    faqs: [
-      { q: "What is an iron condor?", a: "A defined-risk non-directional credit spread." },
-      { q: "What is maximum profit?", a: "Net premium credit collected." },
-    ],
-    relatedTradingSlugs: ["long-straddle-calculator", "bull-call-spread-calculator"],
+    workedExample: { scenario: "Sell 24,100P/24,800C; Buy 23,800P/25,100C. Net Credit: ₹110.", inputs: { "Wings": "300 pts", "Credit": "110 pts" }, result: "Max Profit: +₹5,500 | Max Loss: -₹9,500", explanation: "Full credit retained if underlying consolidates in range." },
+    faqs: [{ q: "What is an iron condor?", a: "A range-bound 4-leg credit strategy with protected wings." }]
   },
 
-  // --------------------------------------------------------------------------
-  // FUTURES & LEVERAGE TOOLS (PHASE 2D)
-  // --------------------------------------------------------------------------
+  // 5. FUTURES & LEVERAGE (5 TOOLS)
   {
     slug: "futures-pnl-calculator",
     name: "Futures P&L Calculator",
     shortDescription: "Calculate futures trade profit, points gained, notional exposure, and return on deposited margin.",
     category: "futures-leverage",
     renderer: "futures",
-    keywords: ["futures pnl calculator", "nifty futures calculator"],
+    keywords: ["futures pnl calculator", "nifty futures"],
     popular: true,
     status: "active",
-    formulaDescription: "Futures P&L = (Exit Price - Entry Price) × Quantity Lots × Lot Size",
-    workedExample: {
-      scenario: "Buying 2 Lots of Nifty Futures (100 units) at 24,500 and squaring off at 24,750.",
-      inputs: { "Entry": "24,500", "Exit": "24,750", "Lots": "2", "Lot Size": "50" },
-      result: "Points: +250.00 pts | Realized P&L: +₹25,000.00 | Notional: ₹24,50,000.00",
-      explanation: "A 250-point gain across 100 units yields ₹25,000 gross gain.",
-    },
-    assumptions: ["Evaluates gross trade P&L; statutory exchange fees computed separately."],
-    faqs: [
-      { q: "How is futures P&L calculated?", a: "Points gained/lost multiplied by total underlying units (Lots × Lot Size)." },
-      { q: "What is contract notional value?", a: "Price × Lot Size × Lots." },
-    ],
-    relatedTradingSlugs: ["futures-margin-calculator", "liquidation-price-calculator"],
+    formulaDescription: "Futures P&L = (Exit - Entry) × Lots × Lot Size",
+    workedExample: { scenario: "2 lots (100 units) Nifty Futures bought @ 24,500 sold @ 24,750.", inputs: { "Entry": "24,500", "Exit": "24,750", "Lots": "2" }, result: "Points: +250 pts | Net P&L: +₹25,000.00", explanation: "250 points on 100 units = ₹25,000 gross gain." },
+    faqs: [{ q: "How is futures P&L calculated?", a: "Points movement multiplied by total lot units." }]
   },
   {
     slug: "futures-margin-calculator",
@@ -555,22 +306,12 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Determine initial SPAN + Exposure margin requirements, effective leverage, and margin utilization.",
     category: "futures-leverage",
     renderer: "futures",
-    keywords: ["futures margin calculator", "span margin calculator"],
+    keywords: ["futures margin", "span margin"],
     popular: true,
     status: "active",
     formulaDescription: "Initial Margin = Notional Value × Margin Rate % | Leverage = 100 / Margin %",
-    workedExample: {
-      scenario: "Contract price ₹24,500, lot size 50, 2 lots at 12% statutory margin with ₹4L equity.",
-      inputs: { "Notional": "₹24,50,000", "Margin Rate": "12.0%", "Equity": "₹4,00,000" },
-      result: "Margin Required: ₹2,94,000.00 | Leverage: 8.3x | Utilization: 73.5%",
-      explanation: "A ₹2.94L deposit controls ₹24.50L notional exposure.",
-    },
-    assumptions: ["Margin rate reflects combined SPAN and exposure requirements."],
-    faqs: [
-      { q: "What is initial margin in futures?", a: "Minimum capital required to hold an open futures position." },
-      { q: "What is SPAN margin?", a: "Exchange risk-analysis algorithm calculating portfolio risk." },
-    ],
-    relatedTradingSlugs: ["futures-pnl-calculator", "liquidation-price-calculator"],
+    workedExample: { scenario: "Notional ₹24.5L with 12% margin.", inputs: { "Notional": "₹24,50,000", "Margin": "12%" }, result: "Margin Needed: ₹2,94,000 | Leverage: 8.3x", explanation: "₹2.94 Lakh margin controls ₹24.50 Lakh notional contract value." },
+    faqs: [{ q: "What is SPAN margin?", a: "Standard exchange portfolio risk margin required to hold futures." }]
   },
   {
     slug: "liquidation-price-calculator",
@@ -578,48 +319,50 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Estimate liquidation price based on leverage multiplier and maintenance margin buffer.",
     category: "futures-leverage",
     renderer: "futures",
-    keywords: ["liquidation price calculator", "crypto liquidation calculator"],
+    keywords: ["liquidation price", "crypto liquidation"],
     status: "active",
     formulaDescription: "Long Liq = Entry × [1 - (1 / Leverage) + Maintenance Margin %]",
-    workedExample: {
-      scenario: "Long position entered at ₹24,500 with 10x leverage and 0.5% maintenance margin.",
-      inputs: { "Entry": "₹24,500", "Leverage": "10x", "Maintenance": "0.5%" },
-      result: "Estimated Liquidation Price: ₹22,172.50 (-9.50% adverse move threshold)",
-      explanation: "A 9.50% drop consumes equity buffer down to maintenance threshold.",
-    },
-    assumptions: ["Assumes isolated margin rules."],
-    faqs: [
-      { q: "What is a liquidation price?", a: "Price at which losses deplete margin buffer, forcing broker to close position." },
-      { q: "How does higher leverage affect liquidation?", a: "Moves liquidation price significantly closer to entry." },
-    ],
-    relatedTradingSlugs: ["futures-margin-calculator", "position-size-calculator"],
+    workedExample: { scenario: "Long entry @ 24,500 with 10x leverage and 0.5% maintenance margin.", inputs: { "Entry": "24,500", "Leverage": "10x" }, result: "Estimated Liquidation: ₹22,172.50 (-9.50%)", explanation: "9.50% adverse drop reaches margin wipeout threshold." },
+    faqs: [{ q: "What is liquidation price?", a: "Price at which losses consume initial margin, forcing liquidation." }]
+  },
+  {
+    slug: "futures-risk-calculator",
+    name: "Futures Position Risk Calculator",
+    shortDescription: "Evaluate contract risk, reward distance, and account exposure on open futures legs.",
+    category: "futures-leverage",
+    renderer: "futures",
+    keywords: ["futures risk", "futures trade risk"],
+    status: "active",
+    formulaDescription: "Total Risk = |Entry - Stop| × Lots × Lot Size",
+    workedExample: { scenario: "2 lots Nifty with 50-point stop loss.", inputs: { "Lots": "2", "Lot Size": "50", "Stop": "50 pts" }, result: "Total Risk: ₹5,000.00", explanation: "50 points risk on 100 units equals ₹5,000 maximum loss." },
+    faqs: [{ q: "How to manage futures risk?", a: "Predefine stop points before entering leverage contracts." }]
+  },
+  {
+    slug: "futures-contract-quantity-calculator",
+    name: "Futures Contract Quantity Calculator",
+    shortDescription: "Calculate allowable futures lots based on risk budget and stop-loss distance.",
+    category: "futures-leverage",
+    renderer: "futures",
+    keywords: ["futures quantity", "futures lot sizing"],
+    status: "active",
+    formulaDescription: "Allowable Lots = ⌊(Capital × Risk %) / (|Entry - Stop| × Lot Size)⌋",
+    workedExample: { scenario: "₹5L capital risking 1% with 40-point stop on Nifty (50 lot size).", inputs: { "Capital": "₹5,00,000", "Risk": "1%", "Stop": "40 pts" }, result: "Max Lots: 2 Lots (100 Units)", explanation: "₹5,000 budget divided by ₹2,000 per lot risk allows 2 lots." },
+    faqs: [{ q: "Why use lot sizing on futures?", a: "Prevents over-leveraging beyond your account risk limits." }]
   },
 
-  // --------------------------------------------------------------------------
-  // 5. FOREX & CRYPTO TOOLS
-  // --------------------------------------------------------------------------
+  // 6. FOREX & CRYPTO (3 TOOLS)
   {
     slug: "forex-pip-value-calculator",
     name: "Forex Pip Value Calculator",
     shortDescription: "Calculate cash value per pip across standard, mini, and micro lots in local account currency.",
     category: "forex-crypto",
     renderer: "forex",
-    keywords: ["forex pip value calculator", "pip calculator"],
+    keywords: ["forex pip value", "pip calculator"],
     popular: true,
     status: "active",
-    formulaDescription: "Pip Value = Lots × Contract Units × Pip Decimal Size × Exchange Rate",
-    workedExample: {
-      scenario: "1 Standard Lot on EUR/USD (0.0001 pip) with USD/INR at 85.50.",
-      inputs: { "Lots": "1.0", "Pip Size": "0.0001", "FX Rate": "85.50" },
-      result: "Pip Value: $10.00 / pip (₹855.00 INR per pip)",
-      explanation: "Each 1-pip move creates an ₹855 equity change on 1 standard lot.",
-    },
-    assumptions: ["Reflects pure pip valuation without broker spreads."],
-    faqs: [
-      { q: "What is a pip in Forex?", a: "Smallest standard price move, usually 0.0001." },
-      { q: "Why is JPY pip size different?", a: "JPY pairs are quoted to two decimals (0.01)." },
-    ],
-    relatedTradingSlugs: ["forex-position-size-calculator", "position-size-calculator"],
+    formulaDescription: "Pip Value = Lots × Lot Size Units × Pip Decimal × Exchange Rate",
+    workedExample: { scenario: "1 Standard Lot EUR/USD with USD/INR @ 85.50.", inputs: { "Lots": "1.0", "Pip": "0.0001", "Rate": "85.50" }, result: "Pip Value: $10.00 / pip (₹855.00 INR)", explanation: "1 pip move generates ₹855 equity change per standard lot." },
+    faqs: [{ q: "What is a pip?", a: "Standard unit measuring currency price movement (usually 0.0001)." }]
   },
   {
     slug: "forex-position-size-calculator",
@@ -627,20 +370,11 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Determine exact lot sizing to ensure risk remains fixed to 1% of account capital.",
     category: "forex-crypto",
     renderer: "forex",
-    keywords: ["forex position size calculator", "forex lot size calculator"],
+    keywords: ["forex lot size", "forex risk calculator"],
     status: "active",
-    formulaDescription: "Allowable Lots = (Account Capital × Risk %) / (Stop Loss Pips × Pip Value)",
-    workedExample: {
-      scenario: "₹1,00,000 account risking 1.5% with a 25-pip stop loss on USD/INR.",
-      inputs: { "Capital": "₹1,00,000", "Risk %": "1.5%", "Stop": "25 Pips" },
-      result: "Allowable Lot Size: 0.07 Standard Lots | Max Risk: ₹1,500.00",
-      explanation: "Trading 0.07 lots ensures a 25-pip adverse move limits total loss to ₹1,500.",
-    },
-    assumptions: ["Assumes uniform execution at stop-loss without price gaps."],
-    faqs: [
-      { q: "How is Forex position size calculated?", a: "Cash risk budget divided by stop loss pips multiplied by pip value." },
-    ],
-    relatedTradingSlugs: ["forex-pip-value-calculator", "position-size-calculator"],
+    formulaDescription: "Allowable Lots = (Capital × Risk %) / (Stop Pips × Pip Value Per Lot)",
+    workedExample: { scenario: "₹1,00,000 capital risking 1.5% with 25-pip stop on USD/INR.", inputs: { "Capital": "₹1,00,000", "Risk": "1.5%", "Stop": "25 pips" }, result: "Allowable Lots: 0.07 Standard Lots", explanation: "Limits loss strictly to ₹1,500 upon a 25-pip stop hit." },
+    faqs: [{ q: "Why calculate forex lot size?", a: "High currency leverage requires precise sizing to prevent rapid drawdown." }]
   },
   {
     slug: "crypto-dca-calculator",
@@ -648,23 +382,177 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate weighted average buy price and accumulated coin holdings across recurring purchase orders.",
     category: "forex-crypto",
     renderer: "crypto",
-    keywords: ["crypto dca calculator", "bitcoin dca calculator"],
+    keywords: ["crypto dca calculator", "bitcoin dca"],
     popular: true,
     status: "active",
-    formulaDescription: "DCA Average Price = Total Fiat Capital Invested / Total Coin Tokens Acquired",
-    workedExample: {
-      scenario: "Buying ₹50,000 of Bitcoin at ₹55,00,000 and ₹50,00,000 at ₹50,00,000.",
-      inputs: { "Buy 1": "₹50k @ ₹55L", "Buy 2": "₹50k @ ₹50L" },
-      result: "Total Invested: ₹1,00,000.00 | Average Cost: ₹52,380.95",
-      explanation: "Buying the dip pulls the volume-weighted average below the arithmetic midpoint.",
-    },
-    assumptions: ["Prices and values reflect user-entered purchases."],
-    faqs: [
-      { q: "What is Dollar-Cost Averaging?", a: "Investing a fixed cash amount at regular intervals regardless of price." },
-      { q: "Does DCA guarantee profit?", a: "No, if the asset declines indefinitely." },
-    ],
-    relatedTradingSlugs: ["average-price-calculator", "position-size-calculator"],
+    formulaDescription: "DCA Price = Total Fiat Invested / Total Coin Tokens Acquired",
+    workedExample: { scenario: "₹50,000 @ ₹55L and ₹50,000 @ ₹50L.", inputs: { "Buy 1": "50k @ 55L", "Buy 2": "50k @ 50L" }, result: "DCA Average: ₹52,380.95 (0.01909 BTC)", explanation: "Averaging during dips pulls cost below arithmetic midpoint." },
+    faqs: [{ q: "What is DCA?", a: "Investing fixed amounts at regular intervals regardless of price." }]
   },
+
+  // 7. ADVANCED TRADE ANALYSIS & PERFORMANCE (8 TOOLS)
+  {
+    slug: "trade-expectancy-calculator",
+    name: "Trade Expectancy Calculator",
+    shortDescription: "Calculate mathematical expectancy per trade and projected return over a series of executions.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["trade expectancy", "expectancy calculator"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Expectancy = (Win Rate × Avg Win) - (Loss Rate × Avg Loss)",
+    workedExample: { scenario: "55% win rate, ₹2,500 avg win, ₹1,200 avg loss.", inputs: { "Win Rate": "55%", "Avg Win": "₹2,500", "Avg Loss": "₹1,200" }, result: "Expectancy: +₹835.00 / trade", explanation: "Every trade generates an expected positive value of ₹835." },
+    faqs: [{ q: "What is trading expectancy?", a: "The average amount of money you expect to win or lose per trade over time." }]
+  },
+  {
+    slug: "profit-factor-calculator",
+    name: "Profit Factor Calculator",
+    shortDescription: "Measure system efficiency by comparing total gross profits to total gross losses.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["profit factor calculator", "trading profit factor"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Profit Factor = Gross Profit / Gross Loss",
+    workedExample: { scenario: "Gross profits ₹75,000 against gross losses ₹30,000.", inputs: { "Gross Profit": "₹75,000", "Gross Loss": "₹30,000" }, result: "Profit Factor: 2.50", explanation: "System generated ₹2.50 in gains for every ₹1.00 lost." },
+    faqs: [{ q: "What is a good profit factor?", a: "Values above 1.5 indicate a healthy edge; above 2.0 is considered strong." }]
+  },
+  {
+    slug: "win-rate-breakeven-calculator",
+    name: "Win Rate Break-Even Calculator",
+    shortDescription: "Determine the minimum win percentage required to break even based on your average win/loss sizes.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["win rate breakeven", "required win rate"],
+    status: "active",
+    formulaDescription: "Break-Even Win Rate = [Avg Loss / (Avg Win + Avg Loss)] × 100",
+    workedExample: { scenario: "Avg Win ₹2,500 against Avg Loss ₹1,200.", inputs: { "Avg Win": "₹2,500", "Avg Loss": "₹1,200" }, result: "Break-Even Win Rate: 32.43%", explanation: "You only need to win 33 out of 100 trades to stay profitable." },
+    faqs: [{ q: "Can a system with low win rate be profitable?", a: "Yes, if the average win size is substantially larger than average loss." }]
+  },
+  {
+    slug: "payoff-ratio-calculator",
+    name: "Payoff Ratio Calculator",
+    shortDescription: "Measure average trade profitability asymmetry by comparing average win size to average loss size.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["payoff ratio", "win loss ratio"],
+    status: "active",
+    formulaDescription: "Payoff Ratio = Average Winning Trade / Average Losing Trade",
+    workedExample: { scenario: "Average win of ₹2,500 and average loss of ₹1,200.", inputs: { "Avg Win": "₹2,500", "Avg Loss": "₹1,200" }, result: "Payoff Ratio: 2.08x", explanation: "Wins are 2.08 times larger than losses." },
+    faqs: [{ q: "How is payoff ratio different from risk reward?", a: "Payoff ratio evaluates realized historical results; risk/reward is planned target versus stop." }]
+  },
+  {
+    slug: "cagr-trading-calculator",
+    name: "CAGR Trading Return Calculator",
+    shortDescription: "Calculate Compound Annual Growth Rate for multi-year trading portfolio returns.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["trading cagr", "cagr trading calculator"],
+    status: "active",
+    formulaDescription: "CAGR = (Ending Capital / Starting Capital)^(1 / Years) - 1",
+    workedExample: { scenario: "₹2 Lakhs grown to ₹5 Lakhs over 3 years.", inputs: { "Start": "₹2,00,000", "End": "₹5,00,000", "Years": "3" }, result: "CAGR: +35.72% p.a.", explanation: "Portfolio compounded at an annual rate of 35.72%." },
+    faqs: [{ q: "What is CAGR?", a: "Annualized smooth growth rate over an investment horizon." }]
+  },
+  {
+    slug: "sharpe-ratio-calculator",
+    name: "Sharpe Ratio Calculator",
+    shortDescription: "Evaluate risk-adjusted return by comparing excess strategy profits to volatility standard deviation.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["sharpe ratio calculator", "risk adjusted return"],
+    status: "active",
+    formulaDescription: "Sharpe = (Portfolio Return - Risk Free Rate) / Standard Deviation",
+    workedExample: { scenario: "24% annual return, 7% risk-free rate, 12% volatility.", inputs: { "Return": "24%", "Risk-Free": "7%", "StdDev": "12%" }, result: "Sharpe Ratio: 1.42", explanation: "A ratio of 1.42 indicates strong excess return per unit of volatility." },
+    faqs: [{ q: "What is Sharpe ratio?", a: "Standard institutional metric for measuring return generated per unit of risk." }]
+  },
+  {
+    slug: "sortino-ratio-calculator",
+    name: "Sortino Ratio Calculator",
+    shortDescription: "Measure downside risk-adjusted return by penalizing only negative return volatility.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["sortino ratio calculator", "downside risk ratio"],
+    status: "active",
+    formulaDescription: "Sortino = (Portfolio Return - Target Return) / Downside Deviation",
+    workedExample: { scenario: "24% return, 7% target, 8% downside deviation.", inputs: { "Return": "24%", "Target": "7%", "Downside": "8%" }, result: "Sortino Ratio: 2.13", explanation: "High ratio confirms upside volatility without heavy downside drawdowns." },
+    faqs: [{ q: "How is Sortino better than Sharpe?", a: "Sortino does not penalize profitable upside volatility." }]
+  },
+  {
+    slug: "recovery-factor-calculator",
+    name: "Recovery Factor Calculator",
+    shortDescription: "Evaluate strategy resilience by comparing total net profits to maximum peak-to-trough drawdown.",
+    category: "performance",
+    renderer: "advanced-trade",
+    keywords: ["recovery factor", "drawdown recovery factor"],
+    status: "active",
+    formulaDescription: "Recovery Factor = Total Net Profit / Maximum Absolute Drawdown",
+    workedExample: { scenario: "₹1,50,000 net profit with a maximum drawdown of ₹30,000.", inputs: { "Net Profit": "₹1,50,000", "Max DD": "₹30,000" }, result: "Recovery Factor: 5.00x", explanation: "Profits produced were 5 times larger than worst drawdown." },
+    faqs: [{ q: "What does recovery factor indicate?", a: "Shows how easily an account can recover from severe equity dips." }]
+  },
+
+  // 8. TRADE MANAGEMENT & VOLATILITY (5 TOOLS)
+  {
+    slug: "atr-stop-loss-calculator",
+    name: "ATR Stop Loss Calculator",
+    shortDescription: "Calculate dynamic volatility stop-loss prices using Average True Range (ATR) multipliers.",
+    category: "trade-management",
+    renderer: "advanced-trade",
+    keywords: ["atr stop loss", "volatility stop calculator"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Long ATR Stop = Entry Price - (ATR × Multiplier)",
+    workedExample: { scenario: "Entry @ ₹500, ATR is ₹12.50 with 2.0x multiplier.", inputs: { "Entry": "₹500.00", "ATR": "12.50", "Mult": "2.0x" }, result: "Stop-Loss Price: ₹475.00", explanation: "Sets protective barrier beyond standard market noise." },
+    faqs: [{ q: "Why use ATR for stop-loss?", a: "Adapts stop distance to current market volatility rather than fixed points." }]
+  },
+  {
+    slug: "atr-position-size-calculator",
+    name: "ATR Position Size Calculator",
+    shortDescription: "Size your position dynamically using ATR stop distances to normalize market volatility.",
+    category: "trade-management",
+    renderer: "advanced-trade",
+    keywords: ["atr position size", "volatility lot sizing"],
+    status: "active",
+    formulaDescription: "Quantity = ⌊(Capital × Risk %) / (ATR × Multiplier)⌋",
+    workedExample: { scenario: "₹2L capital, 1.5% risk, ATR ₹12.50 with 2.0x buffer (25 pts).", inputs: { "Capital": "₹2,00,000", "Risk": "1.5%", "Stop": "25 pts" }, result: "Position Size: 120 Shares", explanation: "₹3,000 risk budget divided by 25 points ATR stop equals 120 shares." },
+    faqs: [{ q: "What is volatility-adjusted sizing?", a: "Trades smaller in volatile markets and larger in quiet markets." }]
+  },
+  {
+    slug: "trailing-stop-calculator",
+    name: "Trailing Stop Calculator",
+    shortDescription: "Calculate dynamic trailing stop prices to lock in running trade gains as the market advances.",
+    category: "trade-management",
+    renderer: "advanced-trade",
+    keywords: ["trailing stop calculator", "trail stop"],
+    status: "active",
+    formulaDescription: "Long Trailing Stop = Peak Market Price × (1 - Trailing %)",
+    workedExample: { scenario: "Stock surged to ₹600 peak with a 5% trailing stop.", inputs: { "Peak": "₹600.00", "Trail %": "5.0%" }, result: "Active Trailing Stop: ₹570.00", explanation: "Stop ratchets upward to ₹570, locking in previous gains." },
+    faqs: [{ q: "What is a trailing stop?", a: "A stop-loss order that moves in your favor as price advances." }]
+  },
+  {
+    slug: "scale-out-calculator",
+    name: "Multiple Target Scale-Out Calculator",
+    shortDescription: "Plan multi-tier profit taking across 3 target levels and calculate volume-weighted exit prices.",
+    category: "trade-management",
+    renderer: "advanced-trade",
+    keywords: ["scale out calculator", "partial profit booking"],
+    popular: true,
+    status: "active",
+    formulaDescription: "Weighted Exit = Σ(Target Price × Allocated Shares) / Total Shares",
+    workedExample: { scenario: "100 shares @ ₹500: 30% @ ₹520, 40% @ ₹540, 30% @ ₹575.", inputs: { "Qty": "100", "T1": "₹520", "T2": "₹540", "T3": "₹575" }, result: "Blended Profit: +₹4,450.00 | Avg Exit: ₹544.50", explanation: "Securing partial profits smooths return volatility while keeping runners." },
+    faqs: [{ q: "Why scale out of positions?", a: "Locks in gains while keeping a trailing portion to ride bigger trends." }]
+  },
+  {
+    slug: "position-scaling-calculator",
+    name: "Position Scaling & Pyramiding Calculator",
+    shortDescription: "Model multi-tier position additions and blended cost basis as winning trends develop.",
+    category: "trade-management",
+    renderer: "advanced-trade",
+    keywords: ["position scaling", "pyramiding calculator"],
+    status: "active",
+    formulaDescription: "Blended Cost = Total Capital Added / Total Cumulative Shares",
+    workedExample: { scenario: "Entry 1: 100 @ ₹450; Entry 2 on breakout: 50 @ ₹470.", inputs: { "Tier 1": "100 @ 450", "Tier 2": "50 @ 470" }, result: "Blended Price: ₹456.67 (150 Shares)", explanation: "Total ₹68,500 invested across 150 shares sets new average at ₹456.67." },
+    faqs: [{ q: "What is pyramiding?", a: "Adding to a winning trade as market confirmation develops." }]
+  }
 ];
 
 export function getTradingToolBySlug(slug: string): TradingToolDefinition | undefined {

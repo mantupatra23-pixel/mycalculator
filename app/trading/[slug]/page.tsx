@@ -10,6 +10,7 @@ import { OptionsMechanicsRenderer } from "@/components/trading/renderers/Options
 import { OptionsStrategyRenderer } from "@/components/trading/renderers/OptionsStrategyRenderer";
 import { FuturesRenderer } from "@/components/trading/renderers/FuturesRenderer";
 import { ForexCryptoRenderer } from "@/components/trading/renderers/ForexCryptoRenderer";
+import { AdvancedTradeRenderer } from "@/components/trading/renderers/AdvancedTradeRenderer";
 import { BookOpen, Calculator, ShieldAlert, Code2, HelpCircle, ArrowRight, CheckCircle2 } from "lucide-react";
 
 interface Props {
@@ -88,6 +89,8 @@ export default function TradingToolDetailPage({ params }: Props) {
       case "forex":
       case "crypto":
         return <ForexCryptoRenderer toolSlug={tool.slug} />;
+      case "advanced-trade":
+        return <AdvancedTradeRenderer toolSlug={tool.slug} />;
       default:
         return null;
     }

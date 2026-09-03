@@ -1,38 +1,26 @@
-// ============================================================================
-// MYCALCULATORS TRADING SYSTEM — CORE TYPES & CONTRACTS (PHASE 2)
-// ============================================================================
-
 export type TradingCategory =
-  | "pnl-trades"
-  | "risk-management"
-  | "performance"
-  | "compounding"
-  | "charges-brokerage"
   | "options"
   | "options-strategies"
-  | "technical-analysis"
-  | "candlestick-patterns"
-  | "portfolio-market"
-  | "psychology-discipline"
-  | "journal-analytics"
-  | "ai-trading"
   | "futures-leverage"
   | "forex-crypto"
-  | "trader-intelligence";
+  | "pnl-trades"
+  | "risk-management"
+  | "charges-brokerage"
+  | "performance"
+  | "trade-management";
 
 export type RiskLevel = "low" | "moderate" | "high" | "critical";
 
 export type RendererType =
   | "pnl"
   | "risk"
-  | "position-size"
   | "brokerage"
   | "options-mechanics"
   | "options-strategy"
   | "futures"
   | "forex"
   | "crypto"
-  | "generic-placeholder";
+  | "advanced-trade";
 
 export interface TradingCategoryMeta {
   id: TradingCategory;
@@ -98,9 +86,6 @@ export interface TradingCalculationResult {
   notes?: string[];
 }
 
-// ----------------------------------------------------------------------------
-// Phase 2 Multi-Leg Options & Derivatives Data Contracts
-// ----------------------------------------------------------------------------
 export type OptionType = "call" | "put";
 export type PositionSide = "long" | "short";
 
