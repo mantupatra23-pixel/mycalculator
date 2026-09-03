@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!tool) return { title: "Trading Tool Not Found | MyCalculators" };
 
   const title = `${tool.name} – Free Trading Calculator | MyCalculators`;
-  const description = `${tool.shortDescription} Free, browser-native mathematical calculations with step-by-step formulas and live worked examples.`;
+  const description = `${tool.shortDescription} Free, browser-native mathematical calculations with step-by-step formulas, related tools, and live worked examples.`;
 
   return {
     title,
@@ -96,10 +96,17 @@ export default function TradingToolDetailPage({ params }: Props) {
     }
   };
 
+  // Robust Related Tools Resolver: ensures at least 4 related tools are always shown
   const allTools = getAllTradingTools();
-  const relatedTools = (tool.relatedTradingSlugs || [])
+  let relatedTools = (tool.relatedTradingSlugs || [])
     .map((s) => allTools.find((t) => t.slug === s))
     .filter((t): t is typeof tool => t !== undefined);
+
+  if (relatedTools.length < 4) {
+    const sameCategory = allTools.filter((t) => t.slug !== tool.slug && t.category === tool.category);
+    const otherTools = allTools.filter((t) => t.slug !== tool.slug && !relatedTools.some((r) => r.slug === t.slug));
+    relatedTools = [...relatedTools, ...sameCategory, ...otherTools].slice(0, 4);
+  }
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-16 space-y-8">
@@ -137,15 +144,15 @@ export default function TradingToolDetailPage({ params }: Props) {
             <div className="space-y-2 text-xs text-navy/80 leading-relaxed">
               <div className="p-3 bg-sage/20 rounded-xl border border-navy/10 space-y-1">
                 <span className="font-bold text-navy block">Step 1: Input Valuation</span>
-                <p>Read parameters and compute total exposure: multiply contracts by lot multiplier.</p>
+                <p>Read parameters and compute total exposure: multiply order quantity by contract unit multiplier.</p>
               </div>
               <div className="p-3 bg-sage/20 rounded-xl border border-navy/10 space-y-1">
-                <span className="font-bold text-navy block">Step 2: Intrinsic Payoff Evaluation</span>
-                <p>Evaluate terminal payoff at the selected underlying price using strict mathematical boundary logic.</p>
+                <span className="font-bold text-navy block">Step 2: Payoff &amp; Boundary Evaluation</span>
+                <p>Evaluate terminal return at the selected target price using strict financial mathematical boundary logic.</p>
               </div>
               <div className="p-3 bg-sage/20 rounded-xl border border-navy/10 space-y-1">
                 <span className="font-bold text-navy block">Step 3: Frictional &amp; Premium Netting</span>
-                <p>Deduct upfront capital commitments or net debits to produce final net profit or loss realization.</p>
+                <p>Deduct upfront capital commitments, taxes, or net debits to produce final net profit or loss realization.</p>
               </div>
             </div>
           </section>
@@ -159,7 +166,7 @@ export default function TradingToolDetailPage({ params }: Props) {
               <div className="p-3.5 bg-sage/30 rounded-xl font-mono text-xs sm:text-sm font-bold text-navy break-all border border-navy/10">
                 {tool.formulaDescription}
               </div>
-              {tool.formulaVariables && (
+              {tool.formulaVariables && tool.formulaVariables.length > 0 && (
                 <ul className="space-y-1 text-xs text-navy/80 pt-1">
                   {tool.formulaVariables.map((v, i) => (
                     <li key={i}>
@@ -197,7 +204,7 @@ export default function TradingToolDetailPage({ params }: Props) {
             </section>
           )}
 
-          {/* Comprehensive FAQs */}
+          {/* Comprehensive FAQs Section */}
           {tool.faqs && tool.faqs.length > 0 && (
             <section className="space-y-3">
               <h2 className="text-xl font-bold text-navy flex items-center gap-2">
@@ -217,37 +224,36 @@ export default function TradingToolDetailPage({ params }: Props) {
 
         {/* Sidebar */}
         <aside className="md:col-span-4 space-y-4">
-          {relatedTools.length > 0 && (
-            <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
-              <h3 className="font-bold text-sm text-navy">Related Trading Tools</h3>
-              <div className="space-y-2">
-                {relatedTools.map((rel) => (
-                  <Link
-                    key={rel.slug}
-                    href={`/trading/${rel.slug}`}
-                    className="block p-2.5 rounded-xl bg-sage/20 hover:bg-cream border border-navy/10 transition-colors group"
-                  >
-                    <div className="font-bold text-xs text-navy group-hover:text-steel flex items-center justify-between">
-                      <span>{rel.name}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-navy/40 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
+          {/* Related Tools Widget (Guaranteed Visible) */}
+          <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
+            <h3 className="font-bold text-sm text-navy">Related Trading Tools</h3>
+            <div className="space-y-2">
+              {relatedTools.map((rel) => (
+                <Link
+                  key={rel.slug}
+                  href={`/trading/${rel.slug}`}
+                  className="block p-2.5 rounded-xl bg-sage/20 hover:bg-cream border border-navy/10 transition-colors group"
+                >
+                  <div className="font-bold text-xs text-navy group-hover:text-steel flex items-center justify-between">
+                    <span>{rel.name}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-navy/40 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              ))}
             </div>
-          )}
+          </div>
 
           {/* Client-side privacy statement */}
           <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-3">
             <h3 className="font-bold text-sm text-navy flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Execution Guarantee
+              <BookOpen className="w-4 h-4 text-steel" /> Client-Side Calculation
             </h3>
             <p className="text-xs text-navy/70 leading-relaxed">
               Calculations run locally in your browser. Values entered into this calculator are not transmitted to our servers for the calculation.
             </p>
           </div>
 
-          {/* Financial Disclaimer */}
+          {/* Educational Disclaimer */}
           <div className="bg-sage/40 border border-navy/10 rounded-2xl p-4 text-xs text-navy space-y-1">
             <span className="font-bold flex items-center gap-1">
               <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Educational Disclaimer

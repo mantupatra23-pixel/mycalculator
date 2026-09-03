@@ -97,20 +97,35 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Determine exact share quantity so trade loss is strictly capped at 1% to 2% of capital.",
     category: "risk-management",
     renderer: "risk",
-    keywords: ["position size calculator", "risk sizing"],
+    keywords: ["position size calculator", "risk per trade calculator", "lot size calculator"],
     popular: true,
     status: "active",
-    formulaDescription: "Allowable Quantity = ⌊(Account Capital × Risk %) / |Entry Price - Stop Loss|⌋",
-    workedExample: { scenario: "₹2,00,000 capital risking 1.5% with entry ₹450 and stop ₹435.", inputs: { "Capital": "₹2,00,000", "Risk": "1.5%", "Gap": "₹15" }, result: "Quantity: 200 Shares | Risk: ₹3,000", explanation: "₹3,000 risk divided by ₹15 stop distance equals 200 shares." },
-    faqs: [{ q: "Why is position sizing important?", a: "Protects capital so no single losing trade causes catastrophic drawdown." }]
-  },
-  {
-    slug: "risk-reward-calculator",
-    name: "Risk/Reward Ratio Calculator",
-    shortDescription: "Calculate risk-to-reward ratio, reward multiplier, and required break-even win rate.",
-    category: "risk-management",
-    renderer: "risk",
-    keywords: ["risk reward calculator", "rr ratio"],
+    formulaDescription: "Allowable Quantity = ⌊(Account Capital × Risk %) / |Entry Price - Stop Loss Price|⌋",
+    formulaVariables: [
+      { symbol: "Account Capital", label: "Total active trading equity balance in rupees" },
+      { symbol: "Risk %", label: "Maximum percentage willing to risk on this trade (typically 1% to 2%)" },
+      { symbol: "Per Share Risk", label: "Absolute price difference between Entry and Stop-Loss" }
+    ],
+    workedExample: {
+      scenario: "₹2,00,000 capital risking 1.5% with entry at ₹450 and stop-loss at ₹435.",
+      inputs: { "Account Capital": "₹2,00,000.00", "Risk %": "1.5%", "Entry Price": "₹450.00", "Stop-Loss": "₹435.00" },
+      result: "Allowable Quantity: 200 Shares | Total Rupee Risk: ₹3,000.00 | Position Value: ₹90,000.00",
+      explanation: "Per share risk is ₹15. Allowable rupee risk is ₹3,000 (1.5% of ₹2.0L). Dividing ₹3,000 by ₹15 yields exactly 200 shares."
+    },
+    assumptions: [
+      "Quantities are rounded down to conservative whole integers to prevent breaking account risk limits.",
+      "Adverse market opening gaps exceeding stop-loss levels are excluded from the baseline mathematical formula."
+    ],
+    relatedTradingSlugs: ["risk-reward-calculator", "drawdown-recovery-calculator", "daily-loss-limit-calculator"],
+    faqs: [
+      { q: "What is a position size calculator?", a: "A position size calculator determines the exact number of shares or lots you should trade to ensure your maximum financial risk on the trade matches your predetermined risk budget." },
+      { q: "Why should risk per trade be capped at 1% to 2%?", a: "Limiting risk to 1-2% protects your trading capital from catastrophic drawdown during inevitable losing streaks." },
+      { q: "How is position size computed mathematically?", a: "It is calculated by dividing your total allowable rupee risk (Capital × Risk %) by the risk per share (Entry Price minus Stop-Loss Price)." },
+      { q: "What happens if the stop-loss distance is very small?", a: "A tighter stop-loss increases the allowable share quantity for the same rupee risk budget. However, it also raises the probability of getting stopped out by routine market noise." },
+      { q: "Does position sizing guarantee trading profitability?", a: "No. Position sizing manages risk and capital preservation; overall profitability depends on your strategy's win rate and edge." },
+      { q: "Should I include brokerage and taxes in position sizing?", a: "While position sizing focuses on price stop-loss risk, factoring in expected brokerage and slippage ensures total friction does not breach your risk limit." },
+      { q: "How does account capital affect position sizing?", a: "Larger account capital permits larger absolute position sizes while maintaining the exact same percentage risk profile." }
+    ],
     popular: true,
     status: "active",
     formulaDescription: "Reward/Risk = |Target - Entry| / |Entry - Stop Loss|",
@@ -162,20 +177,36 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate STT, GST (18%), exchange turnover fees, SEBI charges, and net break-even for Zerodha, Groww, and Angel One.",
     category: "charges-brokerage",
     renderer: "brokerage",
-    keywords: ["brokerage calculator", "zerodha charges", "stt calculator"],
+    keywords: ["zerodha brokerage calculator", "groww charges calculator", "stt calculator", "share market taxes india"],
     popular: true,
     status: "active",
-    formulaDescription: "Total Frictions = Brokerage + STT + Exchange Charges + SEBI Fees + Stamp Duty + GST (18%)",
-    workedExample: { scenario: "100 shares @ ₹1,000 sold @ ₹1,050 intraday.", inputs: { "Buy": "₹1,000", "Sell": "₹1,050", "Broker": "Zerodha" }, result: "Gross: ₹5,000 | Total Charges: -₹83.63 | Net: ₹4,916.37", explanation: "Brokerage is ₹40, STT is ₹26, GST is ₹8.33." },
-    faqs: [{ q: "What is STT in India?", a: "Securities Transaction Tax charged by the government on equity sales." }]
-  },
-  {
-    slug: "break-even-after-brokerage-calculator",
-    name: "Break-Even Price After Charges Calculator",
-    shortDescription: "Calculate the exact ticks and exit price needed to fully recover all brokerage and regulatory taxes.",
-    category: "charges-brokerage",
-    renderer: "brokerage",
-    keywords: ["break even after charges", "zerodha breakeven"],
+    formulaDescription: "Total Frictions = Brokerage + STT + Exchange Charges + SEBI Fees + Stamp Duty + GST (18% on fees)",
+    formulaVariables: [
+      { symbol: "STT", label: "Securities Transaction Tax: 0.025% on sell side for intraday" },
+      { symbol: "Exchange Charges", label: "NSE/BSE turnover transaction fees (~0.00297%)" },
+      { symbol: "Stamp Duty", label: "State government levy on buy-side turnover (0.003% intraday)" },
+      { symbol: "GST", label: "18% tax applied strictly on Brokerage + Exchange + SEBI fees" }
+    ],
+    workedExample: {
+      scenario: "Buying 100 shares at ₹1,000 and selling at ₹1,050 intraday via Zerodha.",
+      inputs: { "Buy Price": "₹1,000.00", "Sell Price": "₹1,050.00", "Quantity": "100", "Broker": "Zerodha" },
+      result: "Gross P&L: +₹5,000.00 | Total Charges: -₹83.63 | Net In-Pocket: +₹4,916.37",
+      explanation: "Turnover is ₹2,05,000. Brokerage is ₹40, STT is ₹26, Exchange fees are ₹6.09, SEBI fees are ₹0.21, Stamp Duty is ₹3, and GST on fees is ₹8.33, totaling ₹83.63 in charges."
+    },
+    assumptions: [
+      "Statutory tax rates follow official schedules prescribed by NSE, BSE, SEBI, and Indian Stamp Act.",
+      "GST is calculated exclusively on taxable fee components and never on statutory taxes like STT or Stamp Duty."
+    ],
+    relatedTradingSlugs: ["break-even-after-brokerage-calculator", "intraday-pnl-calculator", "equity-pnl-calculator"],
+    faqs: [
+      { q: "How are Indian stock market brokerage charges calculated?", a: "Brokerage is calculated either as a flat fee per order (e.g. ₹20 on Zerodha) or a percentage of trade turnover depending on your broker and segment." },
+      { q: "What is STT and when is it levied?", a: "STT (Securities Transaction Tax) is a direct tax levied on all taxable securities transactions. For equity intraday, it is charged at 0.025% on the sell side only." },
+      { q: "Why is GST charged at 18%?", a: "GST at 18% is applied strictly to taxable service components (brokerage commission, exchange transaction charges, and SEBI turnover fees)." },
+      { q: "What is Stamp Duty?", a: "Stamp duty is a state government levy charged on the buy-side transaction value (0.003% for equity intraday, 0.015% for delivery)." },
+      { q: "What are SEBI turnover charges?", a: "SEBI turnover charges are regulatory fees levied at ₹10 per crore (0.0001%) on total trade turnover." },
+      { q: "Why do net break-even points matter?", a: "Break-even points show the exact price movement required just to cover all round-trip brokerage and taxes before generating actual net profit." },
+      { q: "Are charges identical across all brokers like Groww and Zerodha?", a: "No. While statutory taxes (STT, Stamp Duty, GST) are uniform, broker commissions vary between flat-fee discounters and traditional percentage brokers." }
+    ],
     status: "active",
     formulaDescription: "Break-Even Exit = Buy Price + (Total Estimated Charges / Quantity)",
     workedExample: { scenario: "500 shares bought @ ₹200 on Zerodha.", inputs: { "Buy": "₹200", "Qty": "500" }, result: "Break-Even Move: +₹0.16 | Exit: ₹200.16", explanation: "16-paise price increase covers all round-trip fees." },
@@ -189,20 +220,38 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Calculate intrinsic payoff, net profit/loss, and expiry breakeven for long and short call contracts.",
     category: "options",
     renderer: "options-mechanics",
-    keywords: ["call option payoff", "call option calculator"],
+    keywords: ["call option payoff calculator", "call option profit calculator", "long call payoff", "call option breakeven"],
     popular: true,
     status: "active",
-    formulaDescription: "Long Call Profit = max(Spot - Strike, 0) - Premium",
-    workedExample: { scenario: "1 lot (50 units) 24,500 Call @ ₹180, expiring @ 24,800.", inputs: { "Strike": "24,500", "Prem": "180", "Spot": "24,800" }, result: "Net Profit: +₹6,000.00 | Breakeven: ₹24,680", explanation: "Intrinsic value ₹300 minus ₹180 premium = ₹120 net × 50 units." },
-    faqs: [{ q: "What is call option payoff?", a: "Cash realization at expiration before deducting purchase premium." }]
-  },
-  {
-    slug: "put-option-payoff-calculator",
-    name: "Put Option Payoff Calculator",
-    shortDescription: "Calculate put option intrinsic value, expiry profit/loss, and downside breakeven price.",
-    category: "options",
-    renderer: "options-mechanics",
-    keywords: ["put option payoff", "put option calculator"],
+    formulaDescription: "Long Call Profit = max(Underlying Expiry Price - Strike Price, 0) - Premium Paid",
+    formulaVariables: [
+      { symbol: "S", label: "Underlying market price at expiration" },
+      { symbol: "K", label: "Call option strike price" },
+      { symbol: "P", label: "Option premium paid per unit" },
+      { symbol: "Breakeven", label: "Strike Price + Option Premium (K + P)" }
+    ],
+    workedExample: {
+      scenario: "Buying 1 lot (50 units) of Nifty 24,500 Call at ₹180 premium with underlying expiring at 24,800.",
+      inputs: { "Strike Price": "₹24,500.00", "Option Premium": "₹180.00", "Expiry Spot Price": "₹24,800.00", "Units": "50" },
+      result: "Gross Payoff: ₹300.00/unit | Net Profit: +₹6,000.00 (+66.67% ROI) | Breakeven: ₹24,680.00",
+      explanation: "Intrinsic value at expiry is ₹300 per unit (24,800 - 24,500). Subtracting the ₹180 premium paid leaves ₹120 net profit per unit (₹6,000 across 50 units)."
+    },
+    assumptions: [
+      "Calculation reflects deterministic intrinsic expiration value; pre-expiry time decay (theta) is not modeled.",
+      "Regulatory brokerage, STT, and exchange turnover taxes are excluded from the mathematical payoff line.",
+      "Contract quantity strictly equals number of lots multiplied by lot multiplier."
+    ],
+    relatedTradingSlugs: ["put-option-payoff-calculator", "bull-call-spread-calculator", "options-breakeven-calculator", "options-moneyness-calculator"],
+    faqs: [
+      { q: "What is a call option payoff?", a: "A call option payoff represents the cash realization of the option contract at expiration before deducting the initial premium paid to acquire it." },
+      { q: "How is call option profit calculated?", a: "Profit equals intrinsic expiration value (Underlying Price minus Strike Price, minimum zero) minus the per-unit premium paid, multiplied by total units." },
+      { q: "What is the breakeven price of a long call?", a: "The breakeven price equals the Strike Price plus the Premium Paid (K + P). At this price, intrinsic payoff exactly covers your premium outlay." },
+      { q: "What happens if the underlying closes below the strike at expiry?", a: "The option expires out-of-the-money (OTM) with zero intrinsic value. Your loss is strictly capped at the initial premium paid." },
+      { q: "What is the maximum risk on a long call?", a: "The maximum loss on a long call is 100% of the premium paid. It occurs if the underlying price expires at or below the strike price." },
+      { q: "Is the risk on a short call unlimited?", a: "Yes. A naked short call has theoretically unlimited risk because there is no statutory ceiling on how high an asset price can climb." },
+      { q: "Does this calculator include brokerage and statutory taxes?", a: "No. This tool models the mathematical derivatives payoff. To calculate exchange turnover, STT, and 18% GST friction, link to our Indian Brokerage Calculator." },
+      { q: "Does the calculator model Black-Scholes pricing before expiry?", a: "No. This engine computes deterministic intrinsic expiration payoffs. Intraday implied volatility shifts prior to expiration require option Greeks." }
+    ],
     popular: true,
     status: "active",
     formulaDescription: "Long Put Profit = max(Strike - Spot, 0) - Premium",
@@ -215,19 +264,30 @@ export const TRADING_TOOLS: TradingToolDefinition[] = [
     shortDescription: "Determine In-The-Money (ITM), At-The-Money (ATM), and Out-of-The-Money (OTM) status and time value.",
     category: "options",
     renderer: "options-mechanics",
-    keywords: ["options moneyness", "itm atm otm calculator"],
+    keywords: ["options moneyness calculator", "itm atm otm calculator", "intrinsic value calculator"],
     status: "active",
-    formulaDescription: "Call Intrinsic = max(Spot - Strike, 0) | Time Value = Premium - Intrinsic",
-    workedExample: { scenario: "Nifty @ 24,620 with 24,500 Call @ ₹210.", inputs: { "Spot": "24,620", "Strike": "24,500" }, result: "Status: ITM | Intrinsic: ₹120 | Time Value: ₹90", explanation: "Spot is 120 points above strike; remaining ₹90 is extrinsic time value." },
-    faqs: [{ q: "What does ITM mean?", a: "Option possesses positive immediate exercise value." }]
-  },
-  {
-    slug: "options-breakeven-calculator",
-    name: "Options Breakeven Calculator",
-    shortDescription: "Calculate the exact underlying price needed at expiry to break even on Calls and Puts.",
-    category: "options",
-    renderer: "options-mechanics",
-    keywords: ["options breakeven", "call breakeven", "put breakeven"],
+    formulaDescription: "Call Intrinsic = max(Spot - Strike, 0) | Put Intrinsic = max(Strike - Spot, 0) | Time Value = Premium - Intrinsic",
+    formulaVariables: [
+      { symbol: "Intrinsic", label: "Tangible intrinsic value based on distance into the money" },
+      { symbol: "Time Value", label: "Extrinsic option premium reflecting duration until expiry" }
+    ],
+    workedExample: {
+      scenario: "Nifty trading at 24,620 with a 24,500 Call option quoting at ₹210 market premium.",
+      inputs: { "Spot Price": "₹24,620.00", "Strike Price": "₹24,500.00", "Option Premium": "₹210.00" },
+      result: "Status: ITM (In-The-Money) | Intrinsic Value: ₹120.00 | Extrinsic (Time) Value: ₹90.00",
+      explanation: "Because spot exceeds strike by 120 points, the call has ₹120 in intrinsic value. The remaining ₹90 represents time value."
+    },
+    assumptions: ["Options within ±0.25% of strike are classified as At-The-Money (ATM)."],
+    relatedTradingSlugs: ["call-option-payoff-calculator", "options-breakeven-calculator", "bull-call-spread-calculator"],
+    faqs: [
+      { q: "What does In-The-Money (ITM) mean?", a: "An option is ITM when it possesses positive intrinsic value. For a call, spot > strike; for a put, spot < strike." },
+      { q: "What does At-The-Money (ATM) mean?", a: "An option is ATM when the underlying price is identical or exceptionally close to the strike price." },
+      { q: "What does Out-of-The-Money (OTM) mean?", a: "An option is OTM when it has zero intrinsic value and consists entirely of extrinsic time value." },
+      { q: "Can an option be ITM but still result in a net loss?", a: "Yes. If an ITM option's intrinsic value at expiry is less than the premium originally paid, you sustain a net loss on the trade." },
+      { q: "How is extrinsic time value computed?", a: "Extrinsic value equals the total market option premium minus its calculated intrinsic value." },
+      { q: "Why does time value decay towards zero?", a: "As expiration approaches, the probability of further favorable price movement diminishes, causing time value (theta) to decay to zero." },
+      { q: "Does high moneyness guarantee trade profitability?", a: "No. Profitability requires the underlying to move beyond the breakeven threshold (strike plus or minus premium paid)." }
+    ],
     status: "active",
     formulaDescription: "Call BE = Strike + Premium | Put BE = Strike - Premium",
     workedExample: { scenario: "Buying 24,200 Put @ ₹140 premium.", inputs: { "Strike": "24,200", "Premium": "₹140" }, result: "Breakeven: ₹24,060.00", explanation: "Underlying must drop below ₹24,060 for net profit." },
