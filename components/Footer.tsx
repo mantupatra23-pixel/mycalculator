@@ -1,106 +1,111 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 
-export function Footer() {
+export default function Footer() {
   return (
-    <footer className="bg-navy text-cream pt-12 pb-8 border-t border-navy/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 text-xs">
-          {/* Brand Info */}
-          <div className="col-span-2 sm:col-span-3 lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-cream/20 flex items-center justify-center bg-white">
-                <Image
-                  src="/logo.png"
-                  alt="MyCalculators Logo"
-                  width={40}
-                  height={40}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-black text-xl tracking-tight text-white leading-none">
-                  MyCalculators
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#e89d67] mt-0.5">
-                  Calculate • Analyze • Grow
-                </span>
-              </div>
-            </Link>
-            <p className="text-cream/70 leading-relaxed text-xs max-w-sm">
-              Deterministic, private, and zero-latency calculations engineered for personal finance, direct taxation, business forecasting, and mathematics.
-            </p>
+    <footer className="bg-[#0b1329] text-white border-t border-slate-800 pt-12 pb-8 mt-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
+        {/* Brand Header */}
+        <div className="space-y-1 border-b border-slate-800/80 pb-6">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00f59b] animate-pulse"></span>
+            <span className="font-black text-lg sm:text-xl tracking-tight text-white">MyCalculators</span>
           </div>
+          <p className="text-xs text-slate-400 font-mono tracking-widest uppercase">
+            CALCULATE • ANALYZE • GROW
+          </p>
+        </div>
 
-          {/* Finance */}
+        {/* 5 Columns Layout */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
+          {/* 1. FINANCE */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider text-[#e89d67]">
-              Finance
-            </h4>
-            <ul className="space-y-2 text-cream/75">
-              <li><Link href="/calculators/emi-calculator" className="hover:text-white">EMI Calculator</Link></li>
-              <li><Link href="/calculators/home-loan-emi-calculator" className="hover:text-white">Home Loan EMI</Link></li>
-              <li><Link href="/calculators/sip-calculator" className="hover:text-white">SIP Calculator</Link></li>
-              <li><Link href="/calculators/gst-calculator" className="hover:text-white">GST Calculator</Link></li>
-              <li><Link href="/calculators/income-tax-calculator" className="hover:text-white">Income Tax (AY 26-27)</Link></li>
-              <li><Link href="/calculators/salary-calculator" className="hover:text-white">Salary (In-Hand)</Link></li>
-              <li><Link href="/calculators/ltv-calculator" className="hover:text-white">LTV Ratio</Link></li>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-200">
+              FINANCE
+            </h3>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/calculators/emi-calculator" className="hover:text-white transition-colors">EMI Calculator</Link></li>
+              <li><Link href="/calculators/home-loan-emi-calculator" className="hover:text-white transition-colors">Home Loan EMI</Link></li>
+              <li><Link href="/calculators/sip-calculator" className="hover:text-white transition-colors">SIP Calculator</Link></li>
+              <li><Link href="/calculators/gst-calculator" className="hover:text-white transition-colors">GST Calculator</Link></li>
+              <li><Link href="/calculators/income-tax-calculator" className="hover:text-white transition-colors">Income Tax (AY 26-27)</Link></li>
+              <li><Link href="/calculators/salary-calculator" className="hover:text-white transition-colors">Salary (In-Hand)</Link></li>
+              <li><Link href="/calculators/ltv-ratio-calculator" className="hover:text-white transition-colors">LTV Ratio</Link></li>
             </ul>
           </div>
 
-          {/* Business & Math */}
+          {/* 2. TRADING & MARKETS (NEW COLUMN) */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider text-[#e89d67]">
-              Business & Math
-            </h4>
-            <ul className="space-y-2 text-cream/75">
-              <li><Link href="/calculators/roas-calculator" className="hover:text-white">ROAS Calculator</Link></li>
-              <li><Link href="/calculators/break-even-calculator" className="hover:text-white">Break-Even Point</Link></li>
-              <li><Link href="/calculators/percentage-calculator" className="hover:text-white">Percentage Tool</Link></li>
-              <li><Link href="/calculators/discount-calculator" className="hover:text-white">Discount Calculator</Link></li>
-              <li><Link href="/calculators/profit-loss-calculator" className="hover:text-white">Profit & Loss</Link></li>
-              <li><Link href="/calculators/ratio-calculator" className="hover:text-white">Ratio Simplifier</Link></li>
+            <h3 className="text-xs font-black uppercase tracking-wider text-[#00f59b]">
+              TRADING
+            </h3>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/trading/intraday-pnl-calculator" className="hover:text-[#00f59b] transition-colors">Intraday P&amp;L</Link></li>
+              <li><Link href="/trading/call-option-payoff-calculator" className="hover:text-[#00f59b] transition-colors">Call Option Payoff</Link></li>
+              <li><Link href="/trading/position-size-calculator" className="hover:text-[#00f59b] transition-colors">Position Size Sizing</Link></li>
+              <li><Link href="/trading/futures-pnl-calculator" className="hover:text-[#00f59b] transition-colors">Futures P&amp;L</Link></li>
+              <li><Link href="/trading/brokerage-charges-calculator" className="hover:text-[#00f59b] transition-colors">Brokerage &amp; Taxes</Link></li>
+              <li><Link href="/trading/trade-expectancy-calculator" className="hover:text-[#00f59b] transition-colors">Trade Expectancy</Link></li>
+              <li>
+                <Link href="/trading" className="text-[#00f59b] font-bold hover:underline inline-flex items-center gap-1 pt-1">
+                  View All 42 Tools &rarr;
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Converters & Resources */}
+          {/* 3. BUSINESS & MATH */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider text-[#e89d67]">
-              Converters
-            </h4>
-            <ul className="space-y-2 text-cream/75">
-              <li><Link href="/calculators/unit-converter" className="hover:text-white">All-in-One Converter</Link></li>
-              <li><Link href="/calculators/length-converter" className="hover:text-white">Length & Distance</Link></li>
-              <li><Link href="/calculators/weight-converter" className="hover:text-white">Weight & Mass</Link></li>
-              <li><Link href="/calculators/age-calculator" className="hover:text-white">Age Calculator</Link></li>
-              <li><Link href="/calculators/cgpa-to-percentage" className="hover:text-white">CGPA to % (India)</Link></li>
-              <li><Link href="/resources" className="hover:text-white font-bold text-[#e89d67]">Formula Cheatsheets</Link></li>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-200">
+              BUSINESS &amp; MATH
+            </h3>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/calculators/roas-calculator" className="hover:text-white transition-colors">ROAS Calculator</Link></li>
+              <li><Link href="/calculators/break-even-point-calculator" className="hover:text-white transition-colors">Break-Even Point</Link></li>
+              <li><Link href="/calculators/percentage-calculator" className="hover:text-white transition-colors">Percentage Tool</Link></li>
+              <li><Link href="/calculators/discount-calculator" className="hover:text-white transition-colors">Discount Calculator</Link></li>
+              <li><Link href="/calculators/profit-and-loss-calculator" className="hover:text-white transition-colors">Profit &amp; Loss</Link></li>
+              <li><Link href="/calculators/ratio-simplifier-calculator" className="hover:text-white transition-colors">Ratio Simplifier</Link></li>
             </ul>
           </div>
 
-          {/* Legal / Company */}
+          {/* 4. CONVERTERS */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider text-[#e89d67]">
-              Company
-            </h4>
-            <ul className="space-y-2 text-cream/75">
-              <li><Link href="/about" className="hover:text-white">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-white">Contact Desk</Link></li>
-              <li><Link href="/privacy" className="hover:text-white">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white">Terms of Service</Link></li>
-              <li><Link href="/disclaimer" className="hover:text-white">Legal Disclaimer</Link></li>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-200">
+              CONVERTERS
+            </h3>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/calculators/all-in-one-converter" className="hover:text-white transition-colors">All-in-One Converter</Link></li>
+              <li><Link href="/calculators/length-distance-converter" className="hover:text-white transition-colors">Length &amp; Distance</Link></li>
+              <li><Link href="/calculators/weight-mass-converter" className="hover:text-white transition-colors">Weight &amp; Mass</Link></li>
+              <li><Link href="/calculators/age-calculator" className="hover:text-white transition-colors">Age Calculator</Link></li>
+              <li><Link href="/calculators/cgpa-to-percentage-calculator" className="hover:text-white transition-colors">CGPA to % (India)</Link></li>
+              <li><Link href="/calculators/formula-cheatsheets" className="text-amber-400 hover:underline">Formula Cheatsheets</Link></li>
+            </ul>
+          </div>
+
+          {/* 5. COMPANY */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-200">
+              COMPANY
+            </h3>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact Desk</Link></li>
+              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link href="/disclaimer" className="hover:text-white transition-colors">Legal Disclaimer</Link></li>
             </ul>
           </div>
         </div>
 
-        {/* Disclaimer Notice */}
-        <div className="pt-8 border-t border-cream/10 text-[11px] text-cream/60 leading-relaxed space-y-2">
+        {/* Footnote / Disclaimer */}
+        <div className="pt-8 border-t border-slate-800 text-[11px] text-slate-400 leading-relaxed">
           <p>
-            <strong>Calculation Methodology & Disclaimer:</strong> Financial, tax, investment, health, and educational results are mathematical estimates based on the inputs entered into each calculator. Rules, statutory slabs (e.g. AY 2026-27), and bank loan underwriting criteria vary. Verify with qualified professionals before making binding decisions.
+            Deterministic, private, and zero-latency calculations engineered for personal finance, direct taxation, trading performance, business forecasting, and mathematics. All calculations execute locally in your browser.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-4 text-cream/50 text-[10px]">
-            <span>© 2026 MyCalculators. All rights reserved.</span>
+          <div className="mt-4 flex items-center justify-between text-slate-400">
+            <span>&copy; {new Date().getFullYear()} MyCalculators. All rights reserved.</span>
             <span>https://www.mycalculator.xyz</span>
           </div>
         </div>

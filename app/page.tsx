@@ -19,15 +19,15 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Free Online Calculators - EMI, GST, SIP, Finance & Math | MyCalculators",
+  title: "Free Online Calculators - EMI, GST, SIP, Trading, Finance & Math | MyCalculators",
   description:
-    "Use 100+ free online calculators for EMI, GST, SIP returns, in-hand salary, payment gateway fees, freelance earnings, ROAS, percentages, age, and unit conversions. Fast, private and mobile-friendly.",
+    "Use 150+ free online calculators for EMI, GST, SIP returns, trading P&L, options payoffs, position sizing, in-hand salary, payment gateway fees, freelance earnings, ROAS, and unit conversions. Fast, private and mobile-friendly.",
   alternates: {
     canonical: "https://www.mycalculator.xyz",
   },
   openGraph: {
     title: "Free Online Calculators for Everyday Life | MyCalculators",
-    description: "100+ browser-native calculators for finance, math, business, and health.",
+    description: "150+ browser-native calculators for finance, trading, math, business, and health.",
     url: "https://www.mycalculator.xyz",
     siteName: "MyCalculators",
     locale: "en_IN",
@@ -48,7 +48,6 @@ const CATEGORY_ICONS: Record<CalculatorCategory, React.ReactNode> = {
 
 export default function HomePage() {
   const popularCalculators = CALCULATORS.filter((c) => c.popular);
-  const totalCount = CALCULATORS.length;
   const categories = Object.keys(CATEGORIES_META) as CalculatorCategory[];
 
   const jsonLd = {
@@ -73,17 +72,24 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="text-center space-y-4 max-w-3xl mx-auto pt-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage/50 text-steel font-bold text-xs uppercase tracking-wider border border-navy/10">
-          <Zap className="w-3.5 h-3.5" /> {totalCount}+ Free Online Calculators
+          <Zap className="w-3.5 h-3.5" /> 150+ Free Online Calculators
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-navy tracking-tight leading-tight">
           Smart Calculators for Everyday Life
         </h1>
         <p className="text-sm sm:text-base text-navy/75 leading-relaxed max-w-2xl mx-auto">
-          Calculate loans, GST, SIP returns, in-hand salary, payment gateway fees, freelance earnings, ROAS, percentages, age, health metrics, and unit conversions with zero latency and complete privacy.
+          Calculate loans, GST, SIP returns, trading P&amp;L, option payoffs, in-hand salary, payment gateway fees, freelance earnings, ROAS, percentages, age, health metrics, and unit conversions with zero latency and complete privacy.
         </p>
 
-        {/* Dynamic Quick Jump Pills */}
+        {/* Quick Jump Pills with Trading Suite Highlight */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs font-bold">
+          <Link
+            href="/trading"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-navy text-[#00f59b] border border-[#00f59b]/40 text-xs font-black hover:bg-[#00f59b] hover:text-black transition-all shadow-xs shrink-0"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#00f59b] animate-pulse"></span>
+            Trading Suite (42)
+          </Link>
           {popularCalculators.slice(0, 6).map((calc) => (
             <Link
               key={calc.id}
@@ -101,8 +107,7 @@ export default function HomePage() {
         <FeaturedEMI />
       </section>
 
-      
-      {/* Trading Tools Section - Theme Matched */}
+      {/* Trading Tools High-Visibility Section */}
       <section className="bg-white border border-navy/15 rounded-3xl p-6 sm:p-7 shadow-xs my-8 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
@@ -113,14 +118,14 @@ export default function HomePage() {
               Trading &amp; Stock Market Calculators
             </h2>
             <p className="text-xs sm:text-sm text-navy/70">
-              Calculate intraday P&amp;L, strict position sizes, and statutory Indian brokerage taxes (STT, GST, SEBI).
+              Calculate intraday P&amp;L, strict position sizes, options strategies, and statutory Indian brokerage taxes (STT, GST, SEBI).
             </p>
           </div>
           <Link
             href="/trading"
             className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-navy hover:bg-navy/90 text-white text-xs font-bold transition-colors shrink-0"
           >
-            Explore All Trading Tools →
+            Explore All 42 Trading Tools →
           </Link>
         </div>
 
@@ -186,7 +191,7 @@ export default function HomePage() {
             href="/calculators"
             className="text-xs font-bold text-steel hover:text-navy flex items-center gap-1"
           >
-            View All ({totalCount}) <ArrowRight className="w-3.5 h-3.5" />
+            View All (150+) <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
