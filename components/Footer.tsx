@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-[#0b1329] text-white border-t border-slate-800 pt-12 pb-8 mt-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
@@ -34,7 +34,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 2. TRADING & MARKETS (NEW COLUMN) */}
+          {/* 2. TRADING & MARKETS */}
           <div className="space-y-3">
             <h3 className="text-xs font-black uppercase tracking-wider text-[#00f59b]">
               TRADING
@@ -99,7 +99,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Footnote / Disclaimer */}
+        {/* Footnote */}
         <div className="pt-8 border-t border-slate-800 text-[11px] text-slate-400 leading-relaxed">
           <p>
             Deterministic, private, and zero-latency calculations engineered for personal finance, direct taxation, trading performance, business forecasting, and mathematics. All calculations execute locally in your browser.
@@ -113,3 +113,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+export default Footer;
