@@ -266,6 +266,22 @@ export default function TradingToolDetailPage({ params }: Props) {
           </div>
         </aside>
       </div>
+    
+      {/* Contextual SEO Inbound Silo */}
+      <div className="mt-8 p-5 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="text-xs font-bold uppercase tracking-wider text-emerald-800">Complete Tax &amp; Brokerage Blueprint</div>
+          <p className="text-xs sm:text-sm text-navy/80">
+            Need a line-by-line verification of the 0.025% STT, ₹66,666 brokerage threshold, and 18% GST rules?
+          </p>
+        </div>
+        <Link
+          href="/guides/intraday-profit-and-loss-calculator-guide"
+          className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shrink-0 transition-colors"
+        >
+          Read Intraday Architecture Guide &rarr;
+        </Link>
+      </div>
     </main>
   );
 }

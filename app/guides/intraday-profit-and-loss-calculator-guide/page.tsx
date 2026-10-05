@@ -11,6 +11,7 @@ import {
   Percent,
   Code2,
   Layers,
+  ExternalLink,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -311,7 +312,10 @@ export default function IntradayGuidePage() {
             GST = 0.18 × (Brokerage + Exchange Turnover Fee + SEBI Fee)
           </div>
           <p className="text-xs text-navy/70">
-            STT and Stamp Duty are sovereign government taxes and do not attract GST.
+            Verify individual contract note stamp duties and exchange fees via the{" "}
+            <Link href="/trading/brokerage-charges-calculator" className="font-bold underline text-steel hover:text-navy">
+              Indian Brokerage &amp; Taxes Calculator
+            </Link>.
           </p>
         </div>
       </section>
@@ -356,10 +360,7 @@ export default function IntradayGuidePage() {
             <div>Breakeven Delta P = Total Charges / Quantity = ₹83.88 / 100 = ₹0.8388 ≈ ₹0.84</div>
           </div>
           <p>
-            On the NSE (₹0.05 minimum tick size), an exit price must clear at least <strong>17 ticks (₹0.85)</strong> above entry (₹1,000.85) to avoid losing capital. Test your setups via our{" "}
-            <Link href="/trading/brokerage-charges-calculator" className="font-bold underline text-steel">
-              Brokerage &amp; Taxes Calculator
-            </Link>.
+            On the NSE (₹0.05 minimum tick size), an exit price must clear at least <strong>17 ticks (₹0.85)</strong> above entry (₹1,000.85) to avoid losing capital.
           </p>
 
           <h3 className="text-lg sm:text-xl font-bold text-navy pt-2 flex items-center gap-2">
@@ -418,8 +419,8 @@ export default function IntradayGuidePage() {
           </div>
 
           <p>
-            Buying 1 lot of Nifty 24,500 Call at ₹180 and exiting at ₹210 produces a gross gain of ₹1,500. After round-trip fees (~₹59.50), your net yield is <strong>₹1,440.50</strong>, representing a friction drag of <strong>1.19 premium points</strong>. Verify payoffs via our{" "}
-            <Link href="/trading/call-option-payoff-calculator" className="font-bold underline text-steel">
+            Buying 1 lot of Nifty 24,500 Call at ₹180 and exiting at ₹210 produces a gross gain of ₹1,500. After round-trip fees (~₹59.50), your net yield is <strong>₹1,440.50</strong>, representing a friction drag of <strong>1.19 premium points</strong>. To model premium decay and multi-strike net payoffs after friction, evaluate contract scenarios on the{" "}
+            <Link href="/trading/call-option-payoff-calculator" className="font-bold underline text-steel hover:text-navy">
               Call Option Payoff Calculator
             </Link>.
           </p>
@@ -453,14 +454,14 @@ export default function IntradayGuidePage() {
             <div>Allowable Quantity = floor(Risk Budget / |Entry Price - Stop-Loss Price|)</div>
           </div>
           <p>
-            With ₹5,00,000 capital and 1.0% risk (₹5,000 budget), entering at ₹2,450 with a ₹2,425 stop-loss (₹25 distance) limits allocation to exactly <strong>200 shares</strong> ($5,000 / 25$). Test your setups on our{" "}
-            <Link href="/trading/position-size-calculator" className="font-bold underline text-steel">
+            With ₹5,00,000 capital and 1.0% risk (₹5,000 budget), entering at ₹2,450 with a ₹2,425 stop-loss (₹25 distance) limits allocation to exactly <strong>200 shares</strong> ($5,000 / 25$). Enforce automated capital limits and calculate exact order sizes via our{" "}
+            <Link href="/trading/position-size-calculator" className="font-bold underline text-steel hover:text-navy">
               Position Size Calculator
             </Link>.
           </p>
 
           <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
-            5.2 Risk-Reward (R:R) Win-Rate Matrix
+            5.2 Mathematical Asymmetry of Risk-Reward (R:R) Ratios
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm border border-navy/15 rounded-2xl overflow-hidden bg-white">
@@ -495,10 +496,73 @@ export default function IntradayGuidePage() {
               </tbody>
             </table>
           </div>
+          <p className="text-xs text-navy/70 pt-1">
+            Compute your system&apos;s long-term mathematical edge over a 100-trade sequence with the{" "}
+            <Link href="/trading/trade-expectancy-calculator" className="font-bold underline text-steel hover:text-navy">
+              Trade Expectancy Calculator
+            </Link>.
+          </p>
         </div>
       </section>
 
-      {/* Section 6 - FAQ */}
+      {/* Section 6 - Statutory Authority Citations */}
+      <section className="space-y-4 pt-6 border-t border-navy/10">
+        <h2 className="text-xl sm:text-2xl font-black text-navy flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-emerald-700" /> Statutory References &amp; Authoritative Sources
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <a
+            href="https://www.nseindia.com/products-services/equity-market-trading-charges"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3.5 bg-white border border-navy/15 rounded-xl hover:border-navy/40 transition-colors flex items-center justify-between group"
+          >
+            <div>
+              <div className="font-bold text-navy group-hover:text-steel">NSE India Equity Charges</div>
+              <div className="text-navy/60 text-[11px]">Exchange turnover circulars &amp; STT Schedule</div>
+            </div>
+            <ExternalLink className="w-4 h-4 text-navy/40 group-hover:text-navy" />
+          </a>
+          <a
+            href="https://www.sebi.gov.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3.5 bg-white border border-navy/15 rounded-xl hover:border-navy/40 transition-colors flex items-center justify-between group"
+          >
+            <div>
+              <div className="font-bold text-navy group-hover:text-steel">SEBI (Stock Brokers) Regulations</div>
+              <div className="text-navy/60 text-[11px]">Schedule IV turnover fee provisions</div>
+            </div>
+            <ExternalLink className="w-4 h-4 text-navy/40 group-hover:text-navy" />
+          </a>
+          <a
+            href="https://cbic-gst.gov.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3.5 bg-white border border-navy/15 rounded-xl hover:border-navy/40 transition-colors flex items-center justify-between group"
+          >
+            <div>
+              <div className="font-bold text-navy group-hover:text-steel">CBIC GST Financial Services</div>
+              <div className="text-navy/60 text-[11px]">Section 15 taxable brokerage rules</div>
+            </div>
+            <ExternalLink className="w-4 h-4 text-navy/40 group-hover:text-navy" />
+          </a>
+          <a
+            href="https://zerodha.com/charge-list"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3.5 bg-white border border-navy/15 rounded-xl hover:border-navy/40 transition-colors flex items-center justify-between group"
+          >
+            <div>
+              <div className="font-bold text-navy group-hover:text-steel">Zerodha Brokerage Tariff</div>
+              <div className="text-navy/60 text-[11px]">MIS equity ₹20 cap execution rules</div>
+            </div>
+            <ExternalLink className="w-4 h-4 text-navy/40 group-hover:text-navy" />
+          </a>
+        </div>
+      </section>
+
+      {/* Section 7 - FAQ */}
       <section className="space-y-6 pt-6 border-t border-navy/10">
         <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2">
           <HelpCircle className="w-6 h-6 text-steel" /> Frequently Asked Questions
