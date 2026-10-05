@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   TrendingUp,
   Percent,
-  CheckCircle2,
   Code2,
   Layers,
 } from "lucide-react";
@@ -17,17 +16,33 @@ import {
 export const metadata: Metadata = {
   title: "Intraday Profit & Loss Calculator India: Brokerage, STT & Tax Architecture | MyCalculators",
   description:
-    "Complete quantitative guide to calculating net intraday equity and options P&L in India. Details Zerodha brokerage formulas, 0.025% STT, 18% GST on services, contract note simulation, and risk-managed position sizing.",
+    "Audit the true friction on your trades: Zerodha ₹20 brokerage cap, 0.025% STT, 18% service GST, contract note simulations, and exact tick breakeven formulas in Indian markets.",
   alternates: {
     canonical: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide",
   },
   openGraph: {
-    title: "Intraday Profit & Loss Calculator India: Brokerage, STT & Tax Architecture",
-    description: "Complete mathematical breakdown of Indian intraday trading friction, STT slabs, GST formulas, and tick breakeven mechanics.",
+    title: "Intraday Profit & Loss Architecture: Net Ledger Mechanics in Indian Markets",
+    description:
+      "Audit the true friction on your trades: Zerodha ₹20 brokerage cap, 0.025% STT, 18% service GST, and exact tick breakeven formulas.",
     url: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide",
     siteName: "MyCalculators",
     locale: "en_IN",
     type: "article",
+    images: [
+      {
+        url: "https://www.mycalculator.xyz/og-trading-guide.png",
+        width: 1200,
+        height: 630,
+        alt: "Intraday Profit and Loss Calculator India Guide",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How Much Do Taxes & Brokerage Actually Eat From Your Intraday P&L?",
+    description:
+      "Screen profit != bank profit. Complete mathematical walkthrough of 0.025% STT, exchange fees, and tick breakeven math.",
+    images: ["https://www.mycalculator.xyz/og-trading-guide.png"],
   },
 };
 
@@ -37,71 +52,74 @@ export default function IntradayGuidePage() {
     "@graph": [
       {
         "@type": "Article",
-        headline: "Intraday Profit and Loss Calculator India: Brokerage, STT, and Net Return Architecture",
-        description: "A definitive technical breakdown of net intraday trading returns across Indian stock exchanges, detailing statutory fees, brokerage caps, and position sizing.",
-        author: {
+        "@id": "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide#article",
+        "headline": "Intraday Profit and Loss Calculator India: Brokerage, STT, and Net Return Architecture",
+        "description": "A definitive technical breakdown of net intraday trading returns across Indian stock exchanges, detailing statutory fees, brokerage caps, and position sizing.",
+        "author": {
           "@type": "Organization",
-          name: "MyCalculators Quantitative Desk",
-          url: "https://www.mycalculator.xyz",
+          "name": "MyCalculators Quantitative Desk",
+          "url": "https://www.mycalculator.xyz"
         },
-        publisher: {
+        "publisher": {
           "@type": "Organization",
-          name: "MyCalculators",
-          logo: {
+          "name": "MyCalculators",
+          "logo": {
             "@type": "ImageObject",
-            url: "https://www.mycalculator.xyz/icon-512.png",
-          },
+            "url": "https://www.mycalculator.xyz/icon-512.png"
+          }
         },
-        datePublished: "2026-09-08",
-        dateModified: "2026-10-06",
-        mainEntityOfPage: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide",
+        "datePublished": "2026-09-08",
+        "dateModified": "2026-10-06",
+        "mainEntityOfPage": "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide"
       },
       {
         "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: "https://www.mycalculator.xyz" },
-          { "@type": "ListItem", position: 2, name: "Trading Hub", item: "https://www.mycalculator.xyz/trading" },
-          { "@type": "ListItem", position: 3, name: "Intraday P&L Guide", item: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide" },
-        ],
+        "@id": "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.mycalculator.xyz" },
+          { "@type": "ListItem", "position": 2, "name": "Trading Suite", "item": "https://www.mycalculator.xyz/trading" },
+          { "@type": "ListItem", "position": 3, "name": "Intraday P&L Guide", "item": "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide" }
+        ]
       },
       {
         "@type": "FAQPage",
-        mainEntity: [
+        "@id": "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide#faq",
+        "mainEntity": [
           {
             "@type": "Question",
-            name: "Is Securities Transaction Tax (STT) charged on intraday loss in India?",
-            acceptedAnswer: {
+            "name": "Is Securities Transaction Tax (STT) charged on intraday loss in India?",
+            "acceptedAnswer": {
               "@type": "Answer",
-              text: "Yes. Securities Transaction Tax (STT) is an execution-level statutory levy charged at 0.025% strictly on sell turnover, regardless of whether the gross trade outcome is a profit or a loss.",
-            },
+              "text": "Yes. Securities Transaction Tax (STT) is an execution-level statutory tax applied strictly to sell-side turnover at 0.025%. The clearing corporation debits STT automatically regardless of whether the gross trade outcome is a profit or a loss."
+            }
           },
           {
             "@type": "Question",
-            name: "Why is intraday STT lower than delivery STT?",
-            acceptedAnswer: {
+            "name": "Why is intraday STT lower than delivery STT?",
+            "acceptedAnswer": {
               "@type": "Answer",
-              text: "Equity delivery trades attract an STT of 0.1% on both the buy and sell sides (totaling 0.2%) because delivery involves physical electronic transfer of ownership in the Demat registry. Intraday (MIS) trades settle purely on price differential without depository involvement, attracting a concessional 0.025% levy on the sell leg only.",
-            },
+              "text": "Delivery trades require physical transfer of ownership via electronic Demat registries, attracting 0.1% STT on both buy and sell legs (0.2% total). Intraday equity settles purely on cash price differentials without depository transfer, attracting a concessional 0.025% levy on the sell leg only."
+            }
           },
           {
             "@type": "Question",
-            name: "What is the auto-square-off penalty on discount brokers?",
-            acceptedAnswer: {
+            "name": "What is the auto-square-off penalty on discount brokers?",
+            "acceptedAnswer": {
               "@type": "Answer",
-              text: "If an MIS position remains open past the broker's cutoff time (typically 15:15 to 15:25 IST), the automated Risk Management System (RMS) squares off the trade, levying an administrative fee of ₹50 + 18% GST (₹59 total) per executed order.",
-            },
+              "text": "Open MIS positions remaining at market close (typically 15:15 to 15:25 IST) are automatically squared off by the broker's Risk Management System (RMS). Brokers charge an administrative fee of ₹50 + 18% GST (₹59.00 total) per executed order."
+            }
           },
           {
             "@type": "Question",
-            name: "How does discount brokerage cap at 20 rupees?",
-            acceptedAnswer: {
+            "name": "How does discount brokerage cap at 20 rupees?",
+            "acceptedAnswer": {
               "@type": "Answer",
-              text: "Discount brokers charge min(₹20, 0.03% × Turnover). For any order leg with turnover exceeding ₹66,666.67, the 0.03% calculation exceeds ₹20, triggering the statutory cap of flat ₹20 per executed order.",
-            },
-          },
-        ],
-      },
-    ],
+              "text": "Brokers apply min(₹20, 0.03% × Turnover). For any order leg with turnover exceeding ₹66,666.67, 0.03% exceeds ₹20, triggering the statutory cap of flat ₹20 per executed order."
+            }
+          }
+        ]
+      }
+    ]
   };
 
   return (
