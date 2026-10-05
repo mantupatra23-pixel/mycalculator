@@ -1,7 +1,18 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { ArrowRight, Calculator, BookOpen, HelpCircle, ShieldCheck, TrendingUp, Percent } from "lucide-react";
+import {
+  ArrowRight,
+  Calculator,
+  BookOpen,
+  HelpCircle,
+  ShieldCheck,
+  TrendingUp,
+  Percent,
+  CheckCircle2,
+  Code2,
+  Layers,
+} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Intraday Profit & Loss Calculator India: Brokerage, STT & Tax Architecture | MyCalculators",
@@ -61,7 +72,7 @@ export default function IntradayGuidePage() {
             name: "Is Securities Transaction Tax (STT) charged on intraday loss in India?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Yes. Securities Transaction Tax (STT) is levied at 0.025% strictly on the sell turnover, regardless of whether the trade yields a profit or a loss.",
+              text: "Yes. Securities Transaction Tax (STT) is an execution-level statutory levy charged at 0.025% strictly on sell turnover, regardless of whether the gross trade outcome is a profit or a loss.",
             },
           },
           {
@@ -69,7 +80,7 @@ export default function IntradayGuidePage() {
             name: "Why is intraday STT lower than delivery STT?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Equity delivery trades attract an STT of 0.1% on both the buy and sell sides (totaling 0.2%), because delivery involves transfer of ownership in the Demat account. Intraday (MIS) trades settle purely on price differential without physical transfer, attracting a lower rate of 0.025% on the sell leg only.",
+              text: "Equity delivery trades attract an STT of 0.1% on both the buy and sell sides (totaling 0.2%) because delivery involves physical electronic transfer of ownership in the Demat registry. Intraday (MIS) trades settle purely on price differential without depository involvement, attracting a concessional 0.025% levy on the sell leg only.",
             },
           },
           {
@@ -77,7 +88,7 @@ export default function IntradayGuidePage() {
             name: "What is the auto-square-off penalty on discount brokers?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "If an MIS position remains open past the broker's cutoff time (typically 15:15 to 15:25 IST), the automated Risk Management System (RMS) squares off the trade, levying a charge of ₹50 + 18% GST (₹59 total) per order.",
+              text: "If an MIS position remains open past the broker's cutoff time (typically 15:15 to 15:25 IST), the automated Risk Management System (RMS) squares off the trade, levying an administrative fee of ₹50 + 18% GST (₹59 total) per executed order.",
             },
           },
           {
@@ -85,7 +96,7 @@ export default function IntradayGuidePage() {
             name: "How does discount brokerage cap at 20 rupees?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Discount brokers charge min(₹20, 0.03% × Turnover). For any order leg with turnover exceeding ₹66,666.67, the 0.03% calculation surpasses ₹20, capping the fee at exactly ₹20 for that leg (₹40 maximum for a round trip).",
+              text: "Discount brokers charge min(₹20, 0.03% × Turnover). For any order leg with turnover exceeding ₹66,666.67, the 0.03% calculation exceeds ₹20, triggering the statutory cap of flat ₹20 per executed order.",
             },
           },
         ],
@@ -118,24 +129,24 @@ export default function IntradayGuidePage() {
           Intraday Profit &amp; Loss Calculator India: Brokerage, STT, and Net Return Architecture
         </h1>
         <p className="text-base sm:text-lg text-navy/75 leading-relaxed">
-          A definitive mathematical blueprint for calculating net realized profit, discount broker commissions, statutory taxes (STT, GST, SEBI), and risk-managed position sizing in Indian markets.
+          Real-time terminal figures represent gross point moves, not bankable capital. This architectural guide breaks down the multi-tier regulatory clearing pipeline: Zerodha brokerage limits, 0.025% STT, 18% service GST, options breakeven drift, and risk-budget position sizing.
         </p>
       </header>
 
       {/* Interactive Tool Banner */}
-      <div className="bg-gradient-to-r from-navy to-[#182848] text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-md border border-slate-800">
+      <div className="bg-gradient-to-r from-[#0b1329] to-[#182848] text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-md border border-slate-800">
         <div className="space-y-2 max-w-xl">
           <div className="flex items-center gap-2 text-xs font-extrabold text-[#00f59b] uppercase tracking-wider">
             <Calculator className="w-4 h-4" /> Live Web Application
           </div>
           <h2 className="text-xl sm:text-2xl font-bold">Calculate Your Real Trade P&amp;L Instantly</h2>
           <p className="text-xs sm:text-sm text-slate-300">
-            Skip manual arithmetic. Factor in Zerodha brokerage, exact 0.025% STT, and 18% GST directly in your browser with zero latency.
+            Skip manual arithmetic. Calculate exact net returns after Zerodha brokerage, 0.025% STT, exchange fees, and 18% GST locally with zero latency.
           </p>
         </div>
         <Link
           href="/trading/intraday-pnl-calculator"
-          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#00f59b] hover:bg-[#00d084] text-navy font-black text-xs sm:text-sm transition-all shadow-md shrink-0"
+          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#00f59b] hover:bg-[#00d084] text-[#0b1329] font-black text-xs sm:text-sm transition-all shadow-md shrink-0"
         >
           Open Intraday Calculator <ArrowRight className="w-4 h-4" />
         </Link>
@@ -143,25 +154,48 @@ export default function IntradayGuidePage() {
 
       {/* Section 1 */}
       <section className="space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">
-          1. Core Mechanics of Intraday Equity Settlement in Indian Markets
+        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2.5">
+          <Layers className="w-6 h-6 text-steel" /> 1. Core Mechanics of Intraday Equity Settlement
         </h2>
+        
+        {/* Settlement Architecture Diagram */}
+        <div className="bg-[#0b1329] text-[#00f59b] p-5 sm:p-6 rounded-2xl overflow-x-auto text-[11px] sm:text-xs font-mono border border-slate-800 leading-relaxed shadow-xs">
+          <pre>{`[Order Placed: MIS] ---> [Matching Engine (NSE/BSE)] ---> [Execution Confirm]
+         |                                                       |
+         v                                                       v
+  [09:15 - 15:15 IST]                                   [Turnover Generated]
+  Active Trade Window                                   Buy Leg + Sell Leg
+         |                                                       |
+         +--> Position Closed by Trader?                         v
+         |    |-- YES --> Normal Settlement             [Statutory Pipeline]
+         |    |                                         - Stamp Duty (Buy Leg)
+         |    +-- NO  --> [15:15 - 15:25 IST]           - STT 0.025% (Sell Leg)
+         |                RMS Auto-Square-Off           - Exchange Turnover Fee
+         |                Triggered:                    - SEBI Fee (₹10/Cr)
+         |                (₹50 + 18% GST Penalty)       - GST (18% on Services)
+         |                                                       |
+         +-------------------------------------------------------+
+                                   |
+                                   v
+                       [Net Bank-Settled P&L]`}</pre>
+        </div>
+
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <h3 className="text-lg sm:text-xl font-bold text-navy">
             1.1 What Constitutes an MIS Intraday Execution on NSE and BSE
           </h3>
           <p>
-            An intraday trade executed under the Margin Intraday Square-off (MIS) product code signifies that the trader intends to open and liquidate their position within the same market session (09:15 AM to 03:30 PM IST). 
+            An intraday trade executed under the Margin Intraday Square-off (MIS) product code signifies that the trader intends to open and liquidate their position within the same market session (09:15 AM to 03:30 PM IST). Under current SEBI Peak Margin frameworks, MIS orders receive up to 5x intraday leverage.
           </p>
           <p>
-            Unlike delivery trades (Cash &amp; Carry - CNC), MIS transactions never result in Demat account credit or debit of equity shares. Consequently, Depositories (CDSL/NSDL) do not levy Demat Debit Charges (DP charges) on intraday orders. If a trader fails to square off their position manually, the broker&apos;s automated Risk Management System (RMS) closes it between 03:15 PM and 03:25 PM, levying an auto-square-off penalty fee of ₹50 + 18% GST.
+            Because MIS transactions settle within the same trading session, shares are never delivered to or debited from your electronic Demat account. Depositories (CDSL/NSDL) do not levy Demat Debit Charges (DP charges) on intraday orders. If an open MIS position is not liquidated manually before the broker&apos;s Risk Management System (RMS) cutoff (typically between 15:15 and 15:25 IST), the position is forcibly squared off at market price with an auto-square-off penalty fee of ₹50 + 18% GST (₹59.00 total) per executed order.
           </p>
 
           <h3 className="text-lg sm:text-xl font-bold text-navy">
             1.2 Gross Terminal Profit vs. Net Bank-Settled P&amp;L
           </h3>
           <p>
-            The green or red figure displayed on your terminal screen reflects strictly gross point differential. Net in-hand capital movement depends on subtracting all non-negotiable statutory frictions:
+            The green or red figure displayed on your terminal screen reflects strictly gross point differential:
           </p>
           <div className="p-4 bg-sage/20 border border-navy/10 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
             <div>Gross P&amp;L = (Sell Execution Price - Buy Execution Price) × Traded Quantity</div>
@@ -172,37 +206,51 @@ export default function IntradayGuidePage() {
 
       {/* Section 2 */}
       <section className="space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">
-          2. Complete Mathematical Breakdown of Intraday Trading Friction
+        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2.5">
+          <Percent className="w-6 h-6 text-steel" /> 2. Mathematical Breakdown of Intraday Trading Friction
         </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <h3 className="text-lg sm:text-xl font-bold text-navy">
             2.1 Discount Brokerage Formula (Zerodha, Groww, Angel One)
           </h3>
           <p>
-            Discount brokerages evaluate each executed order leg against a two-tier formula:
+            Indian discount brokers price equity intraday orders via an algorithmic cap:
           </p>
           <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
-            Brokerage per Order = min(₹20, 0.03% × Order Leg Turnover)
+            Brokerage per Leg = min(₹20, 0.0003 × Turnover per Leg)
           </div>
+
+          {/* Brokerage Curve Diagram */}
+          <div className="bg-[#0b1329] text-[#00f59b] p-5 sm:p-6 rounded-2xl overflow-x-auto text-[11px] sm:text-xs font-mono border border-slate-800 leading-relaxed">
+            <pre>{`Brokerage Fee (₹)
+ ^
+20 |                      +--------------------------------------- (Capped at ₹20)
+   |                     /
+   |                    /
+   |                   /  Slope = 0.03%
+   |                  /
+ 0 +-----------------+---------------------------------------------> Turnover (₹)
+   0             ₹66,666.67`}</pre>
+          </div>
+
           <p>
-            The inflection threshold occurs at exactly ₹66,666.67 turnover per leg:
+            The critical inflection point is ₹66,666.67 per order leg ($20 / 0.0003$):
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-            <li><strong>Turnover &lt; ₹66,667:</strong> Brokerage is exactly 0.03% of the trade value (e.g., ₹10,000 turnover incurs ₹3.00 fee).</li>
-            <li><strong>Turnover &ge; ₹66,667:</strong> Brokerage is capped at the maximum rate of flat ₹20.00 per executed order.</li>
+            <li><strong>Turnover &lt; ₹66,666.67:</strong> Billed at 0.03% (e.g. ₹10,000 turnover incurs ₹3.00 brokerage).</li>
+            <li><strong>Turnover &ge; ₹66,666.67:</strong> Capped at flat ₹20.00 per executed order (₹40.00 total for a round trip).</li>
           </ul>
 
-          <h3 className="text-lg sm:text-xl font-bold text-navy">
-            2.2 Statutory Government Levies: STT, Stamp Duty, and SEBI Charges
+          <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
+            2.2 Statutory Government Levies Schedule
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm border border-navy/15 rounded-2xl overflow-hidden bg-white">
               <thead className="bg-sage/40 text-navy font-bold">
                 <tr>
-                  <th className="p-3 border-b border-navy/15">Tax / Regulatory Charge</th>
-                  <th className="p-3 border-b border-navy/15">Prescribed Rate</th>
-                  <th className="p-3 border-b border-navy/15">Application Base</th>
+                  <th className="p-3 border-b border-navy/15">Tax / Regulatory Vector</th>
+                  <th className="p-3 border-b border-navy/15">Statutory Rate</th>
+                  <th className="p-3 border-b border-navy/15">Tax Base (Application Leg)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-navy/10 text-navy/80">
@@ -228,53 +276,57 @@ export default function IntradayGuidePage() {
                 </tr>
                 <tr>
                   <td className="p-3 font-semibold">Integrated GST</td>
-                  <td className="p-3 font-mono text-emerald-800 font-bold">18%</td>
+                  <td className="p-3 font-mono text-emerald-800 font-bold">18.00%</td>
                   <td className="p-3">Brokerage + Exchange Turnover + SEBI Fee</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <h3 className="text-lg sm:text-xl font-bold text-navy">
-            2.3 The 18% GST Calculation Engine
+          <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
+            2.3 The 18% GST Service Tax Base
           </h3>
           <p>
-            GST is strictly levied on value-added services, not government taxes. It is mathematically calculated as:
+            GST applies exclusively to financial service commissions, not government tax levies:
           </p>
           <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
-            GST = 0.18 × (Brokerage + Exchange Turnover Fee + SEBI Charges)
+            GST = 0.18 × (Brokerage + Exchange Turnover Fee + SEBI Fee)
           </div>
+          <p className="text-xs text-navy/70">
+            STT and Stamp Duty are sovereign government taxes and do not attract GST.
+          </p>
         </div>
       </section>
 
       {/* Section 3 */}
       <section className="space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2">
-          <Percent className="w-6 h-6 text-steel" /> 3. Deterministic Net P&amp;L: Step-by-Step Worked Execution
+        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2.5">
+          <TrendingUp className="w-6 h-6 text-steel" /> 3. Deterministic Net P&amp;L Worked Execution
         </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <p>
-            Consider a trade purchasing 100 shares of an index constituent at ₹1,000 and exiting at ₹1,050:
+            Contract note simulation for 100 shares of Reliance Industries (MIS) bought at ₹1,000 and exited at ₹1,050:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-1 text-xs">
-              <span className="font-bold text-navy uppercase">Order Parameters</span>
-              <div>Buy Leg: 100 shares @ ₹1,000 = ₹1,00,000</div>
-              <div>Sell Leg: 100 shares @ ₹1,050 = ₹1,05,000</div>
-              <div>Total Turnover: ₹2,05,000</div>
-              <div className="font-bold text-emerald-700">Gross P&amp;L: +₹5,000.00</div>
+            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-1.5 text-xs font-mono">
+              <span className="font-bold text-navy uppercase font-sans">Turnover Ledger</span>
+              <div>Buy Leg: 100 × ₹1,000 = ₹1,00,000.00</div>
+              <div>Sell Leg: 100 × ₹1,050 = ₹1,05,000.00</div>
+              <div>Total Turnover = ₹2,05,000.00</div>
+              <div className="font-bold text-emerald-700 pt-1 font-sans">Gross P&amp;L: +₹5,000.00</div>
             </div>
-            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-1 text-xs">
-              <span className="font-bold text-navy uppercase">Friction Itemization</span>
-              <div>Brokerage: ₹20 + ₹20 = ₹40.00</div>
+            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-1 text-xs font-mono">
+              <span className="font-bold text-navy uppercase font-sans">Itemized Deductions</span>
+              <div>Brokerage (Buy + Sell): ₹40.00</div>
               <div>STT (0.025% of ₹1.05L): ₹26.25</div>
-              <div>Exchange Fee (0.00297% of ₹2.05L): ₹6.09</div>
-              <div>Stamp Duty (0.003% of ₹1.00L): ₹3.00</div>
+              <div>Exchange Fee (0.00297%): ₹6.09</div>
+              <div>Stamp Duty (0.003% Buy): ₹3.00</div>
               <div>SEBI Charges (₹10/Cr): ₹0.21</div>
               <div>GST (18% on ₹46.30): ₹8.33</div>
             </div>
           </div>
-          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between font-bold text-emerald-900 text-sm">
+
+          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between font-bold text-emerald-900 text-sm gap-2">
             <span>Total Statutory Deductions: ₹83.88</span>
             <span>Net In-Pocket P&amp;L: +₹4,916.12</span>
           </div>
@@ -282,18 +334,46 @@ export default function IntradayGuidePage() {
           <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
             3.2 Calculating Exact Tick Breakeven Spread
           </h3>
-          <p>
-            Breakeven tick distance identifies how many absolute price points are consumed by exchange overhead before true profitability begins:
-          </p>
-          <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
-            Breakeven Points = Total Charges / Quantity = ₹83.88 / 100 = 0.84 Points
+          <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
+            <div>Breakeven Delta P = Total Charges / Quantity = ₹83.88 / 100 = ₹0.8388 ≈ ₹0.84</div>
           </div>
           <p>
-            In this setup, your sell order must execute at least <strong>₹0.84 above entry</strong> (₹1,000.84) simply to avoid losing capital. Check your own setup with our{" "}
+            On the NSE (₹0.05 minimum tick size), an exit price must clear at least <strong>17 ticks (₹0.85)</strong> above entry (₹1,000.85) to avoid losing capital. Test your setups via our{" "}
             <Link href="/trading/brokerage-charges-calculator" className="font-bold underline text-steel">
               Brokerage &amp; Taxes Calculator
             </Link>.
           </p>
+
+          <h3 className="text-lg sm:text-xl font-bold text-navy pt-2 flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-steel" /> 3.3 TypeScript Engine Implementation
+          </h3>
+          <div className="bg-[#0b1329] text-[#00f59b] p-5 sm:p-6 rounded-2xl overflow-x-auto text-[11px] sm:text-xs font-mono border border-slate-800 leading-relaxed">
+            <pre>{`export function computeIntradayEquitySettlement(trade: {
+  buyPrice: number;
+  sellPrice: number;
+  quantity: number;
+}) {
+  const buyTurnover = trade.buyPrice * trade.quantity;
+  const sellTurnover = trade.sellPrice * trade.quantity;
+  const totalTurnover = buyTurnover + sellTurnover;
+
+  const grossPnL = (trade.sellPrice - trade.buyPrice) * trade.quantity;
+  const brokerage = Math.min(20, buyTurnover * 0.0003) + Math.min(20, sellTurnover * 0.0003);
+  const stt = sellTurnover * 0.00025;
+  const exchangeFee = totalTurnover * 0.0000297;
+  const stampDuty = buyTurnover * 0.00003;
+  const sebiFee = totalTurnover * 0.000001;
+  const gst = (brokerage + exchangeFee + sebiFee) * 0.18;
+
+  const totalFriction = brokerage + stt + exchangeFee + stampDuty + sebiFee + gst;
+  return {
+    grossPnL,
+    totalFriction,
+    netPnL: grossPnL - totalFriction,
+    breakevenMovePoints: totalFriction / trade.quantity
+  };
+}`}</pre>
+          </div>
         </div>
       </section>
 
@@ -304,14 +384,23 @@ export default function IntradayGuidePage() {
         </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <p>
-            Derivative contracts trade in standardized lot multipliers (e.g., 50 units for Nifty 50). Options trading calculates STT strictly on the traded premium value upon sell-off, whereas Futures calculate STT and turnover on the contract notional value.
+            Derivative contracts trade in standardized lot multipliers (50 units for Nifty 50). Options trading calculates STT strictly on the traded premium value upon sell-off, whereas Futures calculate STT and turnover on the contract notional value.
           </p>
-          <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
-            <div>Call Breakeven = Strike Price + Premium Paid + (Round-Trip Charges / Lot Units)</div>
-            <div>Put Breakeven = Strike Price - Premium Paid - (Round-Trip Charges / Lot Units)</div>
+
+          <div className="bg-[#0b1329] text-[#00f59b] p-5 sm:p-6 rounded-2xl overflow-x-auto text-[11px] sm:text-xs font-mono border border-slate-800 leading-relaxed">
+            <pre>{`+--------------------------+-----------------------+-----------------------+
+| Metric                   | Equity Intraday (MIS) | NIFTY Index Options   |
++--------------------------+-----------------------+-----------------------+
+| Underlying Notional Base | Spot Price * Quantity | Premium * Lot Size    |
+| Round-Trip Brokerage     | min(₹20, 0.03%) x 2   | Flat ₹40.00           |
+| STT Rate                 | 0.025% (Sell Leg)     | 0.0625% on Premium    |
+| Round-Trip Friction (1L) | Variable by Price     | ~₹59.50 per lot       |
+| Point Drag (Nifty Lot 50)| ~0.84 pts             | ~1.19 premium points  |
++--------------------------+-----------------------+-----------------------+`}</pre>
           </div>
+
           <p>
-            Buying 1 lot of Nifty 24,500 Call at ₹180 and liquidating at ₹210 (+30 points) produces a ₹1,500 gross gain. After ₹40 brokerage, ₹6.50 STT, ₹4.50 exchange turnover, and ₹8.50 GST (totaling ~₹59.50), your net yield is <strong>₹1,440.50</strong>, representing a friction drag of <strong>1.19 premium points</strong>. Verify contract scenarios on our{" "}
+            Buying 1 lot of Nifty 24,500 Call at ₹180 and exiting at ₹210 produces a gross gain of ₹1,500. After round-trip fees (~₹59.50), your net yield is <strong>₹1,440.50</strong>, representing a friction drag of <strong>1.19 premium points</strong>. Verify payoffs via our{" "}
             <Link href="/trading/call-option-payoff-calculator" className="font-bold underline text-steel">
               Call Option Payoff Calculator
             </Link>.
@@ -321,30 +410,39 @@ export default function IntradayGuidePage() {
 
       {/* Section 5 */}
       <section className="space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2">
-          <TrendingUp className="w-6 h-6 text-steel" /> 5. Capital Protection &amp; Position Sizing Framework
+        <h2 className="text-2xl sm:text-3xl font-black text-navy">
+          5. Capital Protection &amp; Position Sizing Framework
         </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <p>
-            Professional trading is an exercise in risk budget management. Your maximum allowable position size is derived from your predefined risk tolerance:
+            Position sizing must be derived from market volatility and stop-loss distance rather than available leverage:
           </p>
+
+          <div className="bg-[#0b1329] text-[#00f59b] p-5 sm:p-6 rounded-2xl overflow-x-auto text-[11px] sm:text-xs font-mono border border-slate-800 leading-relaxed">
+            <pre>{`[Total Portfolio Capital] 
+            |
+            v
+   * [Risk Allocation %] ---> [Risk Budget in ₹]
+                                     |
+[Entry Price] - [Stop-Loss]          |
+            |                        |
+            v                        v
+   [Absolute Risk Per Share] ----> [DIVIDE] ----> [floor()] ---> [Exact Order Qty]`}</pre>
+          </div>
+
           <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
-            <div>Risk Budget (₹) = Total Portfolio Capital × Risk % (typically 1.0% to 2.0%)</div>
-            <div>Allowable Quantity = floor(Risk Budget / |Entry Execution Price - Stop-Loss Price|)</div>
+            <div>Risk Budget (₹) = Total Capital × Risk % (1.0% to 2.0%)</div>
+            <div>Allowable Quantity = floor(Risk Budget / |Entry Price - Stop-Loss Price|)</div>
           </div>
           <p>
-            If your capital is ₹2,00,000 and you risk 1.5% (₹3,000) on an entry at ₹450 with a stop-loss at ₹435 (₹15 distance), your permissible allocation is exactly <strong>200 shares</strong>. Test your parameters directly using our{" "}
+            With ₹5,00,000 capital and 1.0% risk (₹5,000 budget), entering at ₹2,450 with a ₹2,425 stop-loss (₹25 distance) limits allocation to exactly <strong>200 shares</strong> ($5,000 / 25$). Test your setups on our{" "}
             <Link href="/trading/position-size-calculator" className="font-bold underline text-steel">
               Position Size Calculator
-            </Link>{" "}
-            and{" "}
-            <Link href="/trading/trade-expectancy-calculator" className="font-bold underline text-steel">
-              Trade Expectancy Calculator
             </Link>.
           </p>
 
           <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
-            5.2 Mathematical Asymmetry of Risk-Reward (R:R) Ratios
+            5.2 Risk-Reward (R:R) Win-Rate Matrix
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm border border-navy/15 rounded-2xl overflow-hidden bg-white">
@@ -352,29 +450,29 @@ export default function IntradayGuidePage() {
                 <tr>
                   <th className="p-3 border-b border-navy/15">Target R:R Ratio</th>
                   <th className="p-3 border-b border-navy/15">Breakeven Win Rate</th>
-                  <th className="p-3 border-b border-navy/15">Statistical Edge @ 50% Win Rate</th>
+                  <th className="p-3 border-b border-navy/15">Return Over 100 Trades @ 50% Win Rate</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-navy/10 text-navy/80 font-mono">
                 <tr>
                   <td className="p-3 font-semibold font-sans">1 : 1.0</td>
                   <td className="p-3">50.00%</td>
-                  <td className="p-3 text-amber-700">Net Zero (Frictions erode capital)</td>
+                  <td className="p-3 text-amber-700 font-sans">Net Zero (Friction erodes capital)</td>
                 </tr>
                 <tr>
                   <td className="p-3 font-semibold font-sans">1 : 1.5</td>
                   <td className="p-3">40.00%</td>
-                  <td className="p-3 text-emerald-700 font-bold">+25.00 R Units over 100 trades</td>
+                  <td className="p-3 text-emerald-700 font-bold font-sans">+25.00 R Units</td>
                 </tr>
                 <tr>
                   <td className="p-3 font-semibold font-sans">1 : 2.0</td>
                   <td className="p-3">33.33%</td>
-                  <td className="p-3 text-emerald-700 font-bold">+50.00 R Units over 100 trades</td>
+                  <td className="p-3 text-emerald-700 font-bold font-sans">+50.00 R Units</td>
                 </tr>
                 <tr>
                   <td className="p-3 font-semibold font-sans">1 : 3.0</td>
                   <td className="p-3">25.00%</td>
-                  <td className="p-3 text-emerald-700 font-bold">+100.00 R Units over 100 trades</td>
+                  <td className="p-3 text-emerald-700 font-bold font-sans">+100.00 R Units</td>
                 </tr>
               </tbody>
             </table>
