@@ -1,18 +1,18 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { ArrowRight, Calculator, ShieldCheck, TrendingUp, HelpCircle, BookOpen } from "lucide-react";
+import { ArrowRight, Calculator, BookOpen, HelpCircle, ShieldCheck, TrendingUp, Percent } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Intraday Profit & Loss Calculator India – Complete Guide | MyCalculators",
+  title: "Intraday Profit & Loss Calculator India: Brokerage, STT & Tax Architecture | MyCalculators",
   description:
-    "Master intraday P&L calculation in India: Zerodha brokerage formula, 0.025% STT, 18% GST, exchange turnover charges, options breakeven, and risk-reward position sizing.",
+    "Complete quantitative guide to calculating net intraday equity and options P&L in India. Details Zerodha brokerage formulas, 0.025% STT, 18% GST on services, contract note simulation, and risk-managed position sizing.",
   alternates: {
     canonical: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide",
   },
   openGraph: {
-    title: "Intraday Profit & Loss Calculator India – Complete Guide",
-    description: "Detailed step-by-step breakdown of Zerodha brokerage, STT, GST, and net intraday P&L calculation.",
+    title: "Intraday Profit & Loss Calculator India: Brokerage, STT & Tax Architecture",
+    description: "Complete mathematical breakdown of Indian intraday trading friction, STT slabs, GST formulas, and tick breakeven mechanics.",
     url: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide",
     siteName: "MyCalculators",
     locale: "en_IN",
@@ -26,11 +26,11 @@ export default function IntradayGuidePage() {
     "@graph": [
       {
         "@type": "Article",
-        headline: "Intraday Profit & Loss Calculator India – Complete Guide",
-        description: "Master intraday trading P&L in India with Zerodha brokerage, 0.025% STT, exchange fees, and risk-reward position sizing.",
+        headline: "Intraday Profit and Loss Calculator India: Brokerage, STT, and Net Return Architecture",
+        description: "A definitive technical breakdown of net intraday trading returns across Indian stock exchanges, detailing statutory fees, brokerage caps, and position sizing.",
         author: {
           "@type": "Organization",
-          name: "MyCalculators Editorial Team",
+          name: "MyCalculators Quantitative Desk",
           url: "https://www.mycalculator.xyz",
         },
         publisher: {
@@ -42,7 +42,7 @@ export default function IntradayGuidePage() {
           },
         },
         datePublished: "2026-09-08",
-        dateModified: "2026-10-05",
+        dateModified: "2026-10-06",
         mainEntityOfPage: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide",
       },
       {
@@ -53,21 +53,58 @@ export default function IntradayGuidePage() {
           { "@type": "ListItem", position: 3, name: "Intraday P&L Guide", item: "https://www.mycalculator.xyz/guides/intraday-profit-and-loss-calculator-guide" },
         ],
       },
+      {
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "Is Securities Transaction Tax (STT) charged on intraday loss in India?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Yes. Securities Transaction Tax (STT) is levied at 0.025% strictly on the sell turnover, regardless of whether the trade yields a profit or a loss.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Why is intraday STT lower than delivery STT?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Equity delivery trades attract an STT of 0.1% on both the buy and sell sides (totaling 0.2%), because delivery involves transfer of ownership in the Demat account. Intraday (MIS) trades settle purely on price differential without physical transfer, attracting a lower rate of 0.025% on the sell leg only.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What is the auto-square-off penalty on discount brokers?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "If an MIS position remains open past the broker's cutoff time (typically 15:15 to 15:25 IST), the automated Risk Management System (RMS) squares off the trade, levying a charge of ₹50 + 18% GST (₹59 total) per order.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "How does discount brokerage cap at 20 rupees?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Discount brokers charge min(₹20, 0.03% × Turnover). For any order leg with turnover exceeding ₹66,666.67, the 0.03% calculation surpasses ₹20, capping the fee at exactly ₹20 for that leg (₹40 maximum for a round trip).",
+            },
+          },
+        ],
+      },
     ],
   };
 
   return (
-    <article className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
+    <article className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold text-navy/60">
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-bold text-navy/60">
         <Link href="/" className="hover:text-navy transition-colors">Home</Link>
         <span>/</span>
-        <Link href="/trading" className="hover:text-navy transition-colors">Trading</Link>
+        <Link href="/trading" className="hover:text-navy transition-colors">Trading Suite</Link>
         <span>/</span>
         <span className="text-navy truncate">Intraday P&amp;L Guide</span>
       </nav>
@@ -75,10 +112,10 @@ export default function IntradayGuidePage() {
       {/* Header */}
       <header className="space-y-4 border-b border-navy/10 pb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black uppercase tracking-wider">
-          <BookOpen className="w-3.5 h-3.5" /> Market Intelligence Guide
+          <BookOpen className="w-3.5 h-3.5" /> Market Intelligence &amp; Quantitative Protocol
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-navy tracking-tight leading-tight">
-          Intraday Profit &amp; Loss Calculator – India: Complete Guide
+          Intraday Profit &amp; Loss Calculator India: Brokerage, STT, and Net Return Architecture
         </h1>
         <p className="text-base sm:text-lg text-navy/75 leading-relaxed">
           A definitive mathematical blueprint for calculating net realized profit, discount broker commissions, statutory taxes (STT, GST, SEBI), and risk-managed position sizing in Indian markets.
@@ -86,207 +123,304 @@ export default function IntradayGuidePage() {
       </header>
 
       {/* Interactive Tool Banner */}
-      <div className="bg-gradient-to-r from-navy to-[#182848] text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-md">
+      <div className="bg-gradient-to-r from-navy to-[#182848] text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-md border border-slate-800">
         <div className="space-y-2 max-w-xl">
           <div className="flex items-center gap-2 text-xs font-extrabold text-[#00f59b] uppercase tracking-wider">
             <Calculator className="w-4 h-4" /> Live Web Application
           </div>
           <h2 className="text-xl sm:text-2xl font-bold">Calculate Your Real Trade P&amp;L Instantly</h2>
           <p className="text-xs sm:text-sm text-slate-300">
-            Skip manual arithmetic. Factor in Zerodha brokerage, exact 0.025% STT, and 18% GST directly in your browser.
+            Skip manual arithmetic. Factor in Zerodha brokerage, exact 0.025% STT, and 18% GST directly in your browser with zero latency.
           </p>
         </div>
         <Link
           href="/trading/intraday-pnl-calculator"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#00f59b] hover:bg-[#00d084] text-navy font-black text-xs sm:text-sm transition-all shadow-md shrink-0"
+          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#00f59b] hover:bg-[#00d084] text-navy font-black text-xs sm:text-sm transition-all shadow-md shrink-0"
         >
           Open Intraday Calculator <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
       {/* Section 1 */}
-      <section className="space-y-4">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">1. Understanding Intraday Trading Mechanics</h2>
-        <div className="prose text-sm sm:text-base text-navy/80 space-y-4 leading-relaxed">
-          <h3 className="text-xl font-bold text-navy">1.1 What Defines an Intraday Trade in Indian Markets</h3>
+      <section className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-black text-navy">
+          1. Core Mechanics of Intraday Equity Settlement in Indian Markets
+        </h2>
+        <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
+          <h3 className="text-lg sm:text-xl font-bold text-navy">
+            1.1 What Constitutes an MIS Intraday Execution on NSE and BSE
+          </h3>
           <p>
-            An intraday transaction in India (MIS - Margin Intraday Square-off) involves opening and closing a position within the exact same trading session (09:15 AM to 03:30 PM IST). 
+            An intraday trade executed under the Margin Intraday Square-off (MIS) product code signifies that the trader intends to open and liquidate their position within the same market session (09:15 AM to 03:30 PM IST). 
           </p>
           <p>
-            If a position is not closed manually before approximately 03:15 PM to 03:25 PM, your broker’s automated risk management system (RMS) squares off the trade at the prevailing market rate, frequently levying an auto-square-off penalty fee of ₹50 + 18% GST.
+            Unlike delivery trades (Cash &amp; Carry - CNC), MIS transactions never result in Demat account credit or debit of equity shares. Consequently, Depositories (CDSL/NSDL) do not levy Demat Debit Charges (DP charges) on intraday orders. If a trader fails to square off their position manually, the broker&apos;s automated Risk Management System (RMS) closes it between 03:15 PM and 03:25 PM, levying an auto-square-off penalty fee of ₹50 + 18% GST.
           </p>
-          <h3 className="text-xl font-bold text-navy">1.2 Key Cost Components: Brokerage, Taxes, and Charges</h3>
-          <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Brokerage Commission:</strong> Charged by the broker for executing buy and sell legs.</li>
-            <li><strong>Securities Transaction Tax (STT):</strong> Direct statutory levy collected by the government via stock exchanges.</li>
-            <li><strong>Exchange Transaction Charges:</strong> Turnover fees levied by the National Stock Exchange (NSE) or Bombay Stock Exchange (BSE).</li>
-            <li><strong>GST (18%):</strong> Mandatory service tax applied on Brokerage + Exchange Fees + SEBI Fees.</li>
-            <li><strong>Stamp Duty:</strong> State government revenue tax levied strictly on buy-side turnover.</li>
-            <li><strong>SEBI Turnover Charges:</strong> Regulatory oversight fee charged at ₹10 per Crore of trade volume.</li>
-          </ul>
+
+          <h3 className="text-lg sm:text-xl font-bold text-navy">
+            1.2 Gross Terminal Profit vs. Net Bank-Settled P&amp;L
+          </h3>
+          <p>
+            The green or red figure displayed on your terminal screen reflects strictly gross point differential. Net in-hand capital movement depends on subtracting all non-negotiable statutory frictions:
+          </p>
+          <div className="p-4 bg-sage/20 border border-navy/10 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
+            <div>Gross P&amp;L = (Sell Execution Price - Buy Execution Price) × Traded Quantity</div>
+            <div>Net Realized P&amp;L = Gross P&amp;L - (Brokerage + STT + Exchange Fees + Stamp Duty + SEBI + GST)</div>
+          </div>
         </div>
       </section>
 
       {/* Section 2 */}
-      <section className="space-y-4">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">2. Calculating Intraday Profit/Loss with Brokerage</h2>
+      <section className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-black text-navy">
+          2. Complete Mathematical Breakdown of Intraday Trading Friction
+        </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
-          <h3 className="text-xl font-bold text-navy">2.1 Brokerage Structures (Flat vs. Percentage) – Zerodha Example</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-navy">
+            2.1 Discount Brokerage Formula (Zerodha, Groww, Angel One)
+          </h3>
           <p>
-            Discount brokers like Zerodha, Groww, and Angel One charge a capped commission:
+            Discount brokerages evaluate each executed order leg against a two-tier formula:
           </p>
-          <div className="p-4 bg-sage/20 border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
-            Brokerage per Order = min(₹20, 0.03% × Order Turnover)
+          <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
+            Brokerage per Order = min(₹20, 0.03% × Order Leg Turnover)
           </div>
           <p>
-            On a small trade with ₹1,000 turnover, brokerage is ₹0.30. On trades with turnover exceeding ₹66,667 per leg, the fee caps at flat ₹20 per executed order (₹40 round-trip).
+            The inflection threshold occurs at exactly ₹66,666.67 turnover per leg:
           </p>
+          <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
+            <li><strong>Turnover &lt; ₹66,667:</strong> Brokerage is exactly 0.03% of the trade value (e.g., ₹10,000 turnover incurs ₹3.00 fee).</li>
+            <li><strong>Turnover &ge; ₹66,667:</strong> Brokerage is capped at the maximum rate of flat ₹20.00 per executed order.</li>
+          </ul>
 
-          <h3 className="text-xl font-bold text-navy">2.2 Step-by-Step Profit Formula</h3>
-          <div className="space-y-2">
-            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-2 font-mono text-xs sm:text-sm text-navy">
-              <div>Gross P&amp;L = (Sell Price - Buy Price) × Quantity</div>
-              <div>Total Turnover = (Buy Price × Qty) + (Sell Price × Qty)</div>
-              <div>Net P&amp;L = Gross P&amp;L - (Brokerage + STT + Exchange Fees + Stamp Duty + SEBI + GST)</div>
-            </div>
+          <h3 className="text-lg sm:text-xl font-bold text-navy">
+            2.2 Statutory Government Levies: STT, Stamp Duty, and SEBI Charges
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border border-navy/15 rounded-2xl overflow-hidden bg-white">
+              <thead className="bg-sage/40 text-navy font-bold">
+                <tr>
+                  <th className="p-3 border-b border-navy/15">Tax / Regulatory Charge</th>
+                  <th className="p-3 border-b border-navy/15">Prescribed Rate</th>
+                  <th className="p-3 border-b border-navy/15">Application Base</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-navy/10 text-navy/80">
+                <tr>
+                  <td className="p-3 font-semibold">Securities Transaction Tax (STT)</td>
+                  <td className="p-3 font-mono text-emerald-800 font-bold">0.025%</td>
+                  <td className="p-3">Sell-side turnover exclusively (MIS Equity)</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold">Exchange Turnover Fee</td>
+                  <td className="p-3 font-mono">0.00297% (NSE)</td>
+                  <td className="p-3">Combined turnover (Buy leg + Sell leg)</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold">Stamp Duty</td>
+                  <td className="p-3 font-mono">0.003%</td>
+                  <td className="p-3">Buy-side turnover exclusively</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold">SEBI Turnover Fee</td>
+                  <td className="p-3 font-mono">₹10 / Crore (0.0001%)</td>
+                  <td className="p-3">Combined turnover (Buy leg + Sell leg)</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold">Integrated GST</td>
+                  <td className="p-3 font-mono text-emerald-800 font-bold">18%</td>
+                  <td className="p-3">Brokerage + Exchange Turnover + SEBI Fee</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 className="text-lg sm:text-xl font-bold text-navy">
+            2.3 The 18% GST Calculation Engine
+          </h3>
+          <p>
+            GST is strictly levied on value-added services, not government taxes. It is mathematically calculated as:
+          </p>
+          <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
+            GST = 0.18 × (Brokerage + Exchange Turnover Fee + SEBI Charges)
           </div>
         </div>
       </section>
 
       {/* Section 3 */}
-      <section className="space-y-4">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">3. STT &amp; Regulatory Tax Schedule (Zerodha Rates)</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm border border-navy/15 rounded-2xl overflow-hidden bg-white">
-            <thead className="bg-sage/40 text-navy font-bold">
-              <tr>
-                <th className="p-3 border-b border-navy/15">Tax Component</th>
-                <th className="p-3 border-b border-navy/15">Rate (Equity Intraday)</th>
-                <th className="p-3 border-b border-navy/15">Applicable Leg</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-navy/10 text-navy/80">
-              <tr>
-                <td className="p-3 font-semibold">Brokerage</td>
-                <td className="p-3">0.03% or ₹20/order</td>
-                <td className="p-3">Buy and Sell Orders</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-semibold">Securities Transaction Tax (STT)</td>
-                <td className="p-3">0.025%</td>
-                <td className="p-3 text-emerald-800 font-bold">Sell Side Only</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-semibold">Exchange Turnover Fee</td>
-                <td className="p-3">~0.00297% (NSE)</td>
-                <td className="p-3">Total Turnover (Buy + Sell)</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-semibold">Stamp Duty</td>
-                <td className="p-3">0.003%</td>
-                <td className="p-3">Buy Side Only</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-semibold">SEBI Charges</td>
-                <td className="p-3">₹10 / Crore (0.0001%)</td>
-                <td className="p-3">Total Turnover</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-semibold">GST</td>
-                <td className="p-3">18%</td>
-                <td className="p-3">Brokerage + Exchange Fees + SEBI</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="p-4 bg-cream border border-navy/15 rounded-2xl text-xs text-navy/80">
-          <strong>Key Rule:</strong> GST is never levied on government taxes like STT or Stamp Duty. It is charged exclusively on taxable services rendered. Check deductions on our{" "}
-          <Link href="/trading/brokerage-charges-calculator" className="font-bold underline text-steel">
-            Indian Brokerage &amp; Taxes Calculator
-          </Link>.
+      <section className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2">
+          <Percent className="w-6 h-6 text-steel" /> 3. Deterministic Net P&amp;L: Step-by-Step Worked Execution
+        </h2>
+        <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
+          <p>
+            Consider a trade purchasing 100 shares of an index constituent at ₹1,000 and exiting at ₹1,050:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-1 text-xs">
+              <span className="font-bold text-navy uppercase">Order Parameters</span>
+              <div>Buy Leg: 100 shares @ ₹1,000 = ₹1,00,000</div>
+              <div>Sell Leg: 100 shares @ ₹1,050 = ₹1,05,000</div>
+              <div>Total Turnover: ₹2,05,000</div>
+              <div className="font-bold text-emerald-700">Gross P&amp;L: +₹5,000.00</div>
+            </div>
+            <div className="p-4 bg-white border border-navy/15 rounded-2xl space-y-1 text-xs">
+              <span className="font-bold text-navy uppercase">Friction Itemization</span>
+              <div>Brokerage: ₹20 + ₹20 = ₹40.00</div>
+              <div>STT (0.025% of ₹1.05L): ₹26.25</div>
+              <div>Exchange Fee (0.00297% of ₹2.05L): ₹6.09</div>
+              <div>Stamp Duty (0.003% of ₹1.00L): ₹3.00</div>
+              <div>SEBI Charges (₹10/Cr): ₹0.21</div>
+              <div>GST (18% on ₹46.30): ₹8.33</div>
+            </div>
+          </div>
+          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between font-bold text-emerald-900 text-sm">
+            <span>Total Statutory Deductions: ₹83.88</span>
+            <span>Net In-Pocket P&amp;L: +₹4,916.12</span>
+          </div>
+
+          <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
+            3.2 Calculating Exact Tick Breakeven Spread
+          </h3>
+          <p>
+            Breakeven tick distance identifies how many absolute price points are consumed by exchange overhead before true profitability begins:
+          </p>
+          <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy">
+            Breakeven Points = Total Charges / Quantity = ₹83.88 / 100 = 0.84 Points
+          </div>
+          <p>
+            In this setup, your sell order must execute at least <strong>₹0.84 above entry</strong> (₹1,000.84) simply to avoid losing capital. Check your own setup with our{" "}
+            <Link href="/trading/brokerage-charges-calculator" className="font-bold underline text-steel">
+              Brokerage &amp; Taxes Calculator
+            </Link>.
+          </p>
         </div>
       </section>
 
       {/* Section 4 */}
-      <section className="space-y-4">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">4. Options Intraday Breakeven &amp; P&amp;L Calculation</h2>
+      <section className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-black text-navy">
+          4. Derivative Intraday Adjustments: Futures &amp; Options Friction
+        </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <p>
-            Unlike cash shares, options trading operates on derivative contract lots (e.g. 50 units for Nifty 50). STT on intraday options square-off is charged on the traded premium value.
+            Derivative contracts trade in standardized lot multipliers (e.g., 50 units for Nifty 50). Options trading calculates STT strictly on the traded premium value upon sell-off, whereas Futures calculate STT and turnover on the contract notional value.
           </p>
           <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
-            <div>Call Breakeven = Strike Price + Premium Paid + (Charges / Units)</div>
-            <div>Put Breakeven = Strike Price - Premium Paid - (Charges / Units)</div>
+            <div>Call Breakeven = Strike Price + Premium Paid + (Round-Trip Charges / Lot Units)</div>
+            <div>Put Breakeven = Strike Price - Premium Paid - (Round-Trip Charges / Lot Units)</div>
           </div>
           <p>
-            If you buy 1 lot of Nifty 24,500 Call at ₹180 and exit at ₹210 (+30 points), your gross gain is ₹1,500. Round-trip transaction fees total approximately ₹59.50, delivering a net profit of <strong>₹1,440.50</strong>. Verify multiple strikes on the{" "}
-            <Link href="/trading/options-breakeven-calculator" className="font-bold underline text-steel">
-              Options Breakeven Calculator
+            Buying 1 lot of Nifty 24,500 Call at ₹180 and liquidating at ₹210 (+30 points) produces a ₹1,500 gross gain. After ₹40 brokerage, ₹6.50 STT, ₹4.50 exchange turnover, and ₹8.50 GST (totaling ~₹59.50), your net yield is <strong>₹1,440.50</strong>, representing a friction drag of <strong>1.19 premium points</strong>. Verify contract scenarios on our{" "}
+            <Link href="/trading/call-option-payoff-calculator" className="font-bold underline text-steel">
+              Call Option Payoff Calculator
             </Link>.
           </p>
         </div>
       </section>
 
       {/* Section 5 */}
-      <section className="space-y-4">
-        <h2 className="text-2xl sm:text-3xl font-black text-navy">5. Risk-Reward Ratio &amp; Position Sizing</h2>
+      <section className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2">
+          <TrendingUp className="w-6 h-6 text-steel" /> 5. Capital Protection &amp; Position Sizing Framework
+        </h2>
         <div className="space-y-4 text-sm sm:text-base text-navy/80 leading-relaxed">
           <p>
-            Disciplined execution mandates sizing positions strictly around your risk budget rather than buying arbitrary share quantities:
+            Professional trading is an exercise in risk budget management. Your maximum allowable position size is derived from your predefined risk tolerance:
           </p>
           <div className="p-4 bg-white border border-navy/15 rounded-2xl font-mono text-xs sm:text-sm text-navy space-y-1">
-            <div>Risk Budget = Total Trading Capital × Risk % (typically 1% to 2%)</div>
-            <div>Allowable Shares = floor(Risk Budget / |Entry Price - Stop Loss Price|)</div>
+            <div>Risk Budget (₹) = Total Portfolio Capital × Risk % (typically 1.0% to 2.0%)</div>
+            <div>Allowable Quantity = floor(Risk Budget / |Entry Execution Price - Stop-Loss Price|)</div>
           </div>
           <p>
-            If you have ₹2,00,000 capital and risk 1.5% (₹3,000) on a trade entering at ₹450 with a ₹435 stop-loss (₹15 stop distance), you may purchase exactly <strong>200 shares</strong>. Calculate your parameters instantly with our{" "}
+            If your capital is ₹2,00,000 and you risk 1.5% (₹3,000) on an entry at ₹450 with a stop-loss at ₹435 (₹15 distance), your permissible allocation is exactly <strong>200 shares</strong>. Test your parameters directly using our{" "}
             <Link href="/trading/position-size-calculator" className="font-bold underline text-steel">
               Position Size Calculator
             </Link>{" "}
-            and audit your setup via the{" "}
-            <Link href="/trading/risk-reward-calculator" className="font-bold underline text-steel">
-              Risk/Reward Ratio Calculator
+            and{" "}
+            <Link href="/trading/trade-expectancy-calculator" className="font-bold underline text-steel">
+              Trade Expectancy Calculator
             </Link>.
           </p>
+
+          <h3 className="text-lg sm:text-xl font-bold text-navy pt-2">
+            5.2 Mathematical Asymmetry of Risk-Reward (R:R) Ratios
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border border-navy/15 rounded-2xl overflow-hidden bg-white">
+              <thead className="bg-sage/40 text-navy font-bold">
+                <tr>
+                  <th className="p-3 border-b border-navy/15">Target R:R Ratio</th>
+                  <th className="p-3 border-b border-navy/15">Breakeven Win Rate</th>
+                  <th className="p-3 border-b border-navy/15">Statistical Edge @ 50% Win Rate</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-navy/10 text-navy/80 font-mono">
+                <tr>
+                  <td className="p-3 font-semibold font-sans">1 : 1.0</td>
+                  <td className="p-3">50.00%</td>
+                  <td className="p-3 text-amber-700">Net Zero (Frictions erode capital)</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold font-sans">1 : 1.5</td>
+                  <td className="p-3">40.00%</td>
+                  <td className="p-3 text-emerald-700 font-bold">+25.00 R Units over 100 trades</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold font-sans">1 : 2.0</td>
+                  <td className="p-3">33.33%</td>
+                  <td className="p-3 text-emerald-700 font-bold">+50.00 R Units over 100 trades</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-semibold font-sans">1 : 3.0</td>
+                  <td className="p-3">25.00%</td>
+                  <td className="p-3 text-emerald-700 font-bold">+100.00 R Units over 100 trades</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      {/* FAQs */}
-      <section className="space-y-6 pt-4 border-t border-navy/10">
+      {/* Section 6 - FAQ */}
+      <section className="space-y-6 pt-6 border-t border-navy/10">
         <h2 className="text-2xl sm:text-3xl font-black text-navy flex items-center gap-2">
           <HelpCircle className="w-6 h-6 text-steel" /> Frequently Asked Questions
         </h2>
         <div className="space-y-3">
           <div className="p-5 bg-white border border-navy/15 rounded-2xl space-y-1.5 shadow-2xs">
-            <h3 className="font-bold text-sm text-navy">How do I incorporate brokerage into intraday P&amp;L on Zerodha?</h3>
+            <h3 className="font-bold text-sm text-navy">Is Securities Transaction Tax (STT) charged on intraday loss in India?</h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              Deduct min(0.03% or ₹20) on both buy and sell legs, then add statutory taxes (0.025% STT on sell side, exchange fees, stamp duty, SEBI fees, and 18% GST). Subtracting this total from your gross points gained yields net P&amp;L.
+              Yes. STT is an execution-level statutory tax applied strictly to sell-side turnover at 0.025%. It is debited automatically by the clearing corporation regardless of whether the trader books a profit or a loss.
             </p>
           </div>
           <div className="p-5 bg-white border border-navy/15 rounded-2xl space-y-1.5 shadow-2xs">
-            <h3 className="font-bold text-sm text-navy">What is the exact STT rate for intraday equity trades?</h3>
+            <h3 className="font-bold text-sm text-navy">Why is intraday STT lower than delivery STT?</h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              For equity intraday (MIS), STT is exactly 0.025% charged exclusively on the sell turnover. There is no STT on the buy side of intraday equity transactions.
+              Delivery trades require full transfer of ownership in the Demat registry, attracting 0.1% STT on both buy and sell legs. Intraday equity settles purely on cash price differentials, attracting a concessional 0.025% levy on the sell leg only.
             </p>
           </div>
           <div className="p-5 bg-white border border-navy/15 rounded-2xl space-y-1.5 shadow-2xs">
-            <h3 className="font-bold text-sm text-navy">Can I use the same breakeven formula for futures and options?</h3>
+            <h3 className="font-bold text-sm text-navy">What is the auto-square-off penalty on discount brokers?</h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              The core principle (Gross Gain = Total Charges) is identical, but futures calculate STT and turnover on the contract notional value, while options calculate STT on the sell-side premium value.
+              Open MIS positions remaining at market close (typically 15:15 to 15:25 IST) are automatically squared off by the broker&apos;s Risk Management System (RMS). Brokers charge an administrative fee of ₹50 + 18% GST (₹59 total) per order.
             </p>
           </div>
           <div className="p-5 bg-white border border-navy/15 rounded-2xl space-y-1.5 shadow-2xs">
-            <h3 className="font-bold text-sm text-navy">How does the risk-reward ratio affect my capital allocation?</h3>
+            <h3 className="font-bold text-sm text-navy">How does discount brokerage cap at 20 rupees?</h3>
             <p className="text-xs text-navy/70 leading-relaxed">
-              A 1:2 or 1:3 risk/reward ratio lowers the win rate needed to stay profitable to 33.3% or 25%, protecting your equity curve during unavoidable losing streaks.
+              Brokers apply min(₹20, 0.03% × Turnover). For any order leg with turnover exceeding ₹66,666.67, 0.03% exceeds ₹20, triggering the statutory cap of flat ₹20 per executed order.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Disclaimer */}
-      <footer className="p-4 bg-sage/20 border border-navy/15 rounded-2xl text-[11px] text-navy/60 leading-relaxed">
-        <strong>Educational Disclaimer:</strong> This guide and our associated calculator tools provide deterministic mathematical models based strictly on user inputs. They do not constitute investment advice, stock recommendations, or guaranteed returns.
+      {/* Footer Disclaimer */}
+      <footer className="p-4 bg-sage/20 border border-navy/15 rounded-2xl text-[11px] text-navy/60 leading-relaxed flex items-start gap-2">
+        <ShieldCheck className="w-4 h-4 text-steel shrink-0 mt-0.5" />
+        <div>
+          <strong>Regulatory Disclaimer:</strong> The calculations, tax schedules, and quantitative models published on MyCalculators reflect prevailing Indian market standards (SEBI, NSE, BSE, Central Board of Direct Taxes). Results are for educational and mathematical modeling purposes and do not constitute financial advice or trade recommendations.
+        </div>
       </footer>
     </article>
   );
