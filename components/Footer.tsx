@@ -25,8 +25,8 @@ export function Footer() {
             </h3>
             <ul className="space-y-2 text-xs text-slate-400">
               <li><Link href="/calculators/emi-calculator" className="hover:text-white transition-colors">EMI Calculator</Link></li>
-              <li><Link href="/calculators/upwork-net-earnings-calculator" className="hover:text-white transition-colors">Upwork Net Earnings & Tax Calculator</Link></li>
-              <li><Link href="/calculators/fiverr-net-earnings-calculator" className="hover:text-white transition-colors">Fiverr Net Earnings & Tax Calculator</Link></li>
+              <li><Link href="/calculators/upwork-net-earnings-calculator" className="hover:text-white transition-colors">Upwork Net Earnings &amp; Tax Calculator</Link></li>
+              <li><Link href="/calculators/fiverr-net-earnings-calculator" className="hover:text-white transition-colors">Fiverr Net Earnings &amp; Tax Calculator</Link></li>
               <li><Link href="/calculators/home-loan-emi-calculator" className="hover:text-white transition-colors">Home Loan EMI Calculator</Link></li>
               <li><Link href="/calculators/car-loan-emi-calculator" className="hover:text-white transition-colors">Car Loan EMI Calculator</Link></li>
               <li><Link href="/calculators/personal-loan-emi-calculator" className="hover:text-white transition-colors">Personal Loan EMI Calculator</Link></li>
@@ -41,6 +41,7 @@ export function Footer() {
             </h3>
             <ul className="space-y-2 text-xs text-slate-400">
               <li><Link href="/trading/intraday-pnl-calculator" className="hover:text-[#00f59b] transition-colors">Intraday P&amp;L</Link></li>
+              <li><Link href="/guides/intraday-profit-and-loss-calculator-guide" className="text-amber-300 hover:text-white transition-colors font-semibold">✦ Intraday P&amp;L Guide</Link></li>
               <li><Link href="/trading/call-option-payoff-calculator" className="hover:text-[#00f59b] transition-colors">Call Option Payoff</Link></li>
               <li><Link href="/trading/position-size-calculator" className="hover:text-[#00f59b] transition-colors">Position Size Sizing</Link></li>
               <li><Link href="/trading/futures-pnl-calculator" className="hover:text-[#00f59b] transition-colors">Futures P&amp;L</Link></li>
@@ -62,7 +63,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-slate-400">
               <li><Link href="/calculators/parcel-real-earnings-calculator" className="hover:text-white transition-colors">Parcel Real Earnings Calculator</Link></li>
               <li><Link href="/calculators/payment-gateway-fee-calculator" className="hover:text-white transition-colors">Payment Gateway Fee Calculator</Link></li>
-              <li><Link href="/calculators/ecommerce-roas-break-even-calculator" className="hover:text-white transition-colors">E-Commerce ROAS & Break-Even Margin Calculator</Link></li>
+              <li><Link href="/calculators/ecommerce-roas-break-even-calculator" className="hover:text-white transition-colors">E-Commerce ROAS &amp; Break-Even Margin Calculator</Link></li>
               <li><Link href="/calculators/roas-calculator" className="hover:text-white transition-colors">ROAS Calculator</Link></li>
               <li><Link href="/calculators/break-even-calculator" className="hover:text-white transition-colors">Break-Even Point Calculator</Link></li>
               <li><Link href="/calculators/commission-calculator" className="hover:text-white transition-colors">Commission Calculator</Link></li>
