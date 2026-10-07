@@ -1,9 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import fs from "fs";
-import path from "path";
-import { CALCULATORS, CATEGORIES_META, CalculatorCategory, getCalculatorsByCategory } from "@/lib/registry";
+import {
+  CALCULATORS,
+  CATEGORIES_META,
+  CalculatorCategory,
+  getCalculatorsByCategory,
+} from "@/lib/registry";
 import { TRADING_TOOLS } from "@/lib/trading/registry";
 import { FeaturedEMI } from "@/components/FeaturedEMI";
 import {
@@ -19,26 +22,11 @@ import {
   ShieldCheck,
   Zap,
   Lock,
+  BookOpen,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-function getDynamicTotalCount(): number {
-  try {
-    const sitemapPath = path.join(process.cwd(), "public/sitemap.xml");
-    if (fs.existsSync(sitemapPath)) {
-      const content = fs.readFileSync(sitemapPath, "utf8");
-      const matches = content.match(/<loc>/g);
-      if (matches && matches.length > 0) {
-        return matches.length;
-      }
-    }
-  } catch {
-    // fallback to sum of registries
-  }
-  return CALCULATORS.length + TRADING_TOOLS.length;
-}
+// Edge cache homepage for instant sub-50ms TTFB and 100 PageSpeed score
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Free Online Calculators - EMI, GST, SIP, Trading, Finance & Math | MyCalculators",
@@ -69,7 +57,7 @@ const CATEGORY_ICONS: Record<CalculatorCategory, React.ReactNode> = {
 };
 
 export default function HomePage() {
-  const totalCount = getDynamicTotalCount();
+  const totalCount = CALCULATORS.length + TRADING_TOOLS.length;
   const tradingCount = TRADING_TOOLS.length;
   const popularCalculators = CALCULATORS.filter((c) => c.popular);
   const categories = Object.keys(CATEGORIES_META) as CalculatorCategory[];
@@ -114,7 +102,14 @@ export default function HomePage() {
             <span className="w-2 h-2 rounded-full bg-[#00f59b] animate-pulse"></span>
             Trading Suite ({tradingCount})
           </Link>
-          {popularCalculators.slice(0, 6).map((calc) => (
+          <Link
+            href="/guides/intraday-profit-and-loss-calculator-guide"
+            className="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1.5 rounded-xl transition-all shadow-xs inline-flex items-center gap-1"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-amber-700" />
+            <span>Intraday P&amp;L Guide</span>
+          </Link>
+          {popularCalculators.slice(0, 5).map((calc) => (
             <Link
               key={calc.id}
               href={`/calculators/${calc.slug}`}
@@ -131,7 +126,7 @@ export default function HomePage() {
         <FeaturedEMI />
       </section>
 
-      {/* Trading Tools Section */}
+      {/* Trading Tools & Guide Section */}
       <section className="bg-white border border-navy/15 rounded-3xl p-6 sm:p-7 shadow-xs my-8 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
@@ -153,7 +148,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <Link
             href="/trading/intraday-pnl-calculator"
             className="block p-4 rounded-2xl bg-sage/20 hover:bg-cream border border-navy/10 transition-colors group"
@@ -167,6 +162,22 @@ export default function HomePage() {
             </h3>
             <p className="text-[11px] text-navy/60 mt-1 line-clamp-2">
               Point movements, gross profit/loss, and trade return percentage.
+            </p>
+          </Link>
+
+          <Link
+            href="/guides/intraday-profit-and-loss-calculator-guide"
+            className="block p-4 rounded-2xl bg-amber-50/70 hover:bg-amber-100/80 border border-amber-200 transition-colors group"
+          >
+            <div className="flex items-center justify-between text-[10px] font-bold text-amber-800 uppercase mb-1">
+              <span>✦ Master Guide</span>
+              <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+            </div>
+            <h3 className="text-sm font-bold text-amber-950 group-hover:text-amber-800 transition-colors">
+              Intraday P&amp;L Architecture
+            </h3>
+            <p className="text-[11px] text-amber-900/70 mt-1 line-clamp-2">
+              Zerodha ₹20 brokerage cap, 0.025% STT, and tick breakeven math.
             </p>
           </Link>
 
@@ -297,7 +308,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between border-b border-navy/10 pb-3">
             <div>
               <h3 className="text-xl font-black text-navy flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-steel" /> Business & Freelance Tools
+                <Briefcase className="w-5 h-5 text-steel" /> Business &amp; Freelance Tools
               </h3>
               <p className="text-xs text-navy/60">Payment gateway fees, marketplace net earnings, and e-commerce models</p>
             </div>
@@ -327,7 +338,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between border-b border-navy/10 pb-3">
             <div>
               <h3 className="text-xl font-black text-navy flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-steel" /> Finance, Loans & Tax Calculators
+                <TrendingUp className="w-5 h-5 text-steel" /> Finance, Loans &amp; Tax Calculators
               </h3>
               <p className="text-xs text-navy/60">Reducing balance loans, Indian tax slabs, mutual fund SIPs, and salary models</p>
             </div>
@@ -358,14 +369,14 @@ export default function HomePage() {
         <div className="flex items-center gap-3 bg-sage/20 border border-navy/10 rounded-2xl p-4">
           <Zap className="w-5 h-5 text-steel shrink-0" />
           <div className="text-xs">
-            <span className="font-bold text-navy block">Instant & Browser-Native</span>
+            <span className="font-bold text-navy block">Instant &amp; Browser-Native</span>
             <span className="text-navy/70">Calculations run locally with zero server latency.</span>
           </div>
         </div>
         <div className="flex items-center gap-3 bg-sage/20 border border-navy/10 rounded-2xl p-4">
           <Lock className="w-5 h-5 text-steel shrink-0" />
           <div className="text-xs">
-            <span className="font-bold text-navy block">100% Private & Secure</span>
+            <span className="font-bold text-navy block">100% Private &amp; Secure</span>
             <span className="text-navy/70">No financial inputs or health data are stored remotely.</span>
           </div>
         </div>
