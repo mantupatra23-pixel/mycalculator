@@ -39,7 +39,6 @@ import {
   Table as TableIcon,
   Sparkles,
   Info,
-  Sliders,
 } from "lucide-react";
 
 interface Props {
@@ -201,7 +200,6 @@ export default function CalculatorDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Semantic Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center justify-between text-xs font-semibold text-navy/60">
         <div className="flex items-center gap-2">
           <Link href="/" className="hover:text-navy transition-colors">Home</Link>
@@ -219,7 +217,6 @@ export default function CalculatorDetailPage({ params }: Props) {
         )}
       </nav>
 
-      {/* Above The Fold Header & Embed Option */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl font-black text-navy tracking-tight mb-2">
@@ -234,14 +231,10 @@ export default function CalculatorDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Primary Calculator Engine */}
       {renderCalculatorComponent()}
 
-      {/* Content, Formula, Assumptions, & FAQ Architecture */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
         <div className="md:col-span-8 space-y-8">
-          
-          {/* Section 1: How to Use & Methodology */}
           <section className="bg-sage/20 border border-navy/10 rounded-2xl p-6 space-y-4">
             <h2 className="text-xl font-bold text-navy flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-steel" /> How to Use &amp; Methodological Guide
@@ -285,20 +278,17 @@ export default function CalculatorDetailPage({ params }: Props) {
             </div>
           </section>
 
-          {/* Section 2: Mathematical Derivation & Formula Engine */}
           {calc.formulaDescription && (
             <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-4 shadow-xs">
               <h2 className="text-lg sm:text-xl font-bold text-navy flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-steel" /> Mathematical Derivation &amp; Formula Engine
+                <Code2 className="w-4 h-4 text-steel" /> Mathematical Derivation &amp; Formula Engine
               </h2>
               <p className="text-xs sm:text-sm text-navy/75 leading-relaxed">
                 Computations follow formal mathematical expressions ensuring reproducible, consistent results:
               </p>
-              
               <div className="p-4 bg-sage/30 rounded-xl font-mono text-xs sm:text-sm font-bold text-navy break-all border border-navy/10 text-center">
                 {calc.formulaDescription}
               </div>
-
               {calc.formulaVariables && (
                 <div className="space-y-2 pt-2">
                   <span className="text-xs font-bold text-navy/70 uppercase tracking-wider block">Variable Specifications:</span>
@@ -317,16 +307,14 @@ export default function CalculatorDetailPage({ params }: Props) {
             </section>
           )}
 
-          {/* Section 3: Worked Practical Example & Category-Specific Sensitivity Matrix */}
           {calc.workedExample && (
             <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-4 shadow-xs">
               <h2 className="text-lg sm:text-xl font-bold text-navy flex items-center gap-2">
-                <Calculator className="w-5 h-5 text-steel" /> Worked Practical Example &amp; Case Study
+                <Calculator className="w-4 h-4 text-steel" /> Worked Practical Example &amp; Case Study
               </h2>
               <p className="text-xs sm:text-sm text-navy/75 leading-relaxed">
                 To evaluate the mathematical model in practical execution, examine this real-world benchmark scenario:
               </p>
-
               <div className="bg-sage/20 border border-navy/10 rounded-xl p-4 text-xs text-navy/85 space-y-3">
                 <div className="font-bold text-steel text-xs uppercase tracking-wide">
                   Scenario: {calc.workedExample.scenario}
@@ -348,7 +336,6 @@ export default function CalculatorDetailPage({ params }: Props) {
                 </p>
               </div>
 
-              {/* Dynamic Sensitivity Matrix Based on Category */}
               <div className="space-y-2 pt-2">
                 <h3 className="text-xs font-bold text-navy uppercase tracking-wider flex items-center gap-1.5">
                   <TableIcon className="w-3.5 h-3.5 text-steel" /> Variance &amp; Sensitivity Analysis Matrix
@@ -435,7 +422,6 @@ export default function CalculatorDetailPage({ params }: Props) {
             </section>
           )}
 
-          {/* Section 4: Dynamic Strategic Principles */}
           <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-4 shadow-xs">
             <h2 className="text-lg sm:text-xl font-bold text-navy flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-steel" /> Strategic Optimization &amp; Practical Principles
@@ -491,7 +477,7 @@ export default function CalculatorDetailPage({ params }: Props) {
                   <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
                     <h3 className="font-bold text-navy text-xs">ROAS Breakeven Threshold</h3>
                     <p className="text-[11px] text-navy/70 leading-relaxed">
-                      Breakeven Return on Ad Spend equals $1 / \text{Gross Profit Margin}$. If your gross margin is 40%, your minimum marketing ROAS must exceed 2.5x to avoid net losses.
+                      Breakeven Return on Ad Spend equals 1 divided by Gross Profit Margin. If your gross margin is 40%, your minimum marketing ROAS must exceed 2.5x to avoid net losses.
                     </p>
                   </div>
                 </>
@@ -526,7 +512,6 @@ export default function CalculatorDetailPage({ params }: Props) {
             </div>
           </section>
 
-          {/* Section 5: Upgraded Assumptions & Precision Boundaries */}
           <section className="bg-sage/15 border border-navy/15 rounded-2xl p-6 space-y-4">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-800 shrink-0" />
@@ -564,7 +549,6 @@ export default function CalculatorDetailPage({ params }: Props) {
             </div>
           </section>
 
-          {/* Section 6: Upgraded Frequently Asked Questions */}
           <section className="space-y-4 pt-2">
             <div className="flex items-center justify-between pb-1 border-b border-navy/10">
               <h2 className="text-xl sm:text-2xl font-black text-navy flex items-center gap-2">
@@ -606,7 +590,6 @@ export default function CalculatorDetailPage({ params }: Props) {
             </div>
           </section>
 
-          {/* Section 7: Category Disclaimer */}
           <Disclaimer
             type={
               calc.category === "finance"
@@ -620,7 +603,6 @@ export default function CalculatorDetailPage({ params }: Props) {
           />
         </div>
 
-        {/* Sidebar: Contextual Related Calculators */}
         <aside className="md:col-span-4 space-y-6">
           <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-sm sticky top-20 space-y-4">
             <h3 className="font-bold text-sm text-navy flex items-center gap-2">
