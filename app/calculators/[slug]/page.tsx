@@ -36,9 +36,10 @@ import {
   Calendar,
   TrendingUp,
   ShieldCheck,
-  Percent,
   Table as TableIcon,
   Sparkles,
+  Info,
+  Sliders,
 } from "lucide-react";
 
 interface Props {
@@ -87,6 +88,21 @@ export default function CalculatorDetailPage({ params }: Props) {
   if (!calc) notFound();
 
   const related = getRelatedCalculators(calc, 4);
+
+  const isLoanOrFinance =
+    calc.category === "finance" ||
+    calc.slug.includes("emi") ||
+    calc.slug.includes("loan") ||
+    calc.slug.includes("interest") ||
+    calc.slug.includes("sip");
+
+  const isBusinessOrFreelance =
+    calc.category === "business" ||
+    calc.slug.includes("roas") ||
+    calc.slug.includes("earnings") ||
+    calc.slug.includes("gateway") ||
+    calc.slug.includes("commission") ||
+    calc.slug.includes("margin");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -225,58 +241,58 @@ export default function CalculatorDetailPage({ params }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-4">
         <div className="md:col-span-8 space-y-8">
           
-          {/* Section 1: Comprehensive How to Use & Methodology */}
+          {/* Section 1: How to Use & Methodology */}
           <section className="bg-sage/20 border border-navy/10 rounded-2xl p-6 space-y-4">
             <h2 className="text-xl font-bold text-navy flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-steel" /> How to Use &amp; Methodological Guide
             </h2>
             <p className="text-xs sm:text-sm text-navy/80 leading-relaxed">
-              The <strong>{calc.name}</strong> operates on deterministic financial mathematical modeling designed to give you instant, zero-latency feedback directly in your browser. Whether evaluating long-term amortization, tax liabilities, or transactional margins, follow these calibration practices:
+              The <strong>{calc.name}</strong> executes a verified mathematical evaluation model designed to eliminate manual computation errors and hidden estimation drift. To achieve deterministic precision, apply these operational guidelines:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               <div className="p-3.5 bg-white border border-navy/10 rounded-xl space-y-1">
                 <span className="font-bold text-xs text-navy flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 1. Parameter Input
+                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 1. Input Primary Parameters
                 </span>
                 <p className="text-[11px] text-navy/70 leading-relaxed">
-                  Enter baseline numerical values or adjust interactive sliders to reflect exact loan tenures, tax brackets, or principal quantities.
+                  Provide exact figures or utilize the interactive sliders. Boundary limits prevent invalid negative or zero-division entries.
                 </p>
               </div>
               <div className="p-3.5 bg-white border border-navy/10 rounded-xl space-y-1">
                 <span className="font-bold text-xs text-navy flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 2. Periodic Compounding
+                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 2. Real-Time Netting
                 </span>
                 <p className="text-[11px] text-navy/70 leading-relaxed">
-                  The underlying engine divides annual rates into exact monthly periodic rates ($R / (12 \times 100)$) to prevent flat-rate estimation errors.
+                  The client-side algorithm computes intermediate variables, deduction thresholds, and multiplier scaling instantly with zero latency.
                 </p>
               </div>
               <div className="p-3.5 bg-white border border-navy/10 rounded-xl space-y-1">
                 <span className="font-bold text-xs text-navy flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 3. Schedule Inspection
+                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 3. Evaluate Breakdown
                 </span>
                 <p className="text-[11px] text-navy/70 leading-relaxed">
-                  Examine the annual repayment breakdown table below the result card to inspect the shifting ratio between principal and interest.
+                  Inspect the result dashboard to distinguish between gross baseline figures and net finalized outcomes after fees or buffers.
                 </p>
               </div>
               <div className="p-3.5 bg-white border border-navy/10 rounded-xl space-y-1">
                 <span className="font-bold text-xs text-navy flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 4. Structured Export
+                  <CheckCircle2 className="w-3.5 h-3.5 text-steel" /> 4. One-Click Copy
                 </span>
                 <p className="text-[11px] text-navy/70 leading-relaxed">
-                  Use the one-click copy tool to export formatted figures for accounting documentation, spreadsheets, or financial planning reports.
+                  Export structured summaries to your clipboard for record keeping, tax documentation, client proposals, or travel budgeting.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Section 2: Mathematical Derivation & Variable Breakdown */}
+          {/* Section 2: Mathematical Derivation & Formula Engine */}
           {calc.formulaDescription && (
             <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-4 shadow-xs">
               <h2 className="text-lg sm:text-xl font-bold text-navy flex items-center gap-2">
                 <Code2 className="w-5 h-5 text-steel" /> Mathematical Derivation &amp; Formula Engine
               </h2>
               <p className="text-xs sm:text-sm text-navy/75 leading-relaxed">
-                Standard banking and regulatory frameworks in India mandate standard reducing-balance compounding. The mathematical formula powering this engine is:
+                Computations follow formal mathematical expressions ensuring reproducible, consistent results:
               </p>
               
               <div className="p-4 bg-sage/30 rounded-xl font-mono text-xs sm:text-sm font-bold text-navy break-all border border-navy/10 text-center">
@@ -289,7 +305,7 @@ export default function CalculatorDetailPage({ params }: Props) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {calc.formulaVariables.map((v, i) => (
                       <div key={i} className="p-2.5 bg-sage/10 border border-navy/10 rounded-lg flex items-center gap-2">
-                        <strong className="font-mono text-steel bg-white px-2 py-0.5 rounded border border-navy/15">
+                        <strong className="font-mono text-steel bg-white px-2 py-0.5 rounded border border-navy/15 shrink-0">
                           {v.symbol}
                         </strong>
                         <span className="text-navy/80">{v.label}</span>
@@ -298,21 +314,17 @@ export default function CalculatorDetailPage({ params }: Props) {
                   </div>
                 </div>
               )}
-
-              <p className="text-xs text-navy/70 leading-relaxed border-t border-navy/10 pt-3">
-                <strong>Why the periodic rate matters:</strong> When banks quote an annual interest rate ($R$), the true monthly rate is derived as $r = R / (12 \times 100)$. The exponential term $(1+r)^n$ accounts for compound interest over $n$ months, ensuring that while the monthly payment stays fixed, the interest component decreases and principal repayment accelerates with each installment.
-              </p>
             </section>
           )}
 
-          {/* Section 3: Worked Practical Example & Tenure Sensitivity Table */}
+          {/* Section 3: Worked Practical Example & Category-Specific Sensitivity Matrix */}
           {calc.workedExample && (
             <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-4 shadow-xs">
               <h2 className="text-lg sm:text-xl font-bold text-navy flex items-center gap-2">
                 <Calculator className="w-5 h-5 text-steel" /> Worked Practical Example &amp; Case Study
               </h2>
               <p className="text-xs sm:text-sm text-navy/75 leading-relaxed">
-                To illustrate how amortization behaves in practical scenarios, examine the real-world setup below:
+                To evaluate the mathematical model in practical execution, examine this real-world benchmark scenario:
               </p>
 
               <div className="bg-sage/20 border border-navy/10 rounded-xl p-4 text-xs text-navy/85 space-y-3">
@@ -336,40 +348,86 @@ export default function CalculatorDetailPage({ params }: Props) {
                 </p>
               </div>
 
-              {/* Dynamic Comparison / Sensitivity Matrix */}
+              {/* Dynamic Sensitivity Matrix Based on Category */}
               <div className="space-y-2 pt-2">
                 <h3 className="text-xs font-bold text-navy uppercase tracking-wider flex items-center gap-1.5">
-                  <TableIcon className="w-3.5 h-3.5 text-steel" /> Tenure Impact &amp; Interest Sensitivity Matrix
+                  <TableIcon className="w-3.5 h-3.5 text-steel" /> Variance &amp; Sensitivity Analysis Matrix
                 </h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border border-navy/15 rounded-xl overflow-hidden bg-white">
                     <thead className="bg-sage/30 text-navy font-bold">
                       <tr>
-                        <th className="p-2.5 border-b border-navy/15">Selected Tenure</th>
-                        <th className="p-2.5 border-b border-navy/15">Monthly Impact</th>
-                        <th className="p-2.5 border-b border-navy/15">Total Interest Burden</th>
-                        <th className="p-2.5 border-b border-navy/15">Financial Recommendation</th>
+                        <th className="p-2.5 border-b border-navy/15">Parameter Variance</th>
+                        <th className="p-2.5 border-b border-navy/15">Direct Impact</th>
+                        <th className="p-2.5 border-b border-navy/15">Risk / Outlay Shift</th>
+                        <th className="p-2.5 border-b border-navy/15">Optimization Strategy</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-navy/10 text-navy/80">
-                      <tr>
-                        <td className="p-2.5 font-semibold">Short Tenure (10 Years)</td>
-                        <td className="p-2.5 font-mono">Higher Monthly EMI</td>
-                        <td className="p-2.5 font-mono text-emerald-700 font-bold">Lowest Total Interest</td>
-                        <td className="p-2.5">Saves up to 45% in interest payouts</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-semibold">Standard Tenure (15 Years)</td>
-                        <td className="p-2.5 font-mono">Balanced Outflow</td>
-                        <td className="p-2.5 font-mono text-steel">Moderate Total Interest</td>
-                        <td className="p-2.5">Optimal cash flow to debt balance</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-semibold">Extended Tenure (20-30 Years)</td>
-                        <td className="p-2.5 font-mono">Lowest Monthly EMI</td>
-                        <td className="p-2.5 font-mono text-amber-700 font-bold">Exceeds Principal Amount</td>
-                        <td className="p-2.5">High total cost; prepayments recommended</td>
-                      </tr>
+                      {isLoanOrFinance ? (
+                        <>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Short Tenure (5-10 Yrs)</td>
+                            <td className="p-2.5 font-mono">Higher Monthly Installment</td>
+                            <td className="p-2.5 font-mono text-emerald-700 font-bold">Lowest Lifetime Interest</td>
+                            <td className="p-2.5">Saves up to 40% in compounding interest</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Standard Tenure (15 Yrs)</td>
+                            <td className="p-2.5 font-mono">Balanced Monthly Cash Flow</td>
+                            <td className="p-2.5 font-mono text-steel">Moderate Total Interest</td>
+                            <td className="p-2.5">Optimal balance between liquidity and cost</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Extended Tenure (20-30 Yrs)</td>
+                            <td className="p-2.5 font-mono">Lowest Monthly Outflow</td>
+                            <td className="p-2.5 font-mono text-amber-700 font-bold">Interest Exceeds Principal</td>
+                            <td className="p-2.5">Requires annual prepayments to avoid debt trap</td>
+                          </tr>
+                        </>
+                      ) : isBusinessOrFreelance ? (
+                        <>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Low Volume / Sub-Scale</td>
+                            <td className="p-2.5 font-mono">Higher Fixed % Fee Burden</td>
+                            <td className="p-2.5 font-mono text-amber-700 font-bold">Margin Erosion</td>
+                            <td className="p-2.5">Bundle pricing to absorb gateway minimums</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Optimal Scale Level</td>
+                            <td className="p-2.5 font-mono">Volume Discount Slabs</td>
+                            <td className="p-2.5 font-mono text-emerald-700 font-bold">Predictable Net Margin</td>
+                            <td className="p-2.5">Lock in enterprise gateway merchant rates</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold">High Refund / RTO Rate</td>
+                            <td className="p-2.5 font-mono">2x Reverse Logistics Loss</td>
+                            <td className="p-2.5 font-mono text-red-700 font-bold">Severe Capital Drag</td>
+                            <td className="p-2.5">Mandate OTP verification or pre-paid incentives</td>
+                          </tr>
+                        </>
+                      ) : (
+                        <>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Tight Budget (0% Buffer)</td>
+                            <td className="p-2.5 font-mono">Zero Slack for Surge Fees</td>
+                            <td className="p-2.5 font-mono text-red-700 font-bold">High Overrun Risk</td>
+                            <td className="p-2.5">Mandate a baseline 5% contingency buffer</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Standard Buffer (5% - 10%)</td>
+                            <td className="p-2.5 font-mono">Absorbs Incidental Outlays</td>
+                            <td className="p-2.5 font-mono text-emerald-700 font-bold">Safe Realized Budget</td>
+                            <td className="p-2.5">Optimal allocation across travel, fuel, or materials</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold">Conservative (15%+ Buffer)</td>
+                            <td className="p-2.5 font-mono">Over-Allocated Capital</td>
+                            <td className="p-2.5 font-mono text-steel">Zero Financial Stress</td>
+                            <td className="p-2.5">Ideal for international travel or remote logistics</td>
+                          </tr>
+                        </>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -377,81 +435,90 @@ export default function CalculatorDetailPage({ params }: Props) {
             </section>
           )}
 
-          {/* Section 4: Strategic Optimization & Regulatory Insights */}
+          {/* Section 4: Dynamic Strategic Principles */}
           <section className="bg-white border border-navy/15 rounded-2xl p-6 space-y-4 shadow-xs">
             <h2 className="text-lg sm:text-xl font-bold text-navy flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-steel" /> Strategic Optimization &amp; Indian Financial Rules
+              <TrendingUp className="w-5 h-5 text-steel" /> Strategic Optimization &amp; Practical Principles
             </h2>
-            <div className="space-y-3 text-xs sm:text-sm text-navy/80 leading-relaxed">
-              <p>
-                When managing financial obligations like loans, taxes, or business transactions in India, mathematical calculations must account for the following statutory factors:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
-                  <h3 className="font-bold text-navy text-xs">Reducing Balance vs. Flat Rate</h3>
-                  <p className="text-[11px] text-navy/70 leading-relaxed">
-                    Always confirm your lender calculates interest on a Reducing Balance method. A seemingly low 6% flat interest rate is mathematically equivalent to nearly 11% to 12% on a reducing balance basis.
-                  </p>
-                </div>
-                <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
-                  <h3 className="font-bold text-navy text-xs">Income Tax Deductions (Section 24b &amp; 80C)</h3>
-                  <p className="text-[11px] text-navy/70 leading-relaxed">
-                    Under the Indian Income Tax Act, home loan borrowers can claim up to ₹2 Lakhs per financial year on interest payments (Section 24b) and up to ₹1.5 Lakhs on principal repayments (Section 80C).
-                  </p>
-                </div>
-                <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
-                  <h3 className="font-bold text-navy text-xs">The Power of 1 Extra EMI Prepayment</h3>
-                  <p className="text-[11px] text-navy/70 leading-relaxed">
-                    Paying just 1 additional EMI every financial year directly towards principal can reduce a 20-year loan tenure by more than 3 to 4 years, saving multiple lakhs in total interest outgo.
-                  </p>
-                </div>
-                <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
-                  <h3 className="font-bold text-navy text-xs">Floating Rate &amp; RBI Repo Rate Linkage</h3>
-                  <p className="text-[11px] text-navy/70 leading-relaxed">
-                    Most retail loans in India are linked to the RBI External Benchmark Lending Rate (EBLR). When repo rates change, banks generally adjust loan tenure automatically rather than revising monthly EMI amounts.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 5: Assumptions & Constraints */}
-          {calc.assumptions && calc.assumptions.length > 0 && (
-            <section className="bg-sage/10 border border-navy/10 rounded-2xl p-5 space-y-2">
-              <h2 className="text-sm font-bold text-navy uppercase tracking-wider">Underlying Mathematical Assumptions</h2>
-              <ul className="list-disc pl-5 text-xs text-navy/75 space-y-1 leading-relaxed">
-                {calc.assumptions.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* Section 6: Frequently Asked Questions */}
-          <section className="space-y-4">
-            <h2 className="text-xl font-bold text-navy flex items-center gap-2">
-              <HelpCircle className="w-5 h-5 text-steel" /> Frequently Asked Questions
-            </h2>
-            <div className="space-y-3">
-              {calc.faqs && calc.faqs.length > 0 ? (
-                calc.faqs.map((faq, idx) => (
-                  <div key={idx} className="bg-white border border-navy/15 rounded-xl p-4 shadow-xs">
-                    <h3 className="font-bold text-sm text-navy mb-1">{faq.q}</h3>
-                    <p className="text-xs text-navy/75 leading-relaxed">{faq.a}</p>
-                  </div>
-                ))
-              ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              {isLoanOrFinance ? (
                 <>
-                  <div className="bg-white border border-navy/15 rounded-xl p-4 shadow-xs">
-                    <h3 className="font-bold text-sm text-navy mb-1">How accurate are these calculations?</h3>
-                    <p className="text-xs text-navy/75 leading-relaxed">
-                      All calculations use exact banking and financial formulas rounded according to standard currency conventions. Results closely reflect real banking statements and contract notes.
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Reducing Balance vs. Flat Rate</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Confirm your lender computes interest on a Reducing Balance method. A quoted 6% flat rate mathematically equals 11% to 12% on a reducing balance schedule.
                     </p>
                   </div>
-                  <div className="bg-white border border-navy/15 rounded-xl p-4 shadow-xs">
-                    <h3 className="font-bold text-sm text-navy mb-1">Are my personal or financial inputs stored online?</h3>
-                    <p className="text-xs text-navy/75 leading-relaxed">
-                      No. The calculation runs entirely inside your client-side browser runtime. No financial figures, salaries, or debt values are stored remotely.
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Tax Benefits (Section 24b &amp; 80C)</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Home loan borrowers can claim up to ₹2 Lakhs yearly on interest payments (Section 24b) and up to ₹1.5 Lakhs on principal repayments (Section 80C) in India.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Prepayment Amortization Impact</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Paying just 1 extra EMI every financial year directly toward loan principal can shorten a 20-year loan tenure by 3 to 4 years, saving multiple lakhs in interest.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">EBLR &amp; Repo Rate Linkage</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Floating-rate retail loans in India link to the RBI repo rate. When benchmark rates shift, banks adjust loan tenure rather than monthly installments by default.
+                    </p>
+                  </div>
+                </>
+              ) : isBusinessOrFreelance ? (
+                <>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Payment Gateway Blended Cost</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Merchant aggregators charge 2% + 18% GST on domestic transactions and up to 3% to 4% on international cards. Factor in service GST to safeguard net margins.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Section 194-O &amp; Marketplace TDS</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      E-commerce operators in India deduct 1% TDS under Section 194-O before remitting net sales balances. Always reconcile gross sales against Form 26AS.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Return &amp; RTO Cost Absorption</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Return to Origin (RTO) incurs both forward and reverse shipping overhead without revenue realization. Maintain at least a 15% product margin buffer.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">ROAS Breakeven Threshold</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Breakeven Return on Ad Spend equals $1 / \text{Gross Profit Margin}$. If your gross margin is 40%, your minimum marketing ROAS must exceed 2.5x to avoid net losses.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Hidden Outlay Provisioning</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Real-world expenses routinely diverge from nominal quotes due to local service taxes, airport transfer surges, baggage surcharges, and municipal fees.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Contingency Buffer Sizing</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Financial planners recommend adding a minimum 5% to 10% contingency allocation to absorb unplanned incidentals and protect emergency capital reserves.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Dynamic Surge &amp; Seasonal Volatility</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      Dynamic pricing algorithms in hospitality, transit, and material procurement cause pricing spikes during peak demand cycles. Lock bookings early.
+                    </p>
+                  </div>
+                  <div className="p-3.5 bg-sage/20 border border-navy/10 rounded-xl space-y-1">
+                    <h3 className="font-bold text-navy text-xs">Deterministic vs. Stochastic Estimates</h3>
+                    <p className="text-[11px] text-navy/70 leading-relaxed">
+                      While our calculator yields exact deterministic baselines, actual financial execution involves real-time market fluctuations and transaction fee variances.
                     </p>
                   </div>
                 </>
@@ -459,7 +526,87 @@ export default function CalculatorDetailPage({ params }: Props) {
             </div>
           </section>
 
-          {/* Section 7: Unified Category Disclaimer */}
+          {/* Section 5: Upgraded Assumptions & Precision Boundaries */}
+          <section className="bg-sage/15 border border-navy/15 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-emerald-800 shrink-0" />
+              <h2 className="text-base sm:text-lg font-bold text-navy">
+                Underlying Mathematical Assumptions &amp; Precision Standards
+              </h2>
+            </div>
+            <p className="text-xs text-navy/75 leading-relaxed">
+              To deliver deterministic calculations with zero server-side latency, the <strong>{calc.name}</strong> operates on the following mathematical and operational constraints:
+            </p>
+            <div className="space-y-2 pt-1">
+              {calc.assumptions && calc.assumptions.length > 0 ? (
+                calc.assumptions.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 p-3 bg-white border border-navy/10 rounded-xl text-xs text-navy/80">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="flex items-start gap-2.5 p-3 bg-white border border-navy/10 rounded-xl text-xs text-navy/80">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                    <span>Calculations are executed client-side using IEEE 754 double-precision arithmetic to guarantee exact numerical consistency.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5 p-3 bg-white border border-navy/10 rounded-xl text-xs text-navy/80">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                    <span>Statutory rates, deductions, and rounding conventions adhere to standardized Indian banking and commercial regulations.</span>
+                  </div>
+                </>
+              )}
+              <div className="flex items-start gap-2.5 p-3 bg-white border border-navy/10 rounded-xl text-xs text-navy/80">
+                <Info className="w-4 h-4 text-steel shrink-0 mt-0.5" />
+                <span>Final values round to two decimal places (or nearest whole rupee) consistent with Indian currency and contract note formatting conventions.</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 6: Upgraded Frequently Asked Questions */}
+          <section className="space-y-4 pt-2">
+            <div className="flex items-center justify-between pb-1 border-b border-navy/10">
+              <h2 className="text-xl sm:text-2xl font-black text-navy flex items-center gap-2">
+                <HelpCircle className="w-5 h-5 text-steel" /> Frequently Asked Questions
+              </h2>
+              <span className="text-[11px] font-bold text-steel bg-sage/40 px-2.5 py-0.5 rounded-full">
+                Authoritative Guidance
+              </span>
+            </div>
+            
+            <div className="space-y-3">
+              {calc.faqs && calc.faqs.length > 0 ? (
+                calc.faqs.map((faq, idx) => (
+                  <div key={idx} className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-2 hover:border-steel/60 transition-colors">
+                    <h3 className="font-bold text-sm sm:text-base text-navy flex items-start gap-2">
+                      <span className="text-steel font-mono">Q{idx + 1}.</span> {faq.q}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-navy/75 leading-relaxed pl-6">
+                      {faq.a}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-2">
+                    <h3 className="font-bold text-sm text-navy">How accurate are the results calculated by this tool?</h3>
+                    <p className="text-xs text-navy/75 leading-relaxed">
+                      All calculations execute client-side using verified banking, tax, and commercial formulas matching statutory standards. Results closely match official loan amortization schedules, contract notes, and billing ledgers.
+                    </p>
+                  </div>
+                  <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-xs space-y-2">
+                    <h3 className="font-bold text-sm text-navy">Are my personal or financial inputs stored online?</h3>
+                    <p className="text-xs text-navy/75 leading-relaxed">
+                      No. Calculations execute entirely within your local browser environment. No salary data, loan amounts, travel itineraries, or financial inputs are uploaded to or stored on remote servers.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+
+          {/* Section 7: Category Disclaimer */}
           <Disclaimer
             type={
               calc.category === "finance"
@@ -477,7 +624,7 @@ export default function CalculatorDetailPage({ params }: Props) {
         <aside className="md:col-span-4 space-y-6">
           <div className="bg-white border border-navy/15 rounded-2xl p-5 shadow-sm sticky top-20 space-y-4">
             <h3 className="font-bold text-sm text-navy flex items-center gap-2">
-              <Layers className="w-4 h-4 text-steel" /> Related Financial Tools
+              <Layers className="w-4 h-4 text-steel" /> Related Tools in {calc.category.toUpperCase()}
             </h3>
             <div className="space-y-3">
               {related.map((item) => (
